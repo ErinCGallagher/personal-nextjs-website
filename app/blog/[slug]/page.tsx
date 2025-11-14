@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   }
 
   return (
-    <section>
+    <section className="pt-16">
       <h1 className="title font-semibold text-2xl tracking-tighter">
         {post.metadata.title}
       </h1>
