@@ -1,4 +1,5 @@
 import Image from "next/image";
+import SocialLinks from "@/app/components/social-links";
 
 export default function Home() {
   return (
@@ -22,6 +23,13 @@ export default function Home() {
             <p className="mt-4 text-lg text-white/90">
               Software Engineer • Musical Theatre Enthusiast
             </p>
+            <div className="mt-8">
+              <SocialLinks
+                size={28}
+                gap="gap-6"
+                className="text-white"
+              />
+            </div>
           </div>
         </div>
       </header>
