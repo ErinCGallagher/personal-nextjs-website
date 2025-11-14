@@ -1,6 +1,7 @@
 
 import { notFound } from 'next/navigation'
 import { getBlogPosts } from '../utils'
+import { CustomMDX } from '@/app/components/mdx'
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -20,6 +21,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           {post.metadata.publishedAt}
         </p>
       </div>
+      <article className="prose">
+        <CustomMDX source={post.content} />
+      </article>
     </section>
   )
 }
