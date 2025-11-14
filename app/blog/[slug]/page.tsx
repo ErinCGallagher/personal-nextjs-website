@@ -12,17 +12,19 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <section className="pt-16">
-      <h1 className="title font-semibold text-2xl tracking-tighter">
-        {post.metadata.title}
-      </h1>
-      <div className="flex justify-between items-center mt-2 mb-8 text-sm">
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          {post.metadata.publishedAt}
-        </p>
+      <div className="max-w-3xl mx-auto px-6">
+        <h1 className="title font-semibold text-3xl tracking-tighter mb-4">
+          {post.metadata.title}
+        </h1>
+        <div className="flex justify-between items-center mt-2 mb-8 text-sm">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            {post.metadata.publishedAt}
+          </p>
+        </div>
+        <article className="prose max-w-none">
+          <CustomMDX source={post.content} />
+        </article>
       </div>
-      <article className="prose">
-        <CustomMDX source={post.content} />
-      </article>
     </section>
   )
 }
