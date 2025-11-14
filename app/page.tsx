@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SocialLinks from "@/app/components/social-links";
+import { RecentPosts } from "@/app/components/recent-posts";
 
 export default function Home() {
   return (
@@ -35,7 +36,7 @@ export default function Home() {
       </header>
 
       <main className="flex w-full max-w-3xl mx-auto flex-col items-center justify-between py-16 px-6 bg-white dark:bg-black">
-      
+        <RecentPosts />
       </main>
     </div>
   );
