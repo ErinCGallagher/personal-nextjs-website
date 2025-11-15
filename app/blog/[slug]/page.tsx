@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { getBlogPosts } from '../utils'
 import { CustomMDX } from '@/app/components/mdx'
 
@@ -12,6 +13,17 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <section className="pt-16">
+      {post.metadata.image && (
+        <div className="relative w-full h-[400px] mb-8">
+          <Image
+            src={post.metadata.image}
+            alt={post.metadata.title}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
       <div className="max-w-3xl mx-auto px-6">
         <h1 className="title font-semibold text-3xl tracking-tighter mb-4">
           {post.metadata.title}
