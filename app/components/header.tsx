@@ -16,9 +16,7 @@ export default function Header() {
 
   return (
     <header className={headerClass}>
-      <nav className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4"></div>
-
+      <nav className="w-full px-6 py-3 flex items-center justify-end">
         <div className="flex items-center gap-2">
           {links.map((l) => {
             const active = pathname === l.href
