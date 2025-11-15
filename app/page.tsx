@@ -42,8 +42,8 @@ export default function Home() {
 
       <main className="flex w-full max-w-3xl mx-auto flex-col items-center justify-between py-16 px-4 sm:px-6 bg-white dark:bg-black">
         <About />
-        <Experience />
         <RecentPosts />
+        <Experience />
       </main>
     </div>
   );

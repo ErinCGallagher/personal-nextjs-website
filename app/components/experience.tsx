@@ -40,6 +40,15 @@ export function Experience() {
           </div>
         ))}
       </div>
+      <div className="mt-6">
+        <a
+          href="/resume.pdf"
+          download="Erin_Gallagher_Resume.pdf"
+          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+        >
+          Download Resume →
+        </a>
+      </div>
     </section>
   );
 }

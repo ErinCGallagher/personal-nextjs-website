@@ -17,7 +17,7 @@ export function RecentPosts() {
   return (
     <section className="w-full py-12">
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-8">
-        Recent Posts
+        Recent Blog Posts
       </h2>
 
       {recentPosts.length > 0 ? (
