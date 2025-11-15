@@ -19,19 +19,20 @@ export default function Home() {
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 flex items-center justify-center px-4 sm:px-6">
-          <div className="max-w-3xl text-center">
-            <h1 className="text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-5xl xl:text-6xl">
+        <div className="relative z-10 flex items-center justify-center md:justify-start px-4 sm:px-6 w-full max-w-7xl mx-auto">
+          <div className="max-w-3xl text-center md:text-left">
+            <h1 className="text-5xl font-semibold leading-tight text-white sm:text-6xl lg:text-7xl xl:text-[70px]">
               Erin Gallagher
             </h1>
-            <p className="mt-4 text-base sm:text-lg lg:text-xl text-white/90">
+            <p className="mt-4 text-xl sm:text-2xl lg:text-3xl text-white/90">
               Software Engineer • Musical Theatre Enthusiast
             </p>
             <div className="mt-8">
               <SocialLinks
-                size={24}
+                size={32}
                 gap="gap-4 sm:gap-6"
                 className="text-white"
+                justify="justify-center md:justify-start"
               />
             </div>
           </div>

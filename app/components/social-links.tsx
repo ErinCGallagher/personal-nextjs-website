@@ -5,15 +5,17 @@ interface SocialLinksProps {
   size?: number;
   gap?: string;
   className?: string;
+  justify?: string;
 }
 
 export default function SocialLinks({
   size = 24,
   gap = "gap-6",
   className = "",
+  justify = "justify-center",
 }: SocialLinksProps) {
   return (
-    <div className={`flex items-center justify-center ${gap} ${className}`}>
+    <div className={`flex items-center ${justify} ${gap} ${className}`}>
       <Link
         href="https://github.com/ErinCGallagher"
         target="_blank"
