@@ -1,7 +1,7 @@
 import Image from "next/image";
 import SocialLinks from "@/app/components/social-links";
 import { RecentPosts } from "@/app/components/recent-posts";
-import { FaChevronDown } from "react-icons/fa6";
+import { ScrollArrow } from "@/app/components/scroll-arrow";
 
 export default function Home() {
   return (
@@ -35,9 +35,7 @@ export default function Home() {
           </div>
         </div>
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-          <FaChevronDown className="text-white text-2xl" />
-        </div>
+        <ScrollArrow />
       </header>
 
       <main className="flex w-full max-w-3xl mx-auto flex-col items-center justify-between py-16 px-4 sm:px-6 bg-white dark:bg-black">
