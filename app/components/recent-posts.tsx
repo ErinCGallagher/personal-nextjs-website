@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getBlogPosts } from '@/app/blog/utils';
+import Image from 'next/image';
+import { getBlogPosts, formatDate } from '@/app/blog/utils';
 
 export function RecentPosts() {
   const allPosts = getBlogPosts();
@@ -23,20 +24,28 @@ export function RecentPosts() {
         <div className="grid gap-6 md:gap-8">
           {recentPosts.map((post) => (
             <Link href={`/blog/${post.slug}`} key={post.slug}>
-              <article className="group border-l-4 border-transparent hover:border-blue-600 dark:hover:border-blue-400 pl-4 py-2 transition-colors cursor-pointer">
-                <h3 className="text-lg font-semibold text-black dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {post.metadata.title}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                  {post.metadata.summary}
-                </p>
-                <time className="mt-3 block text-xs text-gray-500 dark:text-gray-500">
-                  {new Date(post.metadata.publishedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
+              <article className="group border-l-4 border-transparent hover:border-blue-600 dark:hover:border-blue-400 pl-4 py-2 transition-colors cursor-pointer flex gap-4">
+                {post.metadata.image && (
+                  <div className="relative w-24 h-24 flex-shrink-0 border-2 border-white rounded-lg overflow-hidden">
+                    <Image
+                      src={post.metadata.image}
+                      alt={post.metadata.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-black dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {post.metadata.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    {post.metadata.summary}
+                  </p>
+                  <time className="mt-3 block text-xs text-gray-500 dark:text-gray-500">
+                    {formatDate(post.metadata.publishedAt)}
+                  </time>
+                </div>
               </article>
             </Link>
           ))}

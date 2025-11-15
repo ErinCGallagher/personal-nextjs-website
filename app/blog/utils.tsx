@@ -12,6 +12,14 @@ export function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), 'app', 'blog', 'posts'))
 }
 
+export function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
 function getMDXFiles(dir: string) {
   return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx')
 }
