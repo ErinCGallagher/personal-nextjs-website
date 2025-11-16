@@ -31,7 +31,7 @@ export function Experience() {
         {experiences.map((exp, index) => (
           <div
             key={index}
-            className="border border-gray-200 dark:border-gray-700 rounded-lg p-3"
+            className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 transition-colors hover:border-blue-500 dark:hover:border-blue-400"
           >
             <div className="flex justify-between items-center">
               <div>
