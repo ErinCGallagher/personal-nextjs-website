@@ -134,15 +134,16 @@ body {
 }
 
 .prose table {
-  width: 100%;
+  width: auto;
   border-collapse: collapse;
   margin: 1rem 0;
+  font-size: 0.8rem;
 }
 
 .prose th,
 .prose td {
   border: 1px solid #d1d5db;
-  padding: 0.75rem;
+  padding: 0.4rem 0.6rem;
   text-align: left;
 }
 

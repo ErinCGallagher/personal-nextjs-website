@@ -25,10 +25,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         </div>
       )}
       <div className="max-w-3xl mx-auto px-6">
-        <h1 className="title font-semibold text-3xl tracking-tighter mb-4">
+        <h1 className="title font-semibold text-5xl tracking-tighter mb-4">
           {post.metadata.title}
         </h1>
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex items-center gap-3 mb-12">
           <div className="relative w-10 h-10 flex-shrink-0">
             <Image
               src="/erin.jpg"
