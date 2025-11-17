@@ -6,6 +6,7 @@ import React from 'react'
 import remarkGfm from 'remark-gfm'
 import { ImageGrid4 } from './image-grid-4'
 import { ImageGrid2 } from './image-grid-2'
+import { ImageGrid2Mixed } from './image-grid-2-mixed'
 
 function Table({ data }: any) {
   let headers = data.headers.map((header: any, index: number) => (
@@ -97,6 +98,7 @@ let components = {
   Table,
   ImageGrid4,
   ImageGrid2,
+  ImageGrid2Mixed,
 }
 
 export async function CustomMDX(props: any) {

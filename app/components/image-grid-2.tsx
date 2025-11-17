@@ -4,6 +4,16 @@ interface ImageGrid2Props {
   children: ReactNode;
 }
 
+/**
+ * ImageGrid2 - Displays 2 images side by side with equal width
+ *
+ * Expected image order:
+ * - Image 1: Landscape (1/2 width)
+ * - Image 2: Landscape (1/2 width)
+ *
+ * Layout:
+ * [Image 1 (50%)] [Image 2 (50%)]
+ */
 export function ImageGrid2({ children }: ImageGrid2Props) {
   const images = Children.toArray(children);
 
