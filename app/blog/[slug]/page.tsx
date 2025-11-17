@@ -14,20 +14,27 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   return (
     <section className="pt-16">
       {post.metadata.image && (
-        <div className="relative w-full h-[400px] mb-8">
-          <Image
-            src={post.metadata.image}
-            alt={post.metadata.title}
-            fill
-            className="object-cover"
-            priority
-          />
+        <div className="relative w-full h-[500px] mb-8">
+          <div className="absolute inset-0">
+            <Image
+              src={post.metadata.image}
+              alt={post.metadata.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="max-w-4xl mx-auto px-6 w-full text-center">
+              <h1 className="title font-semibold text-5xl tracking-tighter text-white">
+                {post.metadata.title}
+              </h1>
+            </div>
+          </div>
         </div>
       )}
       <div className="max-w-4xl mx-auto px-6">
-        <h1 className="title font-semibold text-5xl tracking-tighter mb-4">
-          {post.metadata.title}
-        </h1>
         <div className="flex items-center gap-3 mb-12">
           <div className="relative w-10 h-10 flex-shrink-0">
             <Image
