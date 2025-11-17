@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org) project using [MDX](https://mdxjs.com/)
 
-What you'll Find
+What you'll find:
 * A bit about me
 * Travel blog
 * Work experience
