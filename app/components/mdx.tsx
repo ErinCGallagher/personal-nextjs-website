@@ -4,6 +4,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import { highlight } from 'sugar-high'
 import React from 'react'
 import remarkGfm from 'remark-gfm'
+import { ImageGrid } from './image-grid'
 
 function Table({ data }: any) {
   let headers = data.headers.map((header: any, index: number) => (
@@ -93,6 +94,7 @@ let components = {
   a: CustomLink,
   code: Code,
   Table,
+  ImageGrid,
 }
 
 export async function CustomMDX(props: any) {
