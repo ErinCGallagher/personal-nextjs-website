@@ -30,7 +30,7 @@ export default function Page() {
                    Travel Blog
                 </h1>
                 <p className="mt-2 text-gray-600 dark:text-gray-400">
-                  Thoughts on software development, travel, and more.
+                  Check out my travels around the world and get inspired to do some of your own!
                 </p>
 
                 {featuredPosts.length > 0 && (
@@ -45,6 +45,7 @@ export default function Page() {
                                 slug={post.slug}
                                 title={post.metadata.title}
                                 summary={post.metadata.summary}
+                                publishedAt={post.metadata.publishedAt}
                                 image={post.metadata.image}
                                 tags={post.metadata.tags}
                             />
@@ -65,6 +66,7 @@ export default function Page() {
                                 slug={post.slug}
                                 title={post.metadata.title}
                                 summary={post.metadata.summary}
+                                publishedAt={post.metadata.publishedAt}
                                 image={post.metadata.image}
                                 tags={post.metadata.tags}
                             />

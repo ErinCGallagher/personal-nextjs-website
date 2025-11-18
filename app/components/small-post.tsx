@@ -1,16 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getTagColor } from '@/app/blog/utils';
+import { getTagColor, formatDate } from '@/app/blog/utils';
 
 type SmallPostProps = {
     slug: string;
     title: string;
     summary: string;
+    publishedAt: string;
     image?: string;
     tags?: string[];
 };
 
-export function SmallPost({ slug, title, summary, image, tags }: SmallPostProps) {
+export function SmallPost({ slug, title, summary, publishedAt, image, tags }: SmallPostProps) {
     return (
         <Link href={`/blog/${slug}`}>
             <article className="group cursor-pointer">
@@ -27,9 +28,9 @@ export function SmallPost({ slug, title, summary, image, tags }: SmallPostProps)
 
                 <hr className="mt-6 mb-2 border-gray-200 dark:border-gray-700" />
 
-                {tags && tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-1">
-                        {tags.map((tag) => (
+                <div className="flex justify-between items-center mb-2">
+                    <div className="flex flex-wrap gap-2">
+                        {tags && tags.map((tag) => (
                             <span
                                 key={tag}
                                 className="inline-block px-3 py-1 text-sm rounded text-white"
@@ -39,13 +40,16 @@ export function SmallPost({ slug, title, summary, image, tags }: SmallPostProps)
                             </span>
                         ))}
                     </div>
-                )}
+                    <time className="text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(publishedAt)}
+                    </time>
+                </div>
 
                 <h3 className="text-m font-semibold text-black dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                     {title}
                 </h3>
 
-                <p className="mt-2 mb-4 text-[10px] text-gray-600 dark:text-gray-400 line-clamp-1">
+                <p className="mt-2 mb-3 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                     {summary}
                 </p>
             </article>

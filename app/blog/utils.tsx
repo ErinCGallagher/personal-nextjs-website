@@ -16,6 +16,7 @@ export function getTagColor(tag: string) {
   if (tagLower === 'food') return '#20c997';
   if (tagLower === 'hiking') return '#2f89fc';
   if (tagLower === 'safari') return '#dd2ffcd8';
+  if (tagLower === 'itinerary') return '#3b82f6';
   return '#3b82f6';
 }
 
