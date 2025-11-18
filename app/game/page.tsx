@@ -21,7 +21,7 @@ export default function Page() {
                     Ruin
                 </h1>
                 <p className="mt-2 text-xl text-gray-600 dark:text-gray-400">
-                    Ruin is a split focus platformer I built that can be played with 1 or 2 people.
+                    I built Ruin, a split-screen platformer for 1-2 players. You're alien treasure hunters exploring a mysterious planet's ancient ruins. DESCEND into the depths, solve puzzles, avoid traps, and collect treasure, if you dare!
                 </p>
 
                 <div className="mt-8 mb-16 relative z-10">
