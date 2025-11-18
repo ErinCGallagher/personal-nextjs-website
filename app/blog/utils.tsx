@@ -7,6 +7,16 @@ type Metadata = {
   summary: string
   image?: string
   tags?: string[]
+  featured?: string
+}
+
+export function getTagColor(tag: string) {
+  const tagLower = tag.toLowerCase();
+  if (tagLower === 'camping') return '#7971ea';
+  if (tagLower === 'food') return '#20c997';
+  if (tagLower === 'hiking') return '#2f89fc';
+  if (tagLower === 'safari') return '#dd2ffcd8';
+  return '#3b82f6';
 }
 
 export function getBlogPosts() {

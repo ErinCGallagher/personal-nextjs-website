@@ -1,14 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getBlogPosts, formatDate } from '@/app/blog/utils';
-
-function getTagColor(tag: string) {
-  const tagLower = tag.toLowerCase();
-  if (tagLower === 'camping') return '#7971ea';
-  if (tagLower === 'food') return '#20c997';
-  if (tagLower === 'hiking') return '#2f89fc';
-  return '#3b82f6'; // default blue
-}
+import { getBlogPosts, formatDate, getTagColor } from '@/app/blog/utils';
 
 export function RecentPosts() {
   const allPosts = getBlogPosts();
