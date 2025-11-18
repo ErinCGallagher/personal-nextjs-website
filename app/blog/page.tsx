@@ -26,16 +26,16 @@ export default function Page() {
     return (
         <div className="pt-16">
             <div className="max-w-6xl mx-auto px-6">
-                <h1 className="text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+                <h1 className="text-4xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                    Travel Blog
                 </h1>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">
+                <p className="mt-2 text-xl text-gray-600 dark:text-gray-400">
                   Check out my travels around the world and get inspired to do some of your own!
                 </p>
 
                 {featuredPosts.length > 0 && (
                     <div className="mt-12">
-                        <h2 className="text-sm font-semibold tracking-widest text-gray-500 dark:text-gray-400 uppercase mb-6">
+                        <h2 className="text-m font-semibold tracking-widest text-gray-500 dark:text-gray-400 uppercase mb-4">
                             Featured
                         </h2>
                         <div className="grid md:grid-cols-2 gap-8">
@@ -56,7 +56,7 @@ export default function Page() {
 
                 {smallPosts.length > 0 && (
                     <div className="mt-8">
-                        <h2 className="text-sm font-semibold tracking-widest text-gray-500 dark:text-gray-400 uppercase mb-6">
+                        <h2 className="text-m font-semibold tracking-widest text-gray-500 dark:text-gray-400 uppercase mb-4">
                             Recent
                         </h2>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
