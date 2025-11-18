@@ -32,7 +32,7 @@ export function FeaturedPost({ slug, title, summary, image, tags }: FeaturedPost
                         {tags.map((tag) => (
                             <span
                                 key={tag}
-                                className="px-2 py-1 text-xs font-medium rounded-full text-white"
+                                className="inline-block px-3 py-1 text-sm rounded text-white"
                                 style={{ backgroundColor: getTagColor(tag) }}
                             >
                                 {tag}

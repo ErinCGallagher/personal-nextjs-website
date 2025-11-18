@@ -32,7 +32,7 @@ export function SmallPost({ slug, title, summary, image, tags }: SmallPostProps)
                         {tags.map((tag) => (
                             <span
                                 key={tag}
-                                className="px-2 py-1 text-xs font-medium rounded-full text-white"
+                                className="inline-block px-3 py-1 text-sm rounded text-white"
                                 style={{ backgroundColor: getTagColor(tag) }}
                             >
                                 {tag}
@@ -41,11 +41,11 @@ export function SmallPost({ slug, title, summary, image, tags }: SmallPostProps)
                     </div>
                 )}
 
-                <h3 className="text-sm font-semibold text-black dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+                <h3 className="text-m font-semibold text-black dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                     {title}
                 </h3>
 
-                <p className="mt-0.5 text-[10px] text-gray-600 dark:text-gray-400 line-clamp-1">
+                <p className="mt-2 mb-4 text-[10px] text-gray-600 dark:text-gray-400 line-clamp-1">
                     {summary}
                 </p>
             </article>

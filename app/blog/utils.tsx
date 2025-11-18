@@ -53,10 +53,11 @@ function parseFrontmatter(fileContent: string) {
     let value = valueArr.join(': ').trim()
     value = value.replace(/^['"](.*)['"]$/, '$1') // Remove quotes
 
-    if (key.trim() === 'tags') {
+    const trimmedKey = key.trim()
+    if (trimmedKey === 'tags') {
       metadata.tags = value.split(',').map(tag => tag.trim())
-    } else {
-      metadata[key.trim() as keyof Metadata] = value
+    } else if (trimmedKey === 'title' || trimmedKey === 'publishedAt' || trimmedKey === 'summary' || trimmedKey === 'image' || trimmedKey === 'featured') {
+      metadata[trimmedKey] = value
     }
   })
 
