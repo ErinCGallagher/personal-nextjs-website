@@ -27,7 +27,7 @@ export function Experience() {
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-8">
         Experience
       </h2>
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         {experiences.map((exp, index) => (
           <div
             key={index}
@@ -48,7 +48,7 @@ export function Experience() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
       <div className="mt-6">
         <a
           href="/resume.pdf"
