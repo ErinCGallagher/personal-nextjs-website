@@ -21,7 +21,7 @@ export function RecentPosts() {
       </h2>
 
       {recentPosts.length > 0 ? (
-        <div className="grid gap-6 md:gap-8 text-center md:text-left">
+        <div className="grid gap-6 md:gap-8">
           {recentPosts.map((post) => (
             <Link href={`/blog/${post.slug}`} key={post.slug}>
               <article className="group border-l-4 border-transparent hover:border-blue-600 dark:hover:border-blue-400 pl-4 py-2 transition-colors cursor-pointer flex gap-4">
