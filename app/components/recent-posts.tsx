@@ -16,12 +16,12 @@ export function RecentPosts() {
 
   return (
     <section className="w-full py-12">
-      <h2 className="text-2xl font-semibold text-black dark:text-white mb-8">
+      <h2 className="text-2xl font-semibold text-center md:text-left text-black dark:text-white mb-8">
         Recent Blog Posts
       </h2>
 
       {recentPosts.length > 0 ? (
-        <div className="grid gap-6 md:gap-8">
+        <div className="grid gap-6 md:gap-8 text-center md:text-left">
           {recentPosts.map((post) => (
             <Link href={`/blog/${post.slug}`} key={post.slug}>
               <article className="group border-l-4 border-transparent hover:border-blue-600 dark:hover:border-blue-400 pl-4 py-2 transition-colors cursor-pointer flex gap-4">

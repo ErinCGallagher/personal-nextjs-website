@@ -24,7 +24,7 @@ export function Experience() {
 
   return (
     <section className="w-full py-12">
-      <h2 className="text-2xl font-semibold text-black dark:text-white mb-8">
+      <h2 className="text-2xl font-semibold text-black text-center md:text-left dark:text-white mb-8">
         Experience
       </h2>
       {/* <div className="space-y-4">
@@ -49,7 +49,7 @@ export function Experience() {
           </div>
         ))}
       </div> */}
-      <div className="mt-6">
+      <div className="mt-6 text-center md:text-left">
         <a
           href="/resume.pdf"
           download="Erin_Gallagher_Resume.pdf"
