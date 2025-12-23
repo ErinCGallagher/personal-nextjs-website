@@ -8,7 +8,7 @@ export default function Header() {
 
   const links = [
     { href: "/", label: "Home" },
-    // { href: "/blog", label: "Blog" },
+    { href: "/blog", label: "Blog" },
     { href: "/game", label: "Game" },
   ]
   // Make header transparent and sit over the page on all routes
@@ -27,8 +27,11 @@ export default function Header() {
               ? linkBase + " bg-white/10"
               : linkBase + " hover:bg-white/10"
 
+            // Hide non-Home links on mobile
+            const hideOnMobile = l.href !== "/" ? " hidden md:block" : ""
+            
             return (
-              <Link key={l.href} href={l.href} className={linkClass}>
+              <Link key={l.href} href={l.href} className={linkClass + hideOnMobile}>
                 {l.label}
               </Link>
             )
