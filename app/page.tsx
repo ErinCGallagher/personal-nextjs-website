@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="font-sans bg-zinc-50 dark:bg-black">
       {/* Hero section */}
-      <header className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+      <header className="relative h-[98vh] md:h-screen w-full overflow-hidden flex items-center justify-center">
         <Image
           src="/hero-macbook.jpg"
           alt="Hero — MacBook on desk"
