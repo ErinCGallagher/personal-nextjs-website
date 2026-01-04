@@ -4,6 +4,8 @@ import path from 'path'
 type Metadata = {
   title: string
   publishedAt: string
+  author: string
+  authorImage?: string
   summary: string
   image?: string
   tags?: string[]
@@ -57,7 +59,7 @@ function parseFrontmatter(fileContent: string) {
     const trimmedKey = key.trim()
     if (trimmedKey === 'tags') {
       metadata.tags = value.split(',').map(tag => tag.trim())
-    } else if (trimmedKey === 'title' || trimmedKey === 'publishedAt' || trimmedKey === 'summary' || trimmedKey === 'image' || trimmedKey === 'featured') {
+    } else if (trimmedKey === 'title' || trimmedKey === 'publishedAt' || trimmedKey === 'author' || trimmedKey === 'authorImage' || trimmedKey === 'summary' || trimmedKey === 'image' || trimmedKey === 'featured') {
       metadata[trimmedKey] = value
     }
   })
