@@ -24,7 +24,7 @@ const apps = [
     name: 'HouseSigma',
     icon: '/icons/housesigma.png',
     url: 'https://housesigma.com',
-    description: 'Real estate market data in canda should be free and accessible to all! Housesigma allows everyone to make informed decisions.'
+    description: 'Real estate market data in Canada should be free and accessible to all! Housesigma allows everyone to make informed decisions.'
   },
   {
     name: 'Wanderlog',
