@@ -8,7 +8,7 @@ export default function Header() {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/speaking", label: "Speaking" },
+    { href: "/talks", label: "Talks" },
     // { href: "/blog", label: "Blog" },
     { href: "/game", label: "Game" },
   ]
