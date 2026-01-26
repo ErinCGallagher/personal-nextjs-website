@@ -21,10 +21,21 @@ export default function Speaking() {
             Speaking Moments
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Portrait photo - full height on left */}
+            <div className="relative aspect-[3/4] md:row-span-2 bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <Image
+                src="/images/speaking/girls-ghc.jpg"
+                alt="Speaking at Grace Hopper Celebration"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Two landscape photos stacked on right */}
             <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
               <Image
                 src="/images/speaking/ghc-speaking.jpg"
-                alt="Speaking at [Event Name]"
+                alt="Speaking at Grace Hopper Celebration"
                 fill
                 className="object-cover"
               />
@@ -33,7 +44,7 @@ export default function Speaking() {
             <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
               <Image
                 src="/images/speaking/sophie-erin.jpg"
-                alt="Speaking at [Event Name]"
+                alt="Speaking at Grace Hopper Celebration"
                 fill
                 className="object-cover"
               />
@@ -55,15 +66,12 @@ export default function Speaking() {
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
               Grace Hopper Celebration • October 2024
             </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-              Brief description of the talk. What topics were covered and what attendees learned.
-            </p>
             <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
               <iframe
                 src="https://docs.google.com/presentation/d/1an3lLsx4B__E9njnLOVlrBJ1IXz89Yj1qMLzKC-yXTs/embed"
                 className="absolute inset-0 w-full h-full"
                 allowFullScreen
-                title="Talk Title 1"
+                title="From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at Uber"
               />
             </div>
           </div>
@@ -76,15 +84,12 @@ export default function Speaking() {
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
               Grace Hopper Celebration • October 2024
             </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-              Brief description of the talk. What topics were covered and what attendees learned.
-            </p>
             <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
               <iframe
                 src="https://docs.google.com/presentation/d/1H1gILiNqb3Lq_wIa99h0a6cbS2p12vrzqfYsogidtTk/embed"
                 className="absolute inset-0 w-full h-full"
                 allowFullScreen
-                title="Talk Title 2"
+                title="Building Scalable Cross Platform Mobile Apps with Uber's RIBs Architecture"
               />
             </div>
           </div>
