@@ -15,7 +15,7 @@ export function RecentPosts() {
     .slice(-3);
 
   return (
-    <section className="w-full py-12">
+    <section className="w-full py-6">
       <h2 className="text-2xl font-semibold text-center md:text-left text-black dark:text-white mb-8">
         Recent Blog Posts
       </h2>

@@ -3,6 +3,7 @@ import SocialLinks from "@/app/components/social-links";
 import { RecentPosts } from "@/app/components/recent-posts";
 import { ScrollArrow } from "@/app/components/scroll-arrow";
 import { About } from "@/app/components/about";
+import { Favourites } from "@/app/components/favourites";
 import { Experience } from "@/app/components/experience";
 
 export default function Home() {
@@ -41,8 +42,9 @@ export default function Home() {
         <ScrollArrow />
       </header>
 
-      <main className="flex w-full max-w-3xl mx-auto flex-col items-center justify-between py-16 px-4 sm:px-6 bg-white dark:bg-black">
+      <main className="flex w-full max-w-4xl mx-auto flex-col items-center justify-between py-16 px-4 sm:px-6 bg-white dark:bg-black">
         <About />
+        <Favourites />
         <RecentPosts />
         <Experience />
       </main>
