@@ -8,7 +8,8 @@ export default function Header() {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/blog", label: "Blog" },
+    { href: "/talks", label: "Talks" },
+    // { href: "/blog", label: "Blog" },
     { href: "/game", label: "Game" },
   ]
   // Make header transparent and sit over the page on all routes
