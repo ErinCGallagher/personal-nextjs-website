@@ -11,7 +11,7 @@ export default function Talks() {
             Talks
           </h1>
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-            The best part of conferences isn't just attending—it's the exchange of ideas that happens when we share our experiences. This is how our industry moves forward together. Below are some of my recent talks on software engineering and technology.
+            The best part of conferences isn't just attending, it's the exchange of ideas that happens when we share our experiences. This is how our industry moves forward together. Below are some of my recent talks on software engineering and technology.
           </p>
         </header>
 
