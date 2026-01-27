@@ -2,9 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname() || "/";
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Hero is 90vh on mobile, 100vh on desktop
+      const heroHeight = window.innerHeight * 0.9;
+      setScrolledPastHero(window.scrollY > heroHeight - 60);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isHomePage = pathname === "/";
+  const useDarkText = !isHomePage || scrolledPastHero;
 
   const links = [
     { href: "/", label: "Home", mobile: true },
@@ -21,10 +38,14 @@ export default function Header() {
         <div className="flex items-center gap-2">
           {links.map((l) => {
             const active = pathname === l.href;
-            const linkBase =
-              "px-3 py-2 rounded-md text-sm font-medium transition-colors text-white drop-shadow-md";
+            const linkBase = useDarkText
+              ? "px-3 py-2 rounded-md text-sm font-medium transition-colors text-zinc-900"
+              : "px-3 py-2 rounded-md text-sm font-medium transition-colors text-white drop-shadow-md";
 
-            const linkClass = active ? linkBase + " bg-white/10" : linkBase + " hover:bg-white/10";
+            const activeClass = useDarkText ? " bg-zinc-900/10" : " bg-white/10";
+            const hoverClass = useDarkText ? " hover:bg-zinc-900/10" : " hover:bg-white/10";
+
+            const linkClass = active ? linkBase + activeClass : linkBase + hoverClass;
 
             // Hide links on mobile if mobile is false
             const hideOnMobile = !l.mobile ? " hidden md:block" : "";
