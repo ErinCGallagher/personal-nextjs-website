@@ -18,7 +18,7 @@ const apps = [
     name: 'Babbel',
     icon: '/icons/babbel2.png',
     url: 'https://www.babbel.com',
-    description: 'Babbel makes learning languages feel natural and practical. With a focus on grammer and real-life conversations, it has helped me become fluent in French.'
+    description: 'Babbel makes learning languages feel natural and practical. With a focus on grammar and real-life conversations, it has helped me become fluent in French.'
   },
   {
     name: 'HouseSigma',
@@ -30,7 +30,7 @@ const apps = [
     name: 'Wanderlog',
     icon: '/icons/wanderlog.png',
     url: 'https://wanderlog.com',
-    description: 'Easiest way to create detailed travel itineraries. The gmail integration allows me organize all the bookins and confirmations in one place'
+    description: 'Easiest way to create detailed travel itineraries. The gmail integration allows me organize all the bookings and confirmations in one place'
   },
   {
     name: 'AllTrails',
