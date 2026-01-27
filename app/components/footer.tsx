@@ -1,8 +1,8 @@
-import SocialLinks from "./social-links"
+import SocialLinks from "./social-links";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white/60 backdrop-blur-sm border-t border-gray-200 dark:bg-black/60 dark:border-white/5 mt-16">
+    <footer className="w-full bg-zinc-50 backdrop-blur-sm dark:bg-black/60 pt-16">
       <div className="mx-auto max-w-6xl px-6 py-8 flex items-center justify-center">
         <SocialLinks
           size={24}
@@ -11,5 +11,5 @@ export default function Footer() {
         />
       </div>
     </footer>
-  )
+  );
 }
