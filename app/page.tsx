@@ -42,7 +42,7 @@ export default function Home() {
         <ScrollArrow />
       </header>
 
-      <main className="flex w-full max-w-4xl mx-auto flex-col items-center justify-between py-16 px-4 sm:px-6 bg-white dark:bg-black">
+      <main className="flex w-full max-w-4xl mx-auto flex-col items-center justify-between mt-16 px-4 sm:px-6 bg-white dark:bg-black rounded-lg">
         <About />
         <Favourites />
         <RecentPosts />
