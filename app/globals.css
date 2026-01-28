@@ -16,6 +16,7 @@
   --color-light-blue: var(--light-blue);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-playfair: var(--font-playfair-display);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,6 +30,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h1, h2 {
+  font-family: var(--font-playfair-display);
+  font-style: normal;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: -0.03em;
+  line-height: 1.2em;
 }
 
 /* Prose/Markdown styling */
