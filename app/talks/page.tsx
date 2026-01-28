@@ -66,9 +66,9 @@ export default function Talks() {
               href="https://leaddev.com/leaddev-london"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col items-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex flex-col p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
             >
-              <h3 className="text-xl font-semibold text-foreground mb-2">
+              <h3 className="text-2l font-semibold text-foreground mb-2">
                 Lead Dev London
               </h3>
               <p className="text-gray-700">
@@ -82,9 +82,9 @@ export default function Talks() {
               href="https://ghc.anitab.org/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col items-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex flex-col p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
             >
-              <h3 className="text-xl font-semibold text-foreground mb-2">
+              <h3 className="text-2l font-semibold text-foreground mb-2">
                 Grace Hopper Celebration 2026
               </h3>
               <p className="text-gray-700">
