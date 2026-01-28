@@ -43,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         </div>
       )}
       <div className="px-4 sm:px-6 py-16">
-        <main className="max-w-4xl mx-auto p-16 bg-white text-foreground rounded-lg">
+        <main className="max-w-4xl mx-auto p-6 md:p16 bg-white text-foreground rounded-lg">
           <div className="flex items-center gap-3 mb-4">
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image
