@@ -3,10 +3,11 @@ import Link from "next/link";
 
 export default function Talks() {
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-24">
+    <div className="min-h-screen bg-background">
+      <div className="px-4 sm:px-6 py-16">
+        <div className="max-w-4xl mx-auto px-16 pb-16 bg-white text-foreground rounded-lg">
         {/* Header */}
-        <header className="mb-12">
+        <header className="py-12">
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
             Talks
           </h1>
@@ -18,7 +19,7 @@ export default function Talks() {
         </header>
 
         {/* Photos Section */}
-        <section className="mb-16">
+        <section className="py-12">
           <h2 className="text-2xl font-semibold text-foreground mb-6">
             From the Stage
           </h2>
@@ -55,7 +56,7 @@ export default function Talks() {
         </section>
 
         {/* Upcoming Conferences Section */}
-        <section className="mb-16">
+        <section className="py-12">
           <h2 className="text-2xl font-semibold text-foreground mb-6">
             Conferences I Hope to Attend in 2026
           </h2>
@@ -65,7 +66,7 @@ export default function Talks() {
               href="https://leaddev.com/leaddev-london"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="flex flex-col items-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
             >
               <h3 className="text-xl font-semibold text-foreground mb-2">
                 Lead Dev London
@@ -81,7 +82,7 @@ export default function Talks() {
               href="https://ghc.anitab.org/"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="flex flex-col items-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
             >
               <h3 className="text-xl font-semibold text-foreground mb-2">
                 Grace Hopper Celebration 2026
@@ -95,13 +96,13 @@ export default function Talks() {
         </section>
 
         {/* Talks Section */}
-        <section className="space-y-12">
+        <section className="py-12">
           <h2 className="text-2xl font-semibold text-foreground mb-6">
             Recent Talks
           </h2>
 
           {/* Talk 1 */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-6">
             <h3 className="text-xl font-semibold text-foreground mb-2">
               From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at
               Uber
@@ -120,7 +121,7 @@ export default function Talks() {
           </div>
 
           {/* Talk 2 */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-6 mt-12">
             <h3 className="text-xl font-semibold text-foreground mb-2">
               Building Scalable Cross Platform Mobile Apps with Uber's RIBs Architecture
             </h3>
@@ -137,6 +138,7 @@ export default function Talks() {
             </div>
           </div>
         </section>
+        </div>
       </div>
     </div>
   );
