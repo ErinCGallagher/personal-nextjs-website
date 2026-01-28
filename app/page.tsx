@@ -29,8 +29,8 @@ export default function Home() {
                 <p>Gallagher</p>
               </h1>
               <p className="mt-20 text-xl sm:text-2xl lg:text-3xl text-white">
-                <div>Software Engineer &</div>
-                <div>Musical Theatre Enthusiast</div>
+                <p>Software Engineer &</p>
+                <p>Musical Theatre Enthusiast</p>
               </p>
               <div className="mt-8">
                 <SocialLinks

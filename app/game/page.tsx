@@ -17,10 +17,10 @@ export default function Page() {
   return (
     <div className="pt-16">
       <div className="max-w-6xl mx-auto px-6">
-        <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground dark:text-zinc-50">
+        <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
           Ruin
         </h1>
-        <p className="mt-2 text-xl text-gray-600 dark:text-gray-400">
+        <p className="mt-2 text-xl text-gray-600">
           I built Ruin, a split-screen platformer for 1-2 players. You're alien treasure hunters
           exploring a mysterious planet's ancient ruins. DESCEND into the depths, solve puzzles,
           avoid traps, and collect treasure, if you dare!

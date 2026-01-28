@@ -26,7 +26,7 @@ export function SmallPost({ slug, title, summary, publishedAt, image, tags }: Sm
           </div>
         )}
 
-        <hr className="mt-6 mb-2 border-gray-200 dark:border-gray-700" />
+        <hr className="mt-6 mb-2 border-gray-200" />
 
         <div className="flex justify-between items-center mb-2">
           <div className="flex flex-wrap gap-2">
@@ -41,16 +41,16 @@ export function SmallPost({ slug, title, summary, publishedAt, image, tags }: Sm
                 </span>
               ))}
           </div>
-          <time className="text-sm text-gray-500 dark:text-gray-400">
+          <time className="text-sm text-gray-500">
             {formatDate(publishedAt)}
           </time>
         </div>
 
-        <h3 className="text-m font-semibold text-foreground dark:text-white group-hover:text-blue-grey transition-colors line-clamp-1">
+        <h3 className="text-m font-semibold text-foreground group-hover:text-blue-grey transition-colors line-clamp-1">
           {title}
         </h3>
 
-        <p className="mt-2 mb-3 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{summary}</p>
+        <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-2">{summary}</p>
       </article>
     </Link>
   );

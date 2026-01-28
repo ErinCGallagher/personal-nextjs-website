@@ -4,7 +4,7 @@ import Link from "next/link";
 export function About() {
   return (
     <section className="w-full py-12">
-      <h2 className="text-2xl font-semibold text-foreground text-center md:text-left dark:text-white mb-8">
+      <h2 className="text-2xl font-semibold text-foreground text-center md:text-left mb-8">
         About Me
       </h2>
       <div className="flex flex-col md:flex-row gap-8 items-start">

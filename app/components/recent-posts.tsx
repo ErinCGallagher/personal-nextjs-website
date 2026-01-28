@@ -16,7 +16,7 @@ export function RecentPosts() {
 
   return (
     <section className="w-full py-12">
-      <h2 className="text-2xl font-semibold text-center md:text-left text-foreground dark:text-white mb-8">
+      <h2 className="text-2xl font-semibold text-center md:text-left text-foreground mb-8">
         Recent Blog Posts
       </h2>
 
@@ -36,7 +36,7 @@ export function RecentPosts() {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground dark:text-white group-hover:text-blue-grey transition-colors">
+                  <h3 className="text-lg font-semibold text-foreground group-hover:text-blue-grey transition-colors">
                     {post.metadata.title}
                   </h3>
                   <p className="mt-2 text-sm">{post.metadata.summary}</p>
@@ -49,7 +49,7 @@ export function RecentPosts() {
           ))}
         </div>
       ) : (
-        <p className="text-gray-600 dark:text-gray-400">No blog posts yet. Check back soon!</p>
+        <p className="text-gray-600">No blog posts yet. Check back soon!</p>
       )}
     </section>
   );
