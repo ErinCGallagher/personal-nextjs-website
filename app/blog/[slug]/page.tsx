@@ -54,10 +54,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
               />
             </div>
             <div className="flex flex-col">
-              <p className="text-sm text-neutral-900 dark:text-neutral-100">
+              <p className="text-sm text-neutral-900">
                 Written by <span className="font-medium">{post.metadata.author}</span>
               </p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              <p className="text-sm text-neutral-600">
                 Published on {formatDate(post.metadata.publishedAt)}
               </p>
             </div>

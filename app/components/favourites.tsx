@@ -49,7 +49,7 @@ const apps = [
 export function Favourites() {
   return (
     <section className="w-full py-12">
-      <h2 className="text-2xl font-semibold text-foreground text-center md:text-left dark:text-white mb-8">
+      <h2 className="text-2xl font-semibold text-foreground text-center md:text-left mb-8">
         My Favourite Apps
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -59,7 +59,7 @@ export function Favourites() {
             href={app.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center p-6 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="flex flex-col items-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
           >
             <div className="relative w-20 h-20 mb-4">
               <Image
@@ -69,10 +69,10 @@ export function Favourites() {
                 className="object-contain rounded-2xl"
               />
             </div>
-            <h3 className="text-lg font-semibold text-foreground dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               {app.name}
             </h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300 text-center leading-relaxed">
+            <p className="text-sm text-gray-700 text-center leading-relaxed">
               {app.description}
             </p>
           </Link>
