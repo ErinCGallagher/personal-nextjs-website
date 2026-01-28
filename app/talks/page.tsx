@@ -103,14 +103,14 @@ export default function Talks() {
 
           {/* Talk 1 */}
           <div className="bg-gray-50 rounded-lg p-6">
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-base md:text-xl font-semibold text-foreground mb-2">
               From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at
               Uber
             </h3>
             <p className="text-sm text-gray-600 mb-2">
               Grace Hopper Celebration • October 2024
             </p>
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative w-full aspect-[4/3] md:aspect-video rounded-lg overflow-hidden bg-gray-100">
               <iframe
                 src="https://docs.google.com/presentation/d/1an3lLsx4B__E9njnLOVlrBJ1IXz89Yj1qMLzKC-yXTs/embed"
                 className="absolute inset-0 w-full h-full"
@@ -122,13 +122,13 @@ export default function Talks() {
 
           {/* Talk 2 */}
           <div className="bg-gray-50 rounded-lg p-6 mt-12">
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-base md:text-xl font-semibold text-foreground mb-2">
               Building Scalable Cross Platform Mobile Apps with Uber's RIBs Architecture
             </h3>
             <p className="text-sm text-gray-600 mb-2">
               Grace Hopper Celebration • October 2024
             </p>
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative w-full aspect-[4/3] md:aspect-video rounded-lg overflow-hidden bg-gray-100">
               <iframe
                 src="https://docs.google.com/presentation/d/1H1gILiNqb3Lq_wIa99h0a6cbS2p12vrzqfYsogidtTk/embed"
                 className="absolute inset-0 w-full h-full"
