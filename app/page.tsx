@@ -50,7 +50,7 @@ export default function Home() {
       </header>
 
       <div className="px-4 sm:px-6 py-16">
-        <main className="flex max-w-4xl mx-auto px-16 pb-16 flex-col items-center justify-between bg-white text-foreground rounded-lg">
+        <main className="flex max-w-4xl mx-auto px-8 md:px-16 pb-16 flex-col items-center justify-between bg-white text-foreground rounded-lg">
           <About />
           <Favourites />
           <RecentPosts />
