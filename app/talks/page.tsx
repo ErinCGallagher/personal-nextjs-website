@@ -5,7 +5,7 @@ export default function Talks() {
   return (
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
-        <div className="max-w-4xl mx-auto px-16 pb-16 bg-white text-foreground rounded-lg">
+        <div className="max-w-4xl mx-auto px-8 md:px-16 pb-16 bg-white text-foreground rounded-lg">
         {/* Header */}
         <header className="py-12 text-center md:text-left">
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
