@@ -5,9 +5,9 @@ export default function Talks() {
   return (
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
-        <div className="max-w-4xl mx-auto px-16 pb-16 bg-white text-foreground rounded-lg">
+        <div className="max-w-4xl mx-auto px-8 md:px-16 pb-16 bg-white text-foreground rounded-lg">
         {/* Header */}
-        <header className="py-12">
+        <header className="py-12 text-center md:text-left">
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
             Talks
           </h1>
@@ -19,7 +19,7 @@ export default function Talks() {
         </header>
 
         {/* Photos Section */}
-        <section className="py-12">
+        <section className="py-12 text-center md:text-left">
           <h2 className="text-2xl font-semibold text-foreground mb-6">
             From the Stage
           </h2>
@@ -56,7 +56,7 @@ export default function Talks() {
         </section>
 
         {/* Upcoming Conferences Section */}
-        <section className="py-12">
+        <section className="py-12 text-center md:text-left">
           <h2 className="text-2xl font-semibold text-foreground mb-6">
             Conferences I Hope to Attend in 2026
           </h2>
@@ -66,12 +66,12 @@ export default function Talks() {
               href="https://leaddev.com/leaddev-london"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center md:items-start p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
             >
               <h3 className="text-2l font-semibold text-foreground mb-2">
                 Lead Dev London
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 text-center md:text-left">
                 A conference for engineering leaders and senior developers focusing on technical
                 leadership and team development.
               </p>
@@ -82,12 +82,12 @@ export default function Talks() {
               href="https://ghc.anitab.org/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center md:items-start p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
             >
               <h3 className="text-2l font-semibold text-foreground mb-2">
                 Grace Hopper Celebration 2026
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 text-center md:text-left">
                 The world's largest gathering of women and non-binary technologists, celebrating
                 achievements and fostering community.
               </p>
@@ -96,21 +96,21 @@ export default function Talks() {
         </section>
 
         {/* Talks Section */}
-        <section className="py-12">
+        <section className="py-12 text-center md:text-left">
           <h2 className="text-2xl font-semibold text-foreground mb-6">
             Recent Talks
           </h2>
 
           {/* Talk 1 */}
           <div className="bg-gray-50 rounded-lg p-6">
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-base md:text-xl font-semibold text-foreground mb-2">
               From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at
               Uber
             </h3>
             <p className="text-sm text-gray-600 mb-2">
               Grace Hopper Celebration • October 2024
             </p>
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative w-full aspect-[4/3] md:aspect-video rounded-lg overflow-hidden bg-gray-100">
               <iframe
                 src="https://docs.google.com/presentation/d/1an3lLsx4B__E9njnLOVlrBJ1IXz89Yj1qMLzKC-yXTs/embed"
                 className="absolute inset-0 w-full h-full"
@@ -122,13 +122,13 @@ export default function Talks() {
 
           {/* Talk 2 */}
           <div className="bg-gray-50 rounded-lg p-6 mt-12">
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-base md:text-xl font-semibold text-foreground mb-2">
               Building Scalable Cross Platform Mobile Apps with Uber's RIBs Architecture
             </h3>
             <p className="text-sm text-gray-600 mb-2">
               Grace Hopper Celebration • October 2024
             </p>
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative w-full aspect-[4/3] md:aspect-video rounded-lg overflow-hidden bg-gray-100">
               <iframe
                 src="https://docs.google.com/presentation/d/1H1gILiNqb3Lq_wIa99h0a6cbS2p12vrzqfYsogidtTk/embed"
                 className="absolute inset-0 w-full h-full"
