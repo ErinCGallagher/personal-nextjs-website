@@ -23,8 +23,8 @@ export function Experience() {
   ];
 
   return (
-    <section className="w-full py-6">
-      <h2 className="text-2xl font-semibold text-black text-center md:text-left dark:text-white mb-8">
+    <section className="w-full pt-6">
+      <h2 className="text-2xl font-semibold text-foreground text-center md:text-left dark:text-white mb-8">
         Experience
       </h2>
       {/* <div className="space-y-4">
@@ -35,7 +35,7 @@ export function Experience() {
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-semibold text-black dark:text-white">
+                <h3 className="text-lg font-semibold text-foreground dark:text-white">
                   {exp.company}
                 </h3>
                 <p className="text-base text-gray-700 dark:text-gray-300 mt-1">
@@ -53,7 +53,7 @@ export function Experience() {
         <a
           href="/resume.pdf"
           download="Erin_Gallagher_Resume.pdf"
-          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+          className="inline-block px-6 py-3 bg-grey-blue hover:bg-grey-blue/80 text-white font-semibold rounded-lg transition-colors"
         >
           Download Resume →
         </a>

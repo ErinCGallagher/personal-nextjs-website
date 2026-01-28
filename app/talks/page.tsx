@@ -7,17 +7,19 @@ export default function Talks() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-24">
         {/* Header */}
         <header className="mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground dark:text-white mb-4">
             Talks
           </h1>
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-            The best part of conferences isn't just attending, it's the exchange of ideas that happens when we share our experiences. This is how our industry moves forward together. Below are some of my recent talks on software engineering and technology.
+            The best part of conferences isn't just attending, it's the exchange of ideas that
+            happens when we share our experiences. This is how our industry moves forward together.
+            Below are some of my recent talks on software engineering and technology.
           </p>
         </header>
 
         {/* Photos Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-white mb-6">
+          <h2 className="text-2xl font-semibold text-foreground dark:text-white mb-6">
             From the Stage
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -54,7 +56,7 @@ export default function Talks() {
 
         {/* Upcoming Conferences Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-white mb-6">
+          <h2 className="text-2xl font-semibold text-foreground dark:text-white mb-6">
             Conferences I Hope to Attend in 2026
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -65,11 +67,12 @@ export default function Talks() {
               rel="noopener noreferrer"
               className="bg-white dark:bg-zinc-900 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
             >
-              <h3 className="text-xl font-semibold text-black dark:text-white mb-2">
+              <h3 className="text-xl font-semibold text-foreground dark:text-white mb-2">
                 Lead Dev London
               </h3>
               <p className="text-gray-700 dark:text-gray-300">
-                A conference for engineering leaders and senior developers focusing on technical leadership and team development.
+                A conference for engineering leaders and senior developers focusing on technical
+                leadership and team development.
               </p>
             </Link>
 
@@ -80,11 +83,12 @@ export default function Talks() {
               rel="noopener noreferrer"
               className="bg-white dark:bg-zinc-900 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
             >
-              <h3 className="text-xl font-semibold text-black dark:text-white mb-2">
+              <h3 className="text-xl font-semibold text-foreground dark:text-white mb-2">
                 Grace Hopper Celebration 2026
               </h3>
               <p className="text-gray-700 dark:text-gray-300">
-                The world's largest gathering of women and non-binary technologists, celebrating achievements and fostering community.
+                The world's largest gathering of women and non-binary technologists, celebrating
+                achievements and fostering community.
               </p>
             </Link>
           </div>
@@ -92,14 +96,15 @@ export default function Talks() {
 
         {/* Talks Section */}
         <section className="space-y-12">
-          <h2 className="text-2xl font-semibold text-black dark:text-white mb-6">
+          <h2 className="text-2xl font-semibold text-foreground dark:text-white mb-6">
             Recent Talks
           </h2>
 
           {/* Talk 1 */}
           <div className="bg-white dark:bg-zinc-900 rounded-lg p-6 shadow-sm">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-2">
-              From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at Uber
+            <h3 className="text-xl font-semibold text-foreground dark:text-white mb-2">
+              From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at
+              Uber
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
               Grace Hopper Celebration • October 2024
@@ -116,7 +121,7 @@ export default function Talks() {
 
           {/* Talk 2 */}
           <div className="bg-white dark:bg-zinc-900 rounded-lg p-6 shadow-sm">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-2">
+            <h3 className="text-xl font-semibold text-foreground dark:text-white mb-2">
               Building Scalable Cross Platform Mobile Apps with Uber's RIBs Architecture
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
