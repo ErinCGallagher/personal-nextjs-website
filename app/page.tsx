@@ -22,16 +22,16 @@ export default function Home() {
         <div className="absolute inset-0" />
         <div className="relative z-10 h-full flex">
           {/* Left column - centered text */}
-          <div className="w-full md:w-1/2 flex items-center justify-center px-4 sm:px-6">
+          <div className="w-full md:w-1/2 flex items-start md:items-center justify-center px-4 sm:px-6 pt-16 md:pt-0">
             <div className="text-center">
               <h1 className="text-[4.2rem] font-semibold text-white sm:text-[5.25rem] lg:text-[6.3rem] xl:text-[6.125rem]" style={{ lineHeight: '0.95' }}>
                 <p>Erin</p>
                 <p>Gallagher</p>
               </h1>
-              <p className="mt-20 text-xl sm:text-2xl lg:text-3xl text-white">
+              <div className="mt-8 md:mt-20 text-xl sm:text-2xl lg:text-3xl text-white">
                 <p>Software Engineer &</p>
                 <p>Musical Theatre Enthusiast</p>
-              </p>
+              </div>
               <div className="mt-8">
                 <SocialLinks
                   size={32}
