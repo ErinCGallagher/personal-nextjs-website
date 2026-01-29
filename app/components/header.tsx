@@ -42,16 +42,26 @@ export default function Header() {
               ? "px-3 py-2 rounded-md text-sm font-medium transition-colors text-zinc-900"
               : "px-3 py-2 rounded-md text-sm font-medium transition-colors text-white drop-shadow-md";
 
-            const activeClass = useDarkText ? " bg-zinc-900/10" : " bg-white/10";
-            const hoverClass = useDarkText ? " hover:bg-zinc-900/10" : " hover:bg-white/10";
+            const activeClass = useDarkText
+              ? " bg-zinc-900/10"
+              : " bg-white/10";
+            const hoverClass = useDarkText
+              ? " hover:bg-zinc-900/10"
+              : " hover:bg-white/10";
 
-            const linkClass = active ? linkBase + activeClass : linkBase + hoverClass;
+            const linkClass = active
+              ? linkBase + activeClass
+              : linkBase + hoverClass;
 
             // Hide links on mobile if mobile is false
             const hideOnMobile = !l.mobile ? " hidden md:block" : "";
 
             return (
-              <Link key={l.href} href={l.href} className={linkClass + hideOnMobile}>
+              <Link
+                key={l.href}
+                href={l.href}
+                className={linkClass + hideOnMobile}
+              >
                 {l.label}
               </Link>
             );

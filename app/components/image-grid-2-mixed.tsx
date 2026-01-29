@@ -1,4 +1,4 @@
-import { ReactNode, Children } from 'react';
+import { ReactNode, Children } from "react";
 
 interface ImageGrid2MixedProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ interface ImageGrid2MixedProps {
  * - Image 2: Portrait (1/3 width, vertically centered)
  *
  * Layout:
- * [Landscape (2/3)] [Portrait (1/3)] 
+ * [Landscape (2/3)] [Portrait (1/3)]
  */
 export function ImageGrid2Mixed({ children }: ImageGrid2MixedProps) {
   const images = Children.toArray(children);

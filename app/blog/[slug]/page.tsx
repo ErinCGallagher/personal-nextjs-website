@@ -11,7 +11,11 @@ function getTagColor(tag: string) {
   return "#3b82f6"; // default blue
 }
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   let post = getBlogPosts().find((post) => post.slug === slug);
 
@@ -55,7 +59,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             </div>
             <div className="flex flex-col">
               <p className="text-sm text-neutral-900">
-                Written by <span className="font-medium">{post.metadata.author}</span>
+                Written by{" "}
+                <span className="font-medium">{post.metadata.author}</span>
               </p>
               <p className="text-sm text-neutral-600">
                 Published on {formatDate(post.metadata.publishedAt)}

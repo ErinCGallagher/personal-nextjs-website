@@ -21,9 +21,10 @@ export default function Page() {
           Ruin
         </h1>
         <p className="mt-2 text-xl text-gray-600">
-          I built Ruin, a split-screen platformer for 1-2 players. You're alien treasure hunters
-          exploring a mysterious planet's ancient ruins. DESCEND into the depths, solve puzzles,
-          avoid traps, and collect treasure, if you dare!
+          I built Ruin, a split-screen platformer for 1-2 players. You're alien
+          treasure hunters exploring a mysterious planet's ancient ruins.
+          DESCEND into the depths, solve puzzles, avoid traps, and collect
+          treasure, if you dare!
         </p>
 
         <div className="mt-8 mb-16 relative z-10">
@@ -43,11 +44,17 @@ export default function Page() {
               onClick={() => setGameStarted(true)}
             >
               <div className="w-24 h-24 mb-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                <svg className="w-12 h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-12 h-12 text-white ml-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
-              <span className="text-lg font-medium text-white/80">Click to Play</span>
+              <span className="text-lg font-medium text-white/80">
+                Click to Play
+              </span>
             </div>
           )}
         </div>

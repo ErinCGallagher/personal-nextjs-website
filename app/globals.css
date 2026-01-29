@@ -33,7 +33,8 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-family: var(--font-playfair-display);
   font-style: normal;
   font-weight: 500;
@@ -181,4 +182,3 @@ h1, h2 {
 .prose h6:hover .anchor {
   visibility: visible;
 }
-
