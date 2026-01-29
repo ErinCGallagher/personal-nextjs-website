@@ -1,4 +1,4 @@
-import { ReactNode, Children } from 'react';
+import { ReactNode, Children } from "react";
 
 interface ImageGrid4Props {
   children: ReactNode;

@@ -11,9 +11,13 @@ export default function Page() {
     return dateB - dateA;
   });
 
-  const allFeatured = sortedPosts.filter((post) => post.metadata.featured?.toLowerCase() === "yes");
+  const allFeatured = sortedPosts.filter(
+    (post) => post.metadata.featured?.toLowerCase() === "yes",
+  );
 
-  const allSmall = sortedPosts.filter((post) => !(post.metadata.featured?.toLowerCase() === "yes"));
+  const allSmall = sortedPosts.filter(
+    (post) => !(post.metadata.featured?.toLowerCase() === "yes"),
+  );
 
   const featuredPosts = allFeatured.slice(0, 2);
   const extraFeatured = allFeatured.slice(2);
@@ -26,7 +30,8 @@ export default function Page() {
           Travel Blog
         </h1>
         <p className="mt-2 text-xl text-gray-600">
-          Check out my travels around the world and get inspired to do some of your own!
+          Check out my travels around the world and get inspired to do some of
+          your own!
         </p>
 
         {featuredPosts.length > 0 && (

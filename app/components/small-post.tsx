@@ -11,7 +11,14 @@ type SmallPostProps = {
   tags?: string[];
 };
 
-export function SmallPost({ slug, title, summary, publishedAt, image, tags }: SmallPostProps) {
+export function SmallPost({
+  slug,
+  title,
+  summary,
+  publishedAt,
+  image,
+  tags,
+}: SmallPostProps) {
   return (
     <Link href={`/blog/${slug}`}>
       <article className="group cursor-pointer">
@@ -50,7 +57,9 @@ export function SmallPost({ slug, title, summary, publishedAt, image, tags }: Sm
           {title}
         </h3>
 
-        <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-2">{summary}</p>
+        <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-2">
+          {summary}
+        </p>
       </article>
     </Link>
   );
