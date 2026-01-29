@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getBlogPosts, formatDate } from "../utils";
-import { CustomMDX } from "@/app/components/mdx";
+import { CustomMDX } from "@/app/components/blog/mdx";
 
 function getTagColor(tag: string) {
   const tagLower = tag.toLowerCase();
