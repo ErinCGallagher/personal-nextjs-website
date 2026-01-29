@@ -24,57 +24,59 @@ export default function Page() {
   const smallPosts = [...extraFeatured, ...allSmall];
 
   return (
-    <div className="pt-16">
-      <div className="max-w-6xl mx-auto px-6">
-        <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
-          Travel Blog
-        </h1>
-        <p className="mt-2 text-xl text-gray-600">
-          Check out my travels around the world and get inspired to do some of
-          your own!
-        </p>
+    <div className="min-h-screen bg-background">
+      <div className="px-4 sm:px-6 py-16">
+        <div className="max-w-6xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
+          <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
+            Travel Blog
+          </h1>
+          <p className="mt-2 text-xl text-gray-600">
+            Check out my travels around the world and get inspired to do some of
+            your own!
+          </p>
 
-        {featuredPosts.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-m font-semibold tracking-widest text-gray-500 uppercase mb-4">
-              Featured
-            </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              {featuredPosts.map((post) => (
-                <FeaturedPost
-                  key={post.slug}
-                  slug={post.slug}
-                  title={post.metadata.title}
-                  summary={post.metadata.summary}
-                  publishedAt={post.metadata.publishedAt}
-                  image={post.metadata.image}
-                  tags={post.metadata.tags}
-                />
-              ))}
+          {featuredPosts.length > 0 && (
+            <div className="mt-12">
+              <h2 className="text-m font-semibold tracking-widest text-gray-500 uppercase mb-4">
+                Featured
+              </h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                {featuredPosts.map((post) => (
+                  <FeaturedPost
+                    key={post.slug}
+                    slug={post.slug}
+                    title={post.metadata.title}
+                    summary={post.metadata.summary}
+                    publishedAt={post.metadata.publishedAt}
+                    image={post.metadata.image}
+                    tags={post.metadata.tags}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {smallPosts.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-m font-semibold tracking-widest text-gray-500 uppercase mb-4">
-              Recent
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {smallPosts.map((post) => (
-                <SmallPost
-                  key={post.slug}
-                  slug={post.slug}
-                  title={post.metadata.title}
-                  summary={post.metadata.summary}
-                  publishedAt={post.metadata.publishedAt}
-                  image={post.metadata.image}
-                  tags={post.metadata.tags}
-                />
-              ))}
+          {smallPosts.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-m font-semibold tracking-widest text-gray-500 uppercase mb-4">
+                Recent
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {smallPosts.map((post) => (
+                  <SmallPost
+                    key={post.slug}
+                    slug={post.slug}
+                    title={post.metadata.title}
+                    summary={post.metadata.summary}
+                    publishedAt={post.metadata.publishedAt}
+                    image={post.metadata.image}
+                    tags={post.metadata.tags}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
