@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getBlogPosts, formatDate } from "../utils";
+import { getBlogPost, formatDate } from "../utils";
 import { CustomMDX } from "@/app/components/blog/mdx";
 
 function getTagColor(tag: string) {
@@ -17,7 +17,7 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let post = getBlogPosts().find((post) => post.slug === slug);
+  let post = getBlogPost(slug);
 
   if (!post) {
     notFound();

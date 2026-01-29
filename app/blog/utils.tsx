@@ -22,8 +22,44 @@ export function getTagColor(tag: string) {
   return "#3b82f6";
 }
 
+/**
+ * Returns all published blog posts from the posts directory.
+ * This does NOT include drafts - only posts in app/blog/posts.
+ * Used for blog listing pages and recent posts components.
+ */
 export function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), "app", "blog", "posts"));
+}
+
+/**
+ * Returns a single blog post by slug.
+ * Checks published posts first, then drafts (in development only).
+ * Used for individual blog post pages where you want to view drafts via direct URL.
+ *
+ * @param slug - The post filename without extension (e.g., "my-post" for "my-post.mdx")
+ * @returns Post object with metadata, content, and isDraft flag, or null if not found
+ */
+export function getBlogPost(slug: string) {
+  const postsDir = path.join(process.cwd(), "app", "blog", "posts");
+
+  // Try to find in published posts first
+  const publishedPath = path.join(postsDir, `${slug}.mdx`);
+  if (fs.existsSync(publishedPath)) {
+    const { metadata, content } = readMDXFile(publishedPath);
+    return { metadata, slug, content, isDraft: false };
+  }
+
+  // In development, also check drafts folder
+  if (process.env.NODE_ENV === "development") {
+    const draftsDir = path.join(postsDir, "drafts");
+    const draftPath = path.join(draftsDir, `${slug}.mdx`);
+    if (fs.existsSync(draftPath)) {
+      const { metadata, content } = readMDXFile(draftPath);
+      return { metadata, slug, content, isDraft: true };
+    }
+  }
+
+  return null;
 }
 
 export function formatDate(date: string) {
