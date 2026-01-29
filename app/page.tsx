@@ -12,10 +12,10 @@ export default function Home() {
       {/* Hero section */}
       <header className="relative h-[90vh] md:h-screen w-full overflow-hidden">
         <Image
-          src="/hero-erin.jpg"
+          src="/erin-hero.jpg"
           alt="Hero — Erin standing in front of a landscape"
-          height={3000}
-          width={2000}
+          height={4096}
+          width={2730}
           className="absolute inset-0 object-cover object-bottom w-full h-full"
           priority
         />
