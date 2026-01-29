@@ -14,8 +14,8 @@ export default function Home() {
         <Image
           src="/hero-erin.jpg"
           alt="Hero — Erin standing in front of a landscape"
-          height={7000}
-          width={4284}
+          height={3000}
+          width={2000}
           className="absolute inset-0 object-cover object-bottom w-full h-full"
           priority
         />
@@ -24,7 +24,10 @@ export default function Home() {
           {/* Left column - centered text */}
           <div className="w-full md:w-1/2 flex items-start md:items-center justify-center px-4 sm:px-6 pt-16 md:pt-0">
             <div className="text-center">
-              <h1 className="text-[4.2rem] font-semibold text-white sm:text-[5.25rem] lg:text-[6.3rem] xl:text-[6.125rem]" style={{ lineHeight: '0.95' }}>
+              <h1
+                className="text-[4.2rem] font-semibold text-white sm:text-[5.25rem] lg:text-[6.3rem] xl:text-[6.125rem]"
+                style={{ lineHeight: "0.95" }}
+              >
                 <p>Erin</p>
                 <p>Gallagher</p>
               </h1>
