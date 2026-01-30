@@ -20,8 +20,8 @@ export function FeaturedPost({
   tags,
 }: FeaturedPostProps) {
   return (
-    <Link href={`/blog/${slug}`}>
-      <article className="group cursor-pointer p-6 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors min-h-[470px] flex flex-col">
+    <Link href={`/blog/${slug}`} className="h-full">
+      <article className="group cursor-pointer p-6 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors h-full flex flex-col">
         {image && (
           <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden">
             <Image
