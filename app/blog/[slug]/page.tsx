@@ -1,8 +1,29 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import Image from "next/image";
 import { getBlogPost, formatDate, getTagColor } from "../utils";
 import { BlogContent } from "@/app/components/blog/blog-content";
 import { CustomMDX } from "@/app/components/blog/mdx";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getBlogPost(slug);
+
+  if (!post) {
+    return {
+      title: "Post Not Found",
+    };
+  }
+
+  return {
+    title: post.metadata.title,
+    description: post.metadata.summary,
+  };
+}
 
 export default async function Page({
   params,

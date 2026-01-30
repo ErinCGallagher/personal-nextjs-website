@@ -31,8 +31,8 @@ export default function Page() {
             Travel Blog
           </h1>
           <p className="mt-2 text-xl text-gray-700">
-            Check out my travels around the world and get inspired to do some of
-            your own!
+            Trail guides, campsite reviews, and trip planning for outdoor
+            adventures.
           </p>
 
           {featuredPosts.length > 0 && (
