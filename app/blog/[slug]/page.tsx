@@ -1,8 +1,45 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import Image from "next/image";
 import { getBlogPost, formatDate, getTagColor } from "../utils";
 import { BlogContent } from "@/app/components/blog/blog-content";
 import { CustomMDX } from "@/app/components/blog/mdx";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getBlogPost(slug);
+
+  if (!post) {
+    return {
+      title: "Post Not Found",
+    };
+  }
+
+  const ogImages = post.metadata.image ? [post.metadata.image] : [];
+
+  return {
+    title: post.metadata.title,
+    description: post.metadata.summary,
+    openGraph: {
+      type: "article",
+      title: post.metadata.title,
+      description: post.metadata.summary,
+      images: ogImages,
+      publishedTime: post.metadata.publishedAt,
+      authors: [post.metadata.author],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.metadata.title,
+      description: post.metadata.summary,
+      images: ogImages,
+    },
+  };
+}
 
 export default async function Page({
   params,
@@ -16,8 +53,32 @@ export default async function Page({
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.metadata.title,
+    description: post.metadata.summary,
+    image: post.metadata.image
+      ? `https://egallagher.com${post.metadata.image}`
+      : undefined,
+    datePublished: post.metadata.publishedAt,
+    author: {
+      "@type": "Person",
+      name: post.metadata.author,
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Erin Gallagher",
+    },
+    url: `https://egallagher.com/blog/${slug}`,
+  };
+
   return (
     <section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {post.metadata.image && (
         <div className="relative w-full h-[500px]">
           <div className="absolute inset-0">
