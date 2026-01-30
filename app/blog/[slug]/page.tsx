@@ -16,7 +16,7 @@ export default async function Page({
   }
 
   return (
-    <section className="pt-16">
+    <section>
       {post.metadata.image && (
         <div className="relative w-full h-[500px]">
           <div className="absolute inset-0">
