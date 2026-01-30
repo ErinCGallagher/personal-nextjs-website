@@ -21,7 +21,7 @@ export function FeaturedPost({
 }: FeaturedPostProps) {
   return (
     <Link href={`/blog/${slug}`}>
-      <article className="group cursor-pointer p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+      <article className="group cursor-pointer p-6 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
         {image && (
           <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden">
             <Image
