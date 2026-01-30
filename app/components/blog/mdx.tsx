@@ -1,24 +1,24 @@
-import Link from 'next/link'
-import Image from 'next/image'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import { highlight } from 'sugar-high'
-import React from 'react'
-import remarkGfm from 'remark-gfm'
-import { ImageGrid4 } from './image-grid-4'
-import { ImageGrid2 } from './image-grid-2'
-import { ImageGrid2Mixed } from './image-grid-2-mixed'
+import Link from "next/link";
+import Image from "next/image";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { highlight } from "sugar-high";
+import React from "react";
+import remarkGfm from "remark-gfm";
+import { ImageGrid4 } from "./image-grid-4";
+import { ImageGrid2 } from "./image-grid-2";
+import { ImageGrid2Mixed } from "./image-grid-2-mixed";
 
 function Table({ data }: any) {
   let headers = data.headers.map((header: any, index: number) => (
     <th key={index}>{header}</th>
-  ))
+  ));
   let rows = data.rows.map((row: any, index: number) => (
     <tr key={index}>
       {row.map((cell: any, cellIndex: number) => (
         <td key={cellIndex}>{cell}</td>
       ))}
     </tr>
-  ))
+  ));
 
   return (
     <table>
@@ -27,34 +27,34 @@ function Table({ data }: any) {
       </thead>
       <tbody>{rows}</tbody>
     </table>
-  )
+  );
 }
 
 function CustomLink(props: any) {
-  let href = props.href
+  let href = props.href;
 
-  if (href.startsWith('/')) {
+  if (href.startsWith("/")) {
     return (
       <Link href={href} {...props}>
         {props.children}
       </Link>
-    )
+    );
   }
 
-  if (href.startsWith('#')) {
-    return <a {...props} />
+  if (href.startsWith("#")) {
+    return <a {...props} />;
   }
 
-  return <a target="_blank" rel="noopener noreferrer" {...props} />
+  return <a target="_blank" rel="noopener noreferrer" {...props} />;
 }
 
 function RoundedImage(props: any) {
-  return <Image alt={props.alt} className="rounded-lg" {...props} />
+  return <Image alt={props.alt} className="rounded-lg" {...props} />;
 }
 
 function Code({ children, ...props }: any) {
-  let codeHTML = highlight(children)
-  return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />
+  let codeHTML = highlight(children);
+  return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
 }
 
 function slugify(str: any) {
@@ -62,27 +62,27 @@ function slugify(str: any) {
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')
-    .replace(/&/g, '-and-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
+    .replace(/\s+/g, "-")
+    .replace(/&/g, "-and-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-");
 }
 
 function createHeading(level: number) {
   const Heading = ({ children }: any) => {
-    let slug = slugify(children)
-    const Tag = `h${level}` as const
+    let slug = slugify(children);
+    const Tag = `h${level}` as const;
     return (
       <div>
         <a id={slug} className="anchor" href={`#${slug}`} />
         {React.createElement(Tag, { className: `heading-${level}` }, children)}
       </div>
-    )
-  }
+    );
+  };
 
-  Heading.displayName = `Heading${level}`
+  Heading.displayName = `Heading${level}`;
 
-  return Heading
+  return Heading;
 }
 
 let components = {
@@ -99,7 +99,7 @@ let components = {
   ImageGrid4,
   ImageGrid2,
   ImageGrid2Mixed,
-}
+};
 
 export async function CustomMDX(props: any) {
   return (
@@ -113,5 +113,5 @@ export async function CustomMDX(props: any) {
         },
       }}
     />
-  )
+  );
 }

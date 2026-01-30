@@ -1,28 +1,25 @@
-import { notFound } from 'next/navigation'
-import Image from 'next/image'
-import { getBlogPosts, formatDate } from '../utils'
-import { CustomMDX } from '@/app/components/mdx'
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { getBlogPost, formatDate, getTagColor } from "../utils";
+import { BlogContent } from "@/app/components/blog/blog-content";
+import { CustomMDX } from "@/app/components/blog/mdx";
 
-function getTagColor(tag: string) {
-  const tagLower = tag.toLowerCase();
-  if (tagLower === 'camping') return '#7971ea';
-  if (tagLower === 'food') return '#20c997';
-  if (tagLower === 'hiking') return '#2f89fc';
-  return '#3b82f6'; // default blue
-}
-
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
-  let post = getBlogPosts().find((post) => post.slug === slug)
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  let post = getBlogPost(slug);
 
   if (!post) {
-    notFound()
+    notFound();
   }
 
   return (
-    <section className="pt-16">
+    <section>
       {post.metadata.image && (
-        <div className="relative w-full h-[500px] mb-8">
+        <div className="relative w-full h-[500px]">
           <div className="absolute inset-0">
             <Image
               src={post.metadata.image}
@@ -42,42 +39,47 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </div>
         </div>
       )}
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative w-10 h-10 flex-shrink-0">
-            <Image
-              src={post.metadata.authorImage || '/default-author.jpg'}
-              alt={post.metadata.author || "Erin Gallagher"}
-              fill
-              className="object-cover rounded-full"
-            />
+      <div className="px-4 sm:px-6 py-16">
+        <main className="max-w-4xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="relative w-10 h-10 flex-shrink-0">
+              <Image
+                src={post.metadata.authorImage || "/default-author.jpg"}
+                alt={post.metadata.author || "Erin Gallagher"}
+                fill
+                className="object-cover rounded-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <p className="text-sm text-neutral-900">
+                Written by{" "}
+                <span className="font-medium">{post.metadata.author}</span>
+              </p>
+              <p className="text-sm text-neutral-600">
+                Published on {formatDate(post.metadata.publishedAt)}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="text-sm text-neutral-900 dark:text-neutral-100">
-              Written by <span className="font-medium">{post.metadata.author}</span>
-            </p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              Published on {formatDate(post.metadata.publishedAt)}
-            </p>
-          </div>
-        </div>
-        {post.metadata.tags && post.metadata.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-12">
-            {post.metadata.tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-block px-3 py-1 text-sm rounded text-white"
-                style={{ backgroundColor: getTagColor(tag) }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-        <article className="prose max-w-none">
-          <CustomMDX source={post.content} />
-        </article>
+          {post.metadata.tags && post.metadata.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-12">
+              {post.metadata.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-block px-3 py-1 text-sm rounded text-white"
+                  style={{ backgroundColor: getTagColor(tag) }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          <BlogContent>
+            <article className="prose max-w-none">
+              <CustomMDX source={post.content} />
+            </article>
+          </BlogContent>
+        </main>
       </div>
     </section>
-  )
+  );
 }
