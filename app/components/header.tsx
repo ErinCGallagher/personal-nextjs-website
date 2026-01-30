@@ -8,11 +8,13 @@ export default function Header() {
   const pathname = usePathname() || "/";
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
 
+  const isHomePage = pathname === "/";
+  const isBlogPost = pathname.startsWith("/blog/") && pathname !== "/blog";
+
   useEffect(() => {
     const handleScroll = () => {
       // Hero is 90vh on mobile, 100vh on desktop for home page
       // 500px for blog post pages
-      const isBlogPost = pathname.startsWith("/blog/") && pathname !== "/blog";
       const heroHeight = isBlogPost ? 500 : window.innerHeight * 0.9;
       setScrolledPastHero(window.scrollY > heroHeight - 60);
     };
@@ -20,10 +22,8 @@ export default function Header() {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]);
+  }, [isBlogPost]);
 
-  const isHomePage = pathname === "/";
-  const isBlogPost = pathname.startsWith("/blog/") && pathname !== "/blog";
   const useDarkText = (!isHomePage && !isBlogPost) || scrolledPastHero;
 
   const links = [
