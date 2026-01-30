@@ -21,8 +21,11 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Erin's Website",
-  description: "NextJS and MDX website and blog",
+  title: {
+    default: "Erin Gallagher | Travel & Hiking Blog",
+    template: "%s | Erin Gallagher",
+  },
+  description: "Trail guides, trip itineraries, and talks on tech and adventure.",
 };
 
 export default function RootLayout({
