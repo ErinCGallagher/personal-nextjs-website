@@ -1,15 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getBlogPost, formatDate } from "../utils";
+import { getBlogPost, formatDate, getTagColor } from "../utils";
 import { CustomMDX } from "@/app/components/blog/mdx";
-
-function getTagColor(tag: string) {
-  const tagLower = tag.toLowerCase();
-  if (tagLower === "camping") return "#7971ea";
-  if (tagLower === "food") return "#20c997";
-  if (tagLower === "hiking") return "#2f89fc";
-  return "#3b82f6"; // default blue
-}
 
 export default async function Page({
   params,

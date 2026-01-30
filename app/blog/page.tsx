@@ -30,14 +30,14 @@ export default function Page() {
           <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
             Travel Blog
           </h1>
-          <p className="mt-2 text-xl text-gray-600">
+          <p className="mt-2 text-xl text-gray-700">
             Check out my travels around the world and get inspired to do some of
             your own!
           </p>
 
           {featuredPosts.length > 0 && (
             <div className="mt-12">
-              <h2 className="text-m font-semibold tracking-widest text-gray-500 uppercase mb-4">
+              <h2 className="text-2xl !font-bold !tracking-normal text-foreground mb-6">
                 Featured
               </h2>
               <div className="grid md:grid-cols-2 gap-8">
@@ -58,10 +58,10 @@ export default function Page() {
 
           {smallPosts.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-m font-semibold tracking-widest text-gray-500 uppercase mb-4">
+              <h2 className="text-2xl !font-bold !tracking-normal text-foreground mb-6">
                 Recent
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {smallPosts.map((post) => (
                   <SmallPost
                     key={post.slug}

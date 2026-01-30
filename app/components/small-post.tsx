@@ -21,7 +21,7 @@ export function SmallPost({
 }: SmallPostProps) {
   return (
     <Link href={`/blog/${slug}`}>
-      <article className="group cursor-pointer">
+      <article className="group cursor-pointer p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-h-[350px] flex flex-col">
         {image && (
           <div className="relative w-full aspect-[16/9] rounded-md overflow-hidden">
             <Image
@@ -35,31 +35,33 @@ export function SmallPost({
 
         <hr className="mt-6 mb-2 border-gray-200" />
 
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex flex-wrap gap-2">
-            {tags &&
-              tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-block px-3 py-1 text-sm rounded text-white"
-                  style={{ backgroundColor: getTagColor(tag) }}
-                >
-                  {tag}
-                </span>
-              ))}
+        <div className="flex-grow flex flex-col">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2 gap-2">
+            <div className="flex flex-wrap gap-2">
+              {tags &&
+                tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-block px-2 py-0.5 text-xs rounded text-white"
+                    style={{ backgroundColor: getTagColor(tag) }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+            </div>
+            <time className="text-sm text-gray-500">
+              {formatDate(publishedAt)}
+            </time>
           </div>
-          <time className="text-sm text-gray-500">
-            {formatDate(publishedAt)}
-          </time>
+
+          <h3 className="text-m font-semibold text-foreground group-hover:text-blue-grey transition-colors line-clamp-2">
+            {title}
+          </h3>
+
+          <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-5 md:line-clamp-2">
+            {summary}
+          </p>
         </div>
-
-        <h3 className="text-m font-semibold text-foreground group-hover:text-blue-grey transition-colors line-clamp-1">
-          {title}
-        </h3>
-
-        <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-2">
-          {summary}
-        </p>
       </article>
     </Link>
   );

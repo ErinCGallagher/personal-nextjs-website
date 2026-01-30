@@ -14,12 +14,12 @@ type Metadata = {
 
 export function getTagColor(tag: string) {
   const tagLower = tag.toLowerCase();
-  if (tagLower === "camping") return "#7971ea";
-  if (tagLower === "food") return "#20c997";
-  if (tagLower === "hiking") return "#2f89fc";
-  if (tagLower === "safari") return "#dd2ffcd8";
-  if (tagLower === "itinerary") return "#3b82f6";
-  return "#3b82f6";
+  if (tagLower === "camping") return "#8b7dd8";
+  if (tagLower === "food") return "#e685a0";
+  if (tagLower === "hiking") return "#6ba3f5";
+  if (tagLower === "safari") return "#7bc99d";
+  if (tagLower === "itinerary") return "#7b9ae0";
+  return "#7b9ae0";
 }
 
 /**
