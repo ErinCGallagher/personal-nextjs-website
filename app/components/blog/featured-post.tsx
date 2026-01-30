@@ -57,7 +57,9 @@ export function FeaturedPost({
           {title}
         </h3>
 
-        <p className="mt-2 mb-4 text-gray-600 line-clamp-2">{summary}</p>
+        <p className="mt-2 text-gray-600 line-clamp-3 md:line-clamp-2">
+          {summary}
+        </p>
       </article>
     </Link>
   );
