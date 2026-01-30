@@ -26,6 +26,20 @@ export const metadata: Metadata = {
     template: "%s | Erin Gallagher",
   },
   description: "Trail guides, trip itineraries, and talks on tech and adventure.",
+  metadataBase: new URL("https://egallagher.com"),
+  openGraph: {
+    type: "website",
+    siteName: "Erin Gallagher",
+    title: "Erin Gallagher | Travel & Hiking Blog",
+    description: "Trail guides, trip itineraries, and talks on tech and adventure.",
+    images: ["/icons/trail-tales-logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Erin Gallagher | Travel & Hiking Blog",
+    description: "Trail guides, trip itineraries, and talks on tech and adventure.",
+    images: ["/icons/trail-tales-logo.png"],
+  },
 };
 
 export default function RootLayout({

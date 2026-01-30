@@ -19,9 +19,25 @@ export async function generateMetadata({
     };
   }
 
+  const ogImages = post.metadata.image ? [post.metadata.image] : [];
+
   return {
     title: post.metadata.title,
     description: post.metadata.summary,
+    openGraph: {
+      type: "article",
+      title: post.metadata.title,
+      description: post.metadata.summary,
+      images: ogImages,
+      publishedTime: post.metadata.publishedAt,
+      authors: [post.metadata.author],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.metadata.title,
+      description: post.metadata.summary,
+      images: ogImages,
+    },
   };
 }
 
