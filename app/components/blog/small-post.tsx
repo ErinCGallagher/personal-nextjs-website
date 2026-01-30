@@ -58,7 +58,7 @@ export function SmallPost({
             {title}
           </h3>
 
-          <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-5 md:line-clamp-2">
+          <p className="mt-2 mb-3 text-sm text-gray-600 line-clamp-5 md:line-clamp-3">
             {summary}
           </p>
         </div>

@@ -1,6 +1,6 @@
 import { getBlogPosts } from "@/app/blog/utils";
 import { FeaturedPost } from "@/app/components/featured-post";
-import { SmallPost } from "@/app/components/small-post";
+import { SmallPost } from "@/app/components/blog/small-post";
 
 export default function Page() {
   const allPosts = getBlogPosts();
