@@ -53,8 +53,32 @@ export default async function Page({
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.metadata.title,
+    description: post.metadata.summary,
+    image: post.metadata.image
+      ? `https://egallagher.com${post.metadata.image}`
+      : undefined,
+    datePublished: post.metadata.publishedAt,
+    author: {
+      "@type": "Person",
+      name: post.metadata.author,
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Erin Gallagher",
+    },
+    url: `https://egallagher.com/blog/${slug}`,
+  };
+
   return (
     <section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {post.metadata.image && (
         <div className="relative w-full h-[500px]">
           <div className="absolute inset-0">
