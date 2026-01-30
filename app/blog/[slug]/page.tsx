@@ -1,15 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getBlogPosts, formatDate } from "../utils";
-import { CustomMDX } from "@/app/components/mdx";
-
-function getTagColor(tag: string) {
-  const tagLower = tag.toLowerCase();
-  if (tagLower === "camping") return "#7971ea";
-  if (tagLower === "food") return "#20c997";
-  if (tagLower === "hiking") return "#2f89fc";
-  return "#3b82f6"; // default blue
-}
+import { getBlogPost, formatDate, getTagColor } from "../utils";
+import { CustomMDX } from "@/app/components/blog/mdx";
 
 export default async function Page({
   params,
@@ -17,7 +9,7 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let post = getBlogPosts().find((post) => post.slug === slug);
+  let post = getBlogPost(slug);
 
   if (!post) {
     notFound();
@@ -47,7 +39,7 @@ export default async function Page({
         </div>
       )}
       <div className="px-4 sm:px-6 py-16">
-        <main className="max-w-4xl mx-auto p-6 md:p16 bg-white text-foreground rounded-lg">
+        <main className="max-w-4xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
           <div className="flex items-center gap-3 mb-4">
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image

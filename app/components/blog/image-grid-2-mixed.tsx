@@ -1,4 +1,5 @@
-import { ReactNode, Children } from "react";
+import { ReactNode } from "react";
+import { addRoundedCornersToImages } from "./image-utils";
 
 interface ImageGrid2MixedProps {
   children: ReactNode;
@@ -16,7 +17,7 @@ interface ImageGrid2MixedProps {
  * [Landscape (2/3)] [Portrait (1/3)]
  */
 export function ImageGrid2Mixed({ children }: ImageGrid2MixedProps) {
-  const images = Children.toArray(children);
+  const images = addRoundedCornersToImages(children);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">

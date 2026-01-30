@@ -21,7 +21,7 @@ export function FeaturedPost({
 }: FeaturedPostProps) {
   return (
     <Link href={`/blog/${slug}`}>
-      <article className="group cursor-pointer">
+      <article className="group cursor-pointer p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
         {image && (
           <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden">
             <Image
@@ -35,7 +35,7 @@ export function FeaturedPost({
 
         <hr className="mt-6 mb-2 border-gray-200" />
 
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-3 gap-2">
           <div className="flex flex-wrap gap-2">
             {tags &&
               tags.map((tag) => (
@@ -53,9 +53,9 @@ export function FeaturedPost({
           </time>
         </div>
 
-        <h2 className="text-2xl font-semibold text-foreground group-hover:text-blue-grey transition-colors">
+        <h3 className="text-xl font-semibold text-foreground group-hover:text-blue-grey transition-colors">
           {title}
-        </h2>
+        </h3>
 
         <p className="mt-2 mb-4 text-gray-600 line-clamp-2">{summary}</p>
       </article>
