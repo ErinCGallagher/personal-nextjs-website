@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getBlogPost, formatDate, getTagColor } from "../utils";
+import { BlogContent } from "@/app/components/blog/blog-content";
 import { CustomMDX } from "@/app/components/blog/mdx";
 
 export default async function Page({
@@ -72,9 +73,11 @@ export default async function Page({
               ))}
             </div>
           )}
-          <article className="prose max-w-none">
-            <CustomMDX source={post.content} />
-          </article>
+          <BlogContent>
+            <article className="prose max-w-none">
+              <CustomMDX source={post.content} />
+            </article>
+          </BlogContent>
         </main>
       </div>
     </section>
