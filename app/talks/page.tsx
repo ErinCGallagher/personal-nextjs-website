@@ -1,5 +1,17 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Talks",
+  description: "Conference talks and presentations on tech and engineering leadership.",
+  openGraph: {
+    images: ["/icons/erin-logo.png"],
+  },
+  twitter: {
+    images: ["/icons/erin-logo.png"],
+  },
+};
 
 export default function Talks() {
   return (

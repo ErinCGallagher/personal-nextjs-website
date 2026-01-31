@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import SocialLinks from "@/app/components/social-links";
 import { RecentPosts } from "@/app/components/recent-posts";
@@ -5,6 +6,17 @@ import { ScrollArrow } from "@/app/components/scroll-arrow";
 import { About } from "@/app/components/about";
 import { Favourites } from "@/app/components/favourites";
 import { Experience } from "@/app/components/experience";
+
+export const metadata: Metadata = {
+  title: "Erin Gallagher",
+  description: "Software Engineer and outdoor enthusiast.",
+  openGraph: {
+    images: ["/icons/erin-logo.png"],
+  },
+  twitter: {
+    images: ["/icons/erin-logo.png"],
+  },
+};
 
 export default function Home() {
   return (
