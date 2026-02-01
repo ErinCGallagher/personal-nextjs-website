@@ -29,7 +29,7 @@ export default function Page() {
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
         <div className="max-w-6xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
-          <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col md:flex-row gap-6 items-center md:items-center">
             <Image
               src="/icons/trail-tales-logo.png"
               alt="Trail Tales Travel"
@@ -37,7 +37,7 @@ export default function Page() {
               height={150}
               className="rounded-lg"
             />
-            <div>
+            <div className="text-center md:text-left">
               <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
                 Trail Tales Travel Blog
               </h1>
