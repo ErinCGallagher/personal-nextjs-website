@@ -29,34 +29,36 @@ export default function Page() {
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
         <div className="max-w-6xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row gap-6 md:items-center">
             <Image
               src="/icons/trail-tales-logo.png"
               alt="Trail Tales Travel"
-              width={80}
-              height={80}
+              width={150}
+              height={150}
               className="rounded-lg"
             />
-            <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
-              Trail Tales Travel Blog
-            </h1>
+            <div>
+              <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
+                Trail Tales Travel Blog
+              </h1>
+              <p className="mt-3 text-xl text-gray-700">
+                Exploring the world one trail at a time. We share detailed trail
+                guides, honest campsite reviews, and practical itineraries from
+                our global adventures. From backcountry routes to epic road
+                trips, we help you plan unforgettable outdoor experiences. Find
+                our video guides on{" "}
+                <a
+                  href="https://www.youtube.com/@trailtalestravel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#8586A9] hover:underline"
+                >
+                  YouTube
+                </a>
+                .
+              </p>
+            </div>
           </div>
-          <p className="mt-2 text-xl text-gray-700">
-            Exploring the world one trail at a time. We share detailed trail
-            guides, honest campsite reviews, and practical itineraries from our
-            global adventures. From backcountry routes to epic road trips, we
-            help you plan unforgettable outdoor experiences. Find our video
-            guides on{" "}
-            <a
-              href="https://www.youtube.com/@trailtalestravel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#8586A9] hover:underline"
-            >
-              YouTube
-            </a>
-            .
-          </p>
 
           {featuredPosts.length > 0 && (
             <div className="mt-12">

@@ -21,7 +21,7 @@ export function YouTubePromo() {
             href={FEATURED_VIDEO.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative w-full md:w-1/2 aspect-[2/1] rounded-lg overflow-hidden group"
+            className="relative w-full md:w-1/2 aspect-video rounded-lg overflow-hidden group"
           >
             <Image
               src={`https://img.youtube.com/vi/${FEATURED_VIDEO.id}/sddefault.jpg`}
@@ -47,8 +47,8 @@ export function YouTubePromo() {
               <Image
                 src="/icons/trail-tales-logo.png"
                 alt="Trail Tales Travel"
-                width={64}
-                height={64}
+                width={80}
+                height={80}
                 className="rounded-lg"
               />
               <div>
