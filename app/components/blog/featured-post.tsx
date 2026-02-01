@@ -23,7 +23,7 @@ export function FeaturedPost({
     <Link href={`/blog/${slug}`} className="h-full">
       <article className="group cursor-pointer p-6 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors h-full flex flex-col">
         {image && (
-          <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden">
+          <div className="relative w-full aspect-[16/9] md:aspect-[2/1] rounded-lg overflow-hidden">
             <Image
               src={image}
               alt={title}
@@ -33,7 +33,7 @@ export function FeaturedPost({
           </div>
         )}
 
-        <hr className="mt-6 mb-2 border-gray-200" />
+        <hr className="mt-6 md:mt-4 mb-2 border-gray-200" />
 
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-3 gap-2">
           <div className="flex flex-wrap gap-2">

@@ -38,7 +38,7 @@ export default function Page() {
               className="rounded-lg"
             />
             <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
-              Travel Blog
+              Trail Tales Travel Blog
             </h1>
           </div>
           <p className="mt-2 text-xl text-gray-700">
