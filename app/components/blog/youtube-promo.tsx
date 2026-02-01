@@ -47,15 +47,15 @@ export function YouTubePromo() {
               <Image
                 src="/icons/trail-tales-logo.png"
                 alt="Trail Tales Travel"
-                width={80}
-                height={80}
+                width={100}
+                height={100}
                 className="rounded-lg"
               />
               <div className="text-center md:text-left">
-                <h3 className="text-lg font-semibold text-foreground">
+                <h3 className="text-xl font-semibold text-foreground">
                   Trail Tales Travel
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-m text-gray-500">
                   {SUBSCRIBER_COUNT} subscribers
                 </p>
               </div>

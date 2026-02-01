@@ -29,12 +29,12 @@ export default function Page() {
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
         <div className="max-w-6xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
-          <div className="flex flex-col md:flex-row gap-6 items-center md:items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-center md:items-center">
             <Image
               src="/icons/trail-tales-logo.png"
               alt="Trail Tales Travel"
-              width={150}
-              height={150}
+              width={180}
+              height={180}
               className="rounded-lg"
             />
             <div className="text-center md:text-left">

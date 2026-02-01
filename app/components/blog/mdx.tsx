@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { ImageGrid4 } from "./image-grid-4";
 import { ImageGrid2 } from "./image-grid-2";
 import { ImageGrid2Mixed } from "./image-grid-2-mixed";
+import { VideoLink } from "./video-link";
 
 function Table({ data }: any) {
   let headers = data.headers.map((header: any, index: number) => (
@@ -99,6 +100,7 @@ let components = {
   ImageGrid4,
   ImageGrid2,
   ImageGrid2Mixed,
+  VideoLink,
 };
 
 export async function CustomMDX(props: any) {
