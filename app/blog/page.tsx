@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { getBlogPosts } from "@/app/blog/utils";
 import { FeaturedPost } from "@/app/components/blog/featured-post";
 import { SmallPost } from "@/app/components/blog/small-post";
+import { YouTubePromo } from "@/app/components/blog/youtube-promo";
 
 export default function Page() {
   const allPosts = getBlogPosts();
@@ -27,12 +29,33 @@ export default function Page() {
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
         <div className="max-w-6xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
-          <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
-            Travel Blog
-          </h1>
+          <div className="flex items-center gap-4">
+            <Image
+              src="/icons/trail-tales-logo.png"
+              alt="Trail Tales Travel"
+              width={80}
+              height={80}
+              className="rounded-lg"
+            />
+            <h1 className="text-4xl font-semibold leading-10 tracking-tight text-foreground">
+              Travel Blog
+            </h1>
+          </div>
           <p className="mt-2 text-xl text-gray-700">
-            Trail guides, campsite reviews, and trip planning for outdoor
-            adventures.
+            Exploring the world one trail at a time. We share detailed trail
+            guides, honest campsite reviews, and practical itineraries from our
+            global adventures. From backcountry routes to epic road trips, we
+            help you plan unforgettable outdoor experiences. Find our video
+            guides on{" "}
+            <a
+              href="https://www.youtube.com/@trailtalestravel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#8586A9] hover:underline"
+            >
+              YouTube
+            </a>
+            .
           </p>
 
           {featuredPosts.length > 0 && (
@@ -55,6 +78,8 @@ export default function Page() {
               </div>
             </div>
           )}
+
+          <YouTubePromo />
 
           {smallPosts.length > 0 && (
             <div className="mt-8">
