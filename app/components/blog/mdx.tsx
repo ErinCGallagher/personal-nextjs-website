@@ -8,6 +8,7 @@ import { ImageGrid4 } from "./image-grid-4";
 import { ImageGrid2 } from "./image-grid-2";
 import { ImageGrid2Mixed } from "./image-grid-2-mixed";
 import { VideoLink } from "./video-link";
+import { MapEmbed } from "./map-embed";
 
 function Table({ data }: any) {
   let headers = data.headers.map((header: any, index: number) => (
@@ -101,6 +102,7 @@ let components = {
   ImageGrid2,
   ImageGrid2Mixed,
   VideoLink,
+  MapEmbed,
 };
 
 export async function CustomMDX(props: any) {
