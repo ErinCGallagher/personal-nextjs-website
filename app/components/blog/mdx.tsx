@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { ImageGrid4 } from "./image-grid-4";
 import { ImageGrid2 } from "./image-grid-2";
 import { ImageGrid2Mixed } from "./image-grid-2-mixed";
+import { ImageSingle } from "./image-single";
 import { VideoLink } from "./video-link";
 import { MapEmbed } from "./map-embed";
 
@@ -101,6 +102,7 @@ let components = {
   ImageGrid4,
   ImageGrid2,
   ImageGrid2Mixed,
+  ImageSingle,
   VideoLink,
   MapEmbed,
 };
