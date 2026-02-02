@@ -17,6 +17,7 @@ Install dependencies
 
 npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
 npm install next react react-dom
+npm install @vercel/analytics
 
 ```
 
