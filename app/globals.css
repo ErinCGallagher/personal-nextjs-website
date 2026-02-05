@@ -142,10 +142,16 @@ h2 {
   border-radius: 0;
 }
 
-.prose ul,
+.prose ul {
+  margin: 1rem 0;
+  margin-left: 1.5rem;
+  list-style: disc;
+}
+
 .prose ol {
   margin: 1rem 0;
   margin-left: 1.5rem;
+  list-style: decimal;
 }
 
 .prose li {

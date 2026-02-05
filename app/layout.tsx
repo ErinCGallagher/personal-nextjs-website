@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s | Erin Gallagher",
   },
   description: "Trail guides, trip itineraries, and talks on tech and adventure.",
-  metadataBase: new URL("https://egallagher.com"),
+  metadataBase: new URL("https://www.egallagher.com"),
   openGraph: {
     type: "website",
     siteName: "Erin Gallagher",

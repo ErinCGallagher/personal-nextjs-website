@@ -59,7 +59,7 @@ export default async function Page({
     headline: post.metadata.title,
     description: post.metadata.summary,
     image: post.metadata.image
-      ? `https://egallagher.com${post.metadata.image}`
+      ? `https://www.egallagher.com${post.metadata.image}`
       : undefined,
     datePublished: post.metadata.publishedAt,
     author: {
@@ -70,7 +70,7 @@ export default async function Page({
       "@type": "Person",
       name: "Erin Gallagher",
     },
-    url: `https://egallagher.com/blog/${slug}`,
+    url: `https://www.egallagher.com/blog/${slug}`,
   };
 
   return (

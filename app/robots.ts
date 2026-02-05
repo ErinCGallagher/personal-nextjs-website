@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/game", "/drafts"],
     },
-    sitemap: "https://egallagher.com/sitemap.xml",
+    sitemap: "https://www.egallagher.com/sitemap.xml",
   };
 }

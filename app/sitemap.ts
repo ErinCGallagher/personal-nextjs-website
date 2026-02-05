@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { getBlogPosts } from "@/app/blog/utils";
 
-const BASE_URL = "https://egallagher.com";
+const BASE_URL = "https://www.egallagher.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const blogPosts = getBlogPosts();
