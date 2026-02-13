@@ -94,6 +94,8 @@ export default async function Page({
 
   return (
     <section>
+      {/* dangerouslySetInnerHTML is the only way to set inline script content in React.
+          It is safe here because the content is derived from your own MDX files, not user input. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

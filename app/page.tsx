@@ -18,9 +18,28 @@ export const metadata: Metadata = {
   },
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Erin Gallagher",
+  url: "https://www.egallagher.com",
+  jobTitle: "Software Engineer",
+  sameAs: [
+    "https://github.com/ErinCGallagher",
+    "https://www.linkedin.com/in/eringallagher3/",
+    "https://www.youtube.com/@trailtalestravel/featured",
+  ],
+};
+
 export default function Home() {
   return (
     <div className="font-sans bg-background">
+      {/* dangerouslySetInnerHTML is the only way to set inline script content in React.
+          It is safe here because the content is hardcoded JSON, not user input. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       {/* Hero section */}
       <header className="relative h-[90vh] md:h-screen w-full overflow-hidden">
         <Image
