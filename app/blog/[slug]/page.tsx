@@ -55,15 +55,29 @@ export default async function Page({
     notFound();
   }
 
+  const postUrl = `https://www.egallagher.com/blog/${slug}`;
+  const wordCount = post.content
+    .replace(/```[\s\S]*?```/g, "") // strip code blocks
+    .replace(/[#*_`[\]()>-]/g, "")  // strip markdown syntax characters
+    .split(/\s+/)
+    .filter(Boolean).length;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": postUrl,
+    },
     headline: post.metadata.title,
     description: post.metadata.summary,
     image: post.metadata.image
       ? `https://www.egallagher.com${post.metadata.image}`
       : undefined,
     datePublished: post.metadata.publishedAt,
+    dateModified: post.metadata.publishedAt,
+    keywords: post.metadata.tags ?? [],
+    wordCount,
     author: {
       "@type": "Person",
       name: post.metadata.author,
@@ -72,7 +86,7 @@ export default async function Page({
       "@type": "Person",
       name: "Erin Gallagher",
     },
-    url: `https://www.egallagher.com/blog/${slug}`,
+    url: postUrl,
   };
 
   return (
