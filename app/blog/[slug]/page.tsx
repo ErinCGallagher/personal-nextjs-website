@@ -5,6 +5,7 @@ import { getBlogPost, formatDate, getTagColor } from "../utils";
 import { BlogContent } from "@/app/components/blog/blog-content";
 import { CustomMDX } from "@/app/components/blog/mdx";
 import { TableOfContents } from "@/app/components/blog/table-of-contents";
+import { BackToTop } from "@/app/components/blog/back-to-top";
 
 export async function generateMetadata({
   params,
@@ -154,6 +155,7 @@ export default async function Page({
           </main>
         </div>
       </div>
+      <BackToTop />
     </section>
   );
 }
