@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getBlogPost, formatDate, getTagColor } from "../utils";
 import { BlogContent } from "@/app/components/blog/blog-content";
 import { CustomMDX } from "@/app/components/blog/mdx";
+import { TableOfContents } from "@/app/components/blog/table-of-contents";
 
 export async function generateMetadata({
   params,
@@ -47,7 +48,7 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let post = getBlogPost(slug);
+  const post = getBlogPost(slug);
 
   if (!post) {
     notFound();
@@ -101,45 +102,57 @@ export default async function Page({
         </div>
       )}
       <div className="px-4 sm:px-6 py-16">
-        <main className="max-w-4xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="relative w-10 h-10 flex-shrink-0">
-              <Image
-                src={post.metadata.authorImage || "/default-author.jpg"}
-                alt={post.metadata.author || "Erin Gallagher"}
-                fill
-                className="object-cover rounded-full"
-              />
-            </div>
-            <div className="flex flex-col">
-              <p className="text-sm text-neutral-900">
-                Written by{" "}
-                <span className="font-medium">{post.metadata.author}</span>
-              </p>
-              <p className="text-sm text-neutral-600">
-                Published on {formatDate(post.metadata.publishedAt)}
-              </p>
-            </div>
-          </div>
-          {post.metadata.tags && post.metadata.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-12">
-              {post.metadata.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-block px-3 py-1 text-sm rounded text-white"
-                  style={{ backgroundColor: getTagColor(tag) }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+        <div className="max-w-6xl mx-auto lg:flex gap-8 items-start">
+          {post.metadata.tableOfContents && (
+            <aside className="hidden lg:block w-56 flex-shrink-0 sticky top-8 self-start pt-12">
+              <TableOfContents source={post.content} />
+            </aside>
           )}
-          <BlogContent>
-            <article className="prose max-w-none">
-              <CustomMDX source={post.content} />
-            </article>
-          </BlogContent>
-        </main>
+          <main className="flex-1 min-w-0 max-w-4xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="relative w-10 h-10 flex-shrink-0">
+                <Image
+                  src={post.metadata.authorImage || "/default-author.jpg"}
+                  alt={post.metadata.author || "Erin Gallagher"}
+                  fill
+                  className="object-cover rounded-full"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-sm text-neutral-900">
+                  Written by{" "}
+                  <span className="font-medium">{post.metadata.author}</span>
+                </p>
+                <p className="text-sm text-neutral-600">
+                  Published on {formatDate(post.metadata.publishedAt)}
+                </p>
+              </div>
+            </div>
+            {post.metadata.tags && post.metadata.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-12">
+                {post.metadata.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-block px-3 py-1 text-sm rounded text-white"
+                    style={{ backgroundColor: getTagColor(tag) }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {post.metadata.tableOfContents && (
+              <div className="lg:hidden mb-6">
+                <TableOfContents source={post.content} variant="collapsible" />
+              </div>
+            )}
+            <BlogContent>
+              <article className="prose max-w-none">
+                <CustomMDX source={post.content} />
+              </article>
+            </BlogContent>
+          </main>
+        </div>
       </div>
     </section>
   );

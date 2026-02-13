@@ -185,6 +185,27 @@ h2 {
   font-weight: 600;
 }
 
+.toc-chevron-wrapper {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+details[open] .toc-chevron-wrapper {
+  transform: rotate(-180deg);
+}
+
+/* Bounces on mount to hint the section is expandable; inner/outer split keeps
+   the bounce and the open/close rotation on separate transform stacks */
+.toc-chevron-inner {
+  display: inline-block;
+  animation: toc-hint 0.6s ease 0.4s 3;
+}
+
+@keyframes toc-hint {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
 .anchor {
   visibility: hidden;
 }
