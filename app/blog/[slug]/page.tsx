@@ -123,11 +123,9 @@ export default async function Page({
       )}
       <div className="px-4 sm:px-6 py-16">
         <div className="max-w-6xl mx-auto lg:flex gap-8 items-start">
-          {post.metadata.tableOfContents && (
-            <aside className="hidden lg:block w-56 flex-shrink-0 sticky top-8 self-start pt-12">
-              <TableOfContents source={post.content} />
-            </aside>
-          )}
+          <aside className="hidden lg:block w-56 flex-shrink-0 sticky top-8 self-start pt-12">
+            <TableOfContents source={post.content} />
+          </aside>
           <main className="flex-1 min-w-0 max-w-4xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
             <div className="flex items-center gap-3 mb-4">
               <div className="relative w-10 h-10 flex-shrink-0">
@@ -161,11 +159,9 @@ export default async function Page({
                 ))}
               </div>
             )}
-            {post.metadata.tableOfContents && (
-              <div className="lg:hidden mb-6">
-                <TableOfContents source={post.content} variant="collapsible" />
-              </div>
-            )}
+            <div className="lg:hidden mb-6">
+              <TableOfContents source={post.content} variant="collapsible" />
+            </div>
             <BlogContent>
               <article className="prose max-w-none">
                 <CustomMDX source={post.content} />

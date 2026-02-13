@@ -10,7 +10,6 @@ type Metadata = {
   image?: string;
   tags?: string[];
   featured?: string;
-  tableOfContents?: boolean;
 };
 
 export function getTagColor(tag: string) {
@@ -96,8 +95,6 @@ function parseFrontmatter(fileContent: string) {
     const trimmedKey = key.trim();
     if (trimmedKey === "tags") {
       metadata.tags = value.split(",").map((tag) => tag.trim());
-    } else if (trimmedKey === "tableOfContents") {
-      metadata.tableOfContents = value === "true";
     } else if (
       trimmedKey === "title" ||
       trimmedKey === "publishedAt" ||
