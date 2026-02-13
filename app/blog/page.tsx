@@ -1,8 +1,29 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import { getBlogPosts } from "@/app/blog/utils";
 import { FeaturedPost } from "@/app/components/blog/featured-post";
 import { SmallPost } from "@/app/components/blog/small-post";
 import { YouTubePromo } from "@/app/components/blog/youtube-promo";
+
+export const metadata: Metadata = {
+  title: "Trail Tales Travel Blog",
+  description:
+    "Detailed trail guides, honest campsite reviews, and practical itineraries from our global adventures. From backcountry routes to epic road trips.",
+  openGraph: {
+    type: "website",
+    title: "Trail Tales Travel Blog",
+    description:
+      "Detailed trail guides, honest campsite reviews, and practical itineraries from our global adventures. From backcountry routes to epic road trips.",
+    images: ["/icons/trail-tales-logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trail Tales Travel Blog",
+    description:
+      "Detailed trail guides, honest campsite reviews, and practical itineraries from our global adventures. From backcountry routes to epic road trips.",
+    images: ["/icons/trail-tales-logo.png"],
+  },
+};
 
 export default function Page() {
   const allPosts = getBlogPosts();
