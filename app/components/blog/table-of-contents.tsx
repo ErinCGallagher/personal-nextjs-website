@@ -1,4 +1,7 @@
+"use client";
+
 import { slugify } from "./mdx";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 type Heading = {
   text: string;
@@ -27,7 +30,57 @@ export function TableOfContents({
   source,
   variant = "sidebar",
 }: TableOfContentsProps) {
-  const headings = extractHeadings(source);
+  const headings = useMemo(() => extractHeadings(source), [source]);
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const entryMapRef = useRef<Map<string, IntersectionObserverEntry>>(new Map());
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+
+    // Map from DOM element (heading wrapper div) → slug for lookup in callbacks.
+    // We observe the wrapper div rather than the anchor itself because the anchor
+    // has no height and may not trigger intersection reliably.
+    const elementToSlug = new Map<Element, string>();
+
+    const callback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        const slug = elementToSlug.get(entry.target);
+        if (slug) entryMapRef.current.set(slug, entry);
+      });
+
+      // Prefer the first heading visible in the top portion of the viewport
+      const visible = headings.find(
+        (h) => entryMapRef.current.get(h.slug)?.isIntersecting
+      );
+      if (visible) {
+        setActiveSlug(visible.slug);
+        return;
+      }
+
+      // Fall back to the last heading that has scrolled above the viewport
+      const above = headings.filter((h) => {
+        const entry = entryMapRef.current.get(h.slug);
+        return entry && entry.boundingClientRect.top < 0;
+      });
+      if (above.length > 0) {
+        setActiveSlug(above[above.length - 1].slug);
+      }
+    };
+
+    const observer = new IntersectionObserver(callback, {
+      rootMargin: "0px 0px -85% 0px",
+    });
+
+    headings.forEach(({ slug }) => {
+      const el = document.getElementById(slug)?.parentElement;
+      if (el) {
+        elementToSlug.set(el, slug);
+        observer.observe(el);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [headings]);
 
   if (headings.length === 0) {
     return null;
@@ -35,16 +88,23 @@ export function TableOfContents({
 
   const links = (
     <ul className="space-y-2">
-      {headings.map((heading) => (
-        <li key={heading.slug}>
-          <a
-            href={`#${heading.slug}`}
-            className="text-base text-dark-grey hover:text-foreground hover:font-medium hover:translate-x-1 transition-all leading-snug block"
-          >
-            {heading.text}
-          </a>
-        </li>
-      ))}
+      {headings.map((heading) => {
+        const isActive = heading.slug === activeSlug;
+        return (
+          <li key={heading.slug}>
+            <a
+              href={`#${heading.slug}`}
+              className={`text-base leading-snug block transition-all border-l-2 pl-2 ${
+                isActive
+                  ? "text-foreground font-medium translate-x-1 border-dark-grey"
+                  : "text-dark-grey border-transparent hover:text-foreground hover:font-medium hover:translate-x-1"
+              }`}
+            >
+              {heading.text}
+            </a>
+          </li>
+        );
+      })}
     </ul>
   );
 
