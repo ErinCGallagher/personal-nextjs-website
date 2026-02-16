@@ -49,7 +49,7 @@ export function SmallPost({
                   </span>
                 ))}
             </div>
-            <time className="text-sm text-gray-500">
+            <time className="text-sm text-gray-500 shrink-0 whitespace-nowrap">
               {formatDate(publishedAt)}
             </time>
           </div>
