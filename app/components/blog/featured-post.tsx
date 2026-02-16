@@ -9,6 +9,7 @@ type FeaturedPostProps = {
   publishedAt: string;
   image?: string;
   tags?: string[];
+  readingTime?: number;
 };
 
 export function FeaturedPost({
@@ -18,6 +19,7 @@ export function FeaturedPost({
   publishedAt,
   image,
   tags,
+  readingTime,
 }: FeaturedPostProps) {
   return (
     <Link href={`/blog/${slug}`} className="h-full">
@@ -36,7 +38,7 @@ export function FeaturedPost({
         <hr className="mt-6 md:mt-4 mb-2 border-gray-200" />
 
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-3 gap-2">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
             {tags &&
               tags.map((tag) => (
                 <span
@@ -48,9 +50,15 @@ export function FeaturedPost({
                 </span>
               ))}
           </div>
-          <time className="text-sm text-gray-500">
-            {formatDate(publishedAt)}
-          </time>
+          <div className="text-sm text-gray-500 text-left md:text-right">
+            <time>{formatDate(publishedAt)}</time>
+            {readingTime && (
+              <>
+                <span className="md:hidden"> · {readingTime} min read</span>
+                <p className="!my-0 hidden md:block">{readingTime} min read</p>
+              </>
+            )}
+          </div>
         </div>
 
         <h3 className="text-xl font-semibold text-foreground group-hover:text-blue-grey transition-colors">

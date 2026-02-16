@@ -65,8 +65,6 @@ export default async function Page({
     .split(/\s+/)
     .filter(Boolean).length;
 
-  const readingTime = Math.ceil(wordCount / 238);
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -144,8 +142,13 @@ export default async function Page({
                   <span className="font-medium">{post.metadata.author}</span>
                 </p>
                 <p className="text-sm text-neutral-600">
-                  {formatDate(post.metadata.publishedAt)} · {readingTime} min read
+                  {formatDate(post.metadata.publishedAt)}
                 </p>
+                {post.metadata.readingTime && (
+                  <p className="text-sm text-neutral-600">
+                    {post.metadata.readingTime} min read
+                  </p>
+                )}
               </div>
             </div>
             {post.metadata.tags && post.metadata.tags.length > 0 && (

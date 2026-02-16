@@ -9,6 +9,7 @@ type SmallPostProps = {
   publishedAt: string;
   image?: string;
   tags?: string[];
+  readingTime?: number;
 };
 
 export function SmallPost({
@@ -18,6 +19,7 @@ export function SmallPost({
   publishedAt,
   image,
   tags,
+  readingTime,
 }: SmallPostProps) {
   return (
     <Link href={`/blog/${slug}`} className="h-full">
@@ -37,7 +39,7 @@ export function SmallPost({
 
         <div className="flex-grow flex flex-col">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2 gap-2">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               {tags &&
                 tags.map((tag) => (
                   <span
@@ -49,9 +51,15 @@ export function SmallPost({
                   </span>
                 ))}
             </div>
-            <time className="text-sm text-gray-500 shrink-0 whitespace-nowrap">
-              {formatDate(publishedAt)}
-            </time>
+            <div className="text-sm text-gray-500 shrink-0 whitespace-nowrap text-left md:text-right">
+              <time>{formatDate(publishedAt)}</time>
+              {readingTime && (
+                <>
+                  <span className="md:hidden"> · {readingTime} min read</span>
+                  <p className="!my-0 hidden md:block">{readingTime} min read</p>
+                </>
+              )}
+            </div>
           </div>
 
           <h3 className="text-m font-semibold text-foreground group-hover:text-blue-grey transition-colors line-clamp-2">

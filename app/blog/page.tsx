@@ -96,6 +96,7 @@ export default function Page() {
                     publishedAt={post.metadata.publishedAt}
                     image={post.metadata.image}
                     tags={post.metadata.tags}
+                    readingTime={post.metadata.readingTime}
                   />
                 ))}
               </div>
@@ -119,6 +120,7 @@ export default function Page() {
                     publishedAt={post.metadata.publishedAt}
                     image={post.metadata.image}
                     tags={post.metadata.tags}
+                    readingTime={post.metadata.readingTime}
                   />
                 ))}
               </div>

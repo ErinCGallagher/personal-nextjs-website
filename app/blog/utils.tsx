@@ -10,6 +10,7 @@ type Metadata = {
   image?: string;
   tags?: string[];
   featured?: string;
+  readingTime?: number;
 };
 
 export function getTagColor(tag: string) {
@@ -105,6 +106,8 @@ function parseFrontmatter(fileContent: string) {
       trimmedKey === "featured"
     ) {
       metadata[trimmedKey] = value;
+    } else if (trimmedKey === "readingTime") {
+      metadata.readingTime = parseInt(value, 10);
     }
   });
 
