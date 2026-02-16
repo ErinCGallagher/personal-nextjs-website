@@ -11,27 +11,51 @@ What you'll find:
 
 ## Getting Started
 
-Install dependencies
+This is a pnpm monorepo with `frontend` and `backend` workspaces.
+
+Install all dependencies from the root:
 
 ```bash
-
-npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
-npm install next react react-dom
-npm install @vercel/analytics
-
+pnpm install
 ```
 
-First, run the development server:
+### Frontend
+
+Run the Next.js development server:
 
 ```bash
-npm run dev
-# or
 pnpm dev
 ```
 
-Next, open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the result. The page auto-updates as you edit files in `frontend/app/`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Backend
+
+Run the Express development server (with hot-reloading):
+
+```bash
+pnpm dev:backend
+```
+
+The server runs on [http://localhost:3001](http://localhost:3001) by default. Set a `PORT` environment variable to override.
+
+Available endpoints:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health check |
+
+To build the backend for production:
+
+```bash
+pnpm --filter backend build
+```
+
+Output is written to `backend/dist/`. Run it with:
+
+```bash
+pnpm --filter backend start
+```
 
 ## Useful VSCode Extensions
 

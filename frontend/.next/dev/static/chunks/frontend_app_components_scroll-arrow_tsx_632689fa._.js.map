@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/eringallagher/Code/personal-nextjs-website/frontend/app/components/scroll-arrow.tsx"],"sourcesContent":["\"use client\";\n\nimport { FaChevronDown } from \"react-icons/fa6\";\n\nexport function ScrollArrow() {\n  const scrollToContent = () => {\n    window.scrollTo({\n      top: window.innerHeight,\n      behavior: \"smooth\",\n    });\n  };\n\n  return (\n    <button\n      onClick={scrollToContent}\n      className=\"absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce cursor-pointer hover:opacity-80 transition-opacity\"\n      aria-label=\"Scroll to content\"\n    >\n      <FaChevronDown className=\"text-white text-2xl\" />\n    </button>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;AAFA;;;AAIO,SAAS;IACd,MAAM,kBAAkB;QACtB,OAAO,QAAQ,CAAC;YACd,KAAK,OAAO,WAAW;YACvB,UAAU;QACZ;IACF;IAEA,qBACE,8VAAC;QACC,SAAS;QACT,WAAU;QACV,cAAW;kBAEX,cAAA,8VAAC,oPAAa;YAAC,WAAU;;;;;;;;;;;AAG/B;KAjBgB"}}]
+}
