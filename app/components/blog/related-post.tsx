@@ -43,8 +43,8 @@ export function RelatedPost({ href, title, image }: RelatedPostProps) {
         <span className="text-sm font-medium text-foreground line-clamp-2">
           {title}
         </span>
-        <span className="text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0">
-          →
+        <span className="flex items-center text-xl text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0">
+          ➜
         </span>
       </div>
     </Link>
