@@ -130,16 +130,17 @@
       poly.bindPopup(`<div>${popupText}</div>`);
     }
 
-    // Day 2: Boulders Beach, Cape of Good Hope, V&A Waterfront (blue)
+    // Day 2: Bo-Kaap, Boulders Beach, Cape of Good Hope, V&A Waterfront (blue)
     drawRoute(
       [
         [-33.9249, 18.4241],
+        [-33.9264, 18.4088],
         [-34.1975, 18.4501],
         [-34.3567, 18.4975],
         [-33.9069, 18.4233],
       ],
       "#2563eb",
-      "Day 2: Boulders Beach, Cape of Good Hope &amp; V&amp;A Waterfront",
+      "Day 2: Bo-Kaap, Boulders Beach, Cape of Good Hope &amp; V&amp;A Waterfront",
     );
 
     // Day 3: Chapman's Peak, Creation Winery, Hermanus (purple)
@@ -218,132 +219,141 @@
     );
     marker_1.bindTooltip(`<div>Day 1: Cape Town City</div>`, { sticky: true });
 
-    // Marker 2: Boulders Beach (Day 2)
-    var marker_2 = L.marker([-34.1975, 18.4501], {
+    // Marker 2: Bo-Kaap (Day 2)
+    var marker_2 = L.marker([-33.9264, 18.4088], {
       icon: createNumberedIcon(2),
     }).addTo(map);
     marker_2.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Boulders Beach</b><br>African penguins</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Bo-Kaap</b><br>Colourful houses & koeksisters</div>`,
     );
-    marker_2.bindTooltip(`<div>Day 2: Boulders Beach</div>`, { sticky: true });
+    marker_2.bindTooltip(`<div>Day 2: Bo-Kaap</div>`, { sticky: true });
 
-    // Marker 3: Cape of Good Hope (Day 2)
-    var marker_3 = L.marker([-34.3567, 18.4975], {
+    // Marker 3: Boulders Beach (Day 2)
+    var marker_3 = L.marker([-34.1975, 18.4501], {
       icon: createNumberedIcon(3),
     }).addTo(map);
     marker_3.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Cape of Good Hope</b><br>Dramatic cliffs</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Boulders Beach</b><br>African penguins</div>`,
     );
-    marker_3.bindTooltip(`<div>Day 2: Cape of Good Hope</div>`, {
-      sticky: true,
-    });
+    marker_3.bindTooltip(`<div>Day 2: Boulders Beach</div>`, { sticky: true });
 
-    // Marker 4: V&A Waterfront (Day 2)
-    var marker_4 = L.marker([-33.9069, 18.4233], {
+    // Marker 4: Cape of Good Hope (Day 2)
+    var marker_4 = L.marker([-34.3567, 18.4975], {
       icon: createNumberedIcon(4),
     }).addTo(map);
     marker_4.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: V&amp;A Waterfront</b><br>Harbour dining</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Cape of Good Hope</b><br>Dramatic cliffs</div>`,
     );
-    marker_4.bindTooltip(`<div>Day 2: V&amp;A Waterfront</div>`, {
+    marker_4.bindTooltip(`<div>Day 2: Cape of Good Hope</div>`, {
       sticky: true,
     });
 
-    // Marker 5: Chapman's Peak Drive (Day 3)
-    var marker_5 = L.marker([-34.09, 18.36], {
+    // Marker 5: V&A Waterfront (Day 2)
+    var marker_5 = L.marker([-33.9069, 18.4233], {
       icon: createNumberedIcon(5),
     }).addTo(map);
     marker_5.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Chapman's Peak Drive</b><br>Scenic coastal road</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: V&amp;A Waterfront</b><br>Harbour dining</div>`,
     );
-    marker_5.bindTooltip(`<div>Day 3: Chapman's Peak Drive</div>`, {
+    marker_5.bindTooltip(`<div>Day 2: V&amp;A Waterfront</div>`, {
       sticky: true,
     });
 
-    // Marker 6: Creation Winery (Day 3)
-    var marker_6 = L.marker([-34.0392, 19.0114], {
+    // Marker 6: Chapman's Peak Drive (Day 3)
+    var marker_6 = L.marker([-34.09, 18.36], {
       icon: createNumberedIcon(6),
     }).addTo(map);
     marker_6.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Creation Winery</b><br>Wine tasting</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Chapman's Peak Drive</b><br>Scenic coastal road</div>`,
     );
-    marker_6.bindTooltip(`<div>Day 3: Creation Winery</div>`, { sticky: true });
+    marker_6.bindTooltip(`<div>Day 3: Chapman's Peak Drive</div>`, {
+      sticky: true,
+    });
 
-    // Marker 7: Hermanus (Day 3)
-    var marker_7 = L.marker([-34.4187, 19.2345], {
+    // Marker 7: Creation Winery (Day 3)
+    var marker_7 = L.marker([-34.0392, 19.0114], {
       icon: createNumberedIcon(7),
     }).addTo(map);
     marker_7.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Hermanus</b><br>Whale watching</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Creation Winery</b><br>Wine tasting</div>`,
     );
-    marker_7.bindTooltip(`<div>Day 3: Hermanus</div>`, { sticky: true });
+    marker_7.bindTooltip(`<div>Day 3: Creation Winery</div>`, { sticky: true });
 
-    // Marker 8: Ashia Cheetah Sanctuary (Day 4)
-    var marker_8 = L.marker([-33.8, 18.95], {
+    // Marker 8: Hermanus (Day 3)
+    var marker_8 = L.marker([-34.4187, 19.2345], {
       icon: createNumberedIcon(8),
     }).addTo(map);
     marker_8.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 4: Ashia Cheetah Sanctuary</b><br>Cheetah conservation</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Hermanus</b><br>Whale watching</div>`,
     );
-    marker_8.bindTooltip(`<div>Day 4: Ashia Cheetah Sanctuary</div>`, {
-      sticky: true,
-    });
+    marker_8.bindTooltip(`<div>Day 3: Hermanus</div>`, { sticky: true });
 
-    // Marker 9: Franschhoek (Day 4)
-    var marker_9 = L.marker([-33.9139, 19.1174], {
+    // Marker 9: Ashia Cheetah Sanctuary (Day 4)
+    var marker_9 = L.marker([-33.8, 18.95], {
       icon: createNumberedIcon(9),
     }).addTo(map);
     marker_9.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 4: Franschhoek</b><br>Wine tram</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 4: Ashia Cheetah Sanctuary</b><br>Cheetah conservation</div>`,
     );
-    marker_9.bindTooltip(`<div>Day 4: Franschhoek</div>`, { sticky: true });
-
-    // Marker 10: West Coast Safari (Day 5)
-    var marker_10 = L.marker([-33.2, 18.1], {
-      icon: createNumberedIcon(10),
-    }).addTo(map);
-    marker_10.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: West Coast Safari</b><br>Game reserve & national park</div>`,
-    );
-    marker_10.bindTooltip(`<div>Day 5: West Coast Safari</div>`, {
+    marker_9.bindTooltip(`<div>Day 4: Ashia Cheetah Sanctuary</div>`, {
       sticky: true,
     });
 
-    // Marker 11: Bloubergstrand (Day 5)
-    var marker_11 = L.marker([-33.8167, 18.4333], {
+    // Marker 10: Franschhoek (Day 4)
+    var marker_10 = L.marker([-33.9139, 19.1174], {
+      icon: createNumberedIcon(10),
+    }).addTo(map);
+    marker_10.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 4: Franschhoek</b><br>Wine tram</div>`,
+    );
+    marker_10.bindTooltip(`<div>Day 4: Franschhoek</div>`, { sticky: true });
+
+    // Marker 11: West Coast Safari (Day 5)
+    var marker_11 = L.marker([-33.2, 18.1], {
       icon: createNumberedIcon(11),
     }).addTo(map);
     marker_11.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: Bloubergstrand</b><br>Iconic Table Mountain view</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: West Coast Safari</b><br>Game reserve & national park</div>`,
     );
-    marker_11.bindTooltip(`<div>Day 5: Bloubergstrand</div>`, { sticky: true });
+    marker_11.bindTooltip(`<div>Day 5: West Coast Safari</div>`, {
+      sticky: true,
+    });
 
-    // Marker 12: Table Mountain (Day 5)
-    var marker_12 = L.marker([-33.9571, 18.4034], {
+    // Marker 12: Bloubergstrand (Day 5)
+    var marker_12 = L.marker([-33.8167, 18.4333], {
       icon: createNumberedIcon(12),
     }).addTo(map);
     marker_12.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: Table Mountain</b><br>Cableway to the summit</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: Bloubergstrand</b><br>Iconic Table Mountain view</div>`,
     );
-    marker_12.bindTooltip(`<div>Day 5: Table Mountain</div>`, { sticky: true });
+    marker_12.bindTooltip(`<div>Day 5: Bloubergstrand</div>`, { sticky: true });
 
-    // Marker 13: Camps Bay (Day 6)
-    var marker_13 = L.marker([-33.9508, 18.3762], {
+    // Marker 13: Table Mountain (Day 5)
+    var marker_13 = L.marker([-33.9571, 18.4034], {
       icon: createNumberedIcon(13),
     }).addTo(map);
     marker_13.bindPopup(
-      `<div style="width: 100.0%; height: 100.0%;"><b>Day 6: Camps Bay</b><br>Beach & Atlantic views</div>`,
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: Table Mountain</b><br>Cableway to the summit</div>`,
     );
-    marker_13.bindTooltip(`<div>Day 6: Camps Bay</div>`, { sticky: true });
+    marker_13.bindTooltip(`<div>Day 5: Table Mountain</div>`, { sticky: true });
 
-    // Marker 14: District Six Museum (Day 6)
-    var marker_14 = L.marker([-33.9271, 18.4268], {
+    // Marker 14: Camps Bay (Day 6)
+    var marker_14 = L.marker([-33.9508, 18.3762], {
       icon: createNumberedIcon(14),
     }).addTo(map);
     marker_14.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 6: Camps Bay</b><br>Beach & Atlantic views</div>`,
+    );
+    marker_14.bindTooltip(`<div>Day 6: Camps Bay</div>`, { sticky: true });
+
+    // Marker 15: District Six Museum (Day 6)
+    var marker_15 = L.marker([-33.9271, 18.4268], {
+      icon: createNumberedIcon(15),
+    }).addTo(map);
+    marker_15.bindPopup(
       `<div style="width: 100.0%; height: 100.0%;"><b>Day 6: District Six Museum</b><br>Apartheid history</div>`,
     );
-    marker_14.bindTooltip(`<div>Day 6: District Six Museum</div>`, {
+    marker_15.bindTooltip(`<div>Day 6: District Six Museum</div>`, {
       sticky: true,
     });
   </script>
