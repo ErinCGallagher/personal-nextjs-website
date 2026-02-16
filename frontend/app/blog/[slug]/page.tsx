@@ -143,12 +143,10 @@ export default async function Page({
                 </p>
                 <p className="text-sm text-neutral-600">
                   {formatDate(post.metadata.publishedAt)}
+                  {post.metadata.readingTime && (
+                    <span> · {post.metadata.readingTime} min read</span>
+                  )}
                 </p>
-                {post.metadata.readingTime && (
-                  <p className="text-sm text-neutral-600">
-                    {post.metadata.readingTime} min read
-                  </p>
-                )}
               </div>
             </div>
             {post.metadata.tags && post.metadata.tags.length > 0 && (

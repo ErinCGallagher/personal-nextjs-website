@@ -1,721 +1,350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    
+  <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
-    
-            <meta name="viewport" content="width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-            <style>
-                #map_4ff4fa95e6c44c46335217dd22444bf6 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            </style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    />
 
-            <style>html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            </style>
+    <meta
+      name="viewport"
+      content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <style>
+      #map_4ff4fa95e6c44c46335217dd22444bf6 {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        left: 0%;
+        top: 0%;
+      }
+      .leaflet-container {
+        font-size: 1rem;
+      }
 
-            <style>#map {
-                position:absolute;
-                top:0;
-                bottom:0;
-                right:0;
-                left:0;
-                }
-            </style>
+      .numbered-marker {
+        background-color: #dc2626;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+    </style>
 
-            <script>
-                L_NO_TOUCH = false;
-                L_DISABLE_3D = false;
-            </script>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
 
-        
-</head>
-<body>
-    
-    
-            <div class="folium-map" id="map_4ff4fa95e6c44c46335217dd22444bf6" ></div>
-        
-</body>
-<script>
-    
-    
-            var map_4ff4fa95e6c44c46335217dd22444bf6 = L.map(
-                "map_4ff4fa95e6c44c46335217dd22444bf6",
-                {
-                    center: [-33.9, 18.5],
-                    crs: L.CRS.EPSG3857,
-                    ...{
-  "zoom": 9,
-  "zoomControl": true,
-  "preferCanvas": false,
-}
+    <style>
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    </style>
 
-                }
-            );
+    <script>
+      L_NO_TOUCH = false;
+      L_DISABLE_3D = false;
+    </script>
+  </head>
+  <body>
+    <div class="folium-map" id="map_4ff4fa95e6c44c46335217dd22444bf6"></div>
+  </body>
+  <script>
+    function createNumberedIcon(number) {
+      return L.divIcon({
+        className: "numbered-marker",
+        html: number.toString(),
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14],
+      });
+    }
 
-            
+    var map = L.map("map_4ff4fa95e6c44c46335217dd22444bf6", {
+      center: [-33.9, 18.7],
+      crs: L.CRS.EPSG3857,
+      zoom: 9,
+      zoomControl: true,
+      preferCanvas: false,
+    });
 
-        
-    
-            var tile_layer_566885167f96e86cd7c2d7360183165d = L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-  "minZoom": 0,
-  "maxZoom": 19,
-  "maxNativeZoom": 19,
-  "noWrap": false,
-  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
-  "subdomains": "abc",
-  "detectRetina": false,
-  "tms": false,
-  "opacity": 1,
-}
+    var tile_layer = L.tileLayer(
+      "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        minZoom: 0,
+        maxZoom: 19,
+        maxNativeZoom: 19,
+        noWrap: false,
+        attribution:
+          '\u0026copy; \u003ca href="https://www.openstreetmap.org/copyright"\u003eOpenStreetMap\u003c/a\u003e contributors',
+        subdomains: "abc",
+        detectRetina: false,
+        tms: false,
+        opacity: 1,
+      },
+    );
+    tile_layer.addTo(map);
 
-            );
-        
-    
-            tile_layer_566885167f96e86cd7c2d7360183165d.addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var marker_c910d3e4206ed3c7323c9c4f14b87d16 = L.marker(
-                [-33.9249, 18.4241],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_7dd7d407c17e8889d7178a65c25d5330 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "blue",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_5f5fe6d519a202bba8e0c1fcc0d27131 = L.popup({
-  "maxWidth": "100%",
-});
+    // Fetches a driving route from OSRM and draws it as a polyline.
+    // waypoints: array of [lat, lon] pairs
+    async function drawRoute(waypoints, color, popupText) {
+      const coords = waypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
+      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const latlngs = data.routes[0].geometry.coordinates.map(([lon, lat]) => [
+        lat,
+        lon,
+      ]);
+      const poly = L.polyline(latlngs, {
+        color,
+        opacity: 0.8,
+        weight: 3,
+        fill: false,
+      }).addTo(map);
+      poly.bindPopup(`<div>${popupText}</div>`);
+    }
 
-        
-            
-                var html_c43c136284a379a1a1ee0e17d00a707a = $(`<div id="html_c43c136284a379a1a1ee0e17d00a707a" style="width: 100.0%; height: 100.0%;"><b>Cape Town City</b><br>Base for the week</div>`)[0];
-                popup_5f5fe6d519a202bba8e0c1fcc0d27131.setContent(html_c43c136284a379a1a1ee0e17d00a707a);
-            
-        
+    // Day 2: Boulders Beach, Cape of Good Hope, V&A Waterfront (blue)
+    drawRoute(
+      [
+        [-33.9249, 18.4241],
+        [-34.1975, 18.4501],
+        [-34.3567, 18.4975],
+        [-33.9069, 18.4233],
+      ],
+      "#2563eb",
+      "Day 2: Boulders Beach, Cape of Good Hope &amp; V&amp;A Waterfront",
+    );
 
-        marker_c910d3e4206ed3c7323c9c4f14b87d16.bindPopup(popup_5f5fe6d519a202bba8e0c1fcc0d27131)
-        ;
+    // Day 3: Chapman's Peak, Creation Winery, Hermanus (purple)
+    drawRoute(
+      [
+        [-33.9249, 18.4241],
+        [-34.09, 18.36],
+        [-34.0392, 19.0114],
+        [-34.4187, 19.2345],
+      ],
+      "#9333ea",
+      "Day 3: Chapman's Peak, Creation Winery &amp; Hermanus",
+    );
 
-        
-    
-    
-            marker_c910d3e4206ed3c7323c9c4f14b87d16.bindTooltip(
-                `<div>
-                     Cape Town City
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_c910d3e4206ed3c7323c9c4f14b87d16.setIcon(icon_7dd7d407c17e8889d7178a65c25d5330);
-            
-    
-            var marker_dd912204089b97ad53b8e75ea7dc2454 = L.marker(
-                [-34.1975, 18.4501],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_c1acc009a7dcf117bdb0ac3e29f4cd96 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "green",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_dc87ebc0aa50ecc056f3bcfa6590258e = L.popup({
-  "maxWidth": "100%",
-});
+    // Day 4: Ashia Cheetah Sanctuary, Franschhoek (green)
+    drawRoute(
+      [
+        [-34.4187, 19.2345],
+        [-33.8, 18.95],
+        [-33.9139, 19.1174],
+        [-33.9249, 18.4241],
+      ],
+      "#16a34a",
+      "Day 4: Ashia Cheetah Sanctuary &amp; Franschhoek",
+    );
 
-        
-            
-                var html_351b63c0d8305ba920b3de06f854dd0e = $(`<div id="html_351b63c0d8305ba920b3de06f854dd0e" style="width: 100.0%; height: 100.0%;"><b>Boulders Beach</b><br>African penguins</div>`)[0];
-                popup_dc87ebc0aa50ecc056f3bcfa6590258e.setContent(html_351b63c0d8305ba920b3de06f854dd0e);
-            
-        
+    // Day 5: West Coast Safari, Bloubergstrand, Table Mountain (red)
+    drawRoute(
+      [
+        [-33.9249, 18.4241],
+        [-33.2, 18.1],
+        [-33.8167, 18.4333],
+        [-33.9571, 18.4034],
+      ],
+      "#dc2626",
+      "Day 5: West Coast Safari, Bloubergstrand &amp; Table Mountain",
+    );
 
-        marker_dd912204089b97ad53b8e75ea7dc2454.bindPopup(popup_dc87ebc0aa50ecc056f3bcfa6590258e)
-        ;
+    // Day 6: Camps Bay, District Six Museum (orange)
+    drawRoute(
+      [
+        [-33.9249, 18.4241],
+        [-33.9508, 18.3762],
+        [-33.9271, 18.4268],
+      ],
+      "#ea580c",
+      "Day 6: Camps Bay &amp; District Six Museum",
+    );
 
-        
-    
-    
-            marker_dd912204089b97ad53b8e75ea7dc2454.bindTooltip(
-                `<div>
-                     Boulders Beach
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_dd912204089b97ad53b8e75ea7dc2454.setIcon(icon_c1acc009a7dcf117bdb0ac3e29f4cd96);
-            
-    
-            var marker_201dae5b906ea99d4fbb91d931f567f0 = L.marker(
-                [-34.3567, 18.4975],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_a7eeb322935f30fc47b426c281bb12c8 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "red",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_c9d6db72caed107b7b408570436d07f2 = L.popup({
-  "maxWidth": "100%",
-});
+    // Legend
+    var legend = L.control({ position: "bottomright" });
+    legend.onAdd = function () {
+      var div = L.DomUtil.create("div");
+      div.style.cssText =
+        "background: white; padding: 10px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-size: 13px; line-height: 1.8;";
+      div.innerHTML = `
+        <strong style="display:block; margin-bottom:4px;">Itinerary</strong>
+        <span style="display:inline-block;width:20px;height:3px;background:#6b7280;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 1: Arrival<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#2563eb;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 2: Cape Peninsula<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#9333ea;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 3: Hermanus<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#16a34a;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 4: Winelands<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#dc2626;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 5: West Coast<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#ea580c;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 6: Cape Town<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#6b7280;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 7: Departure
+      `;
+      return div;
+    };
+    legend.addTo(map);
 
-        
-            
-                var html_c1856fcaf45f12cb667829214cb267c6 = $(`<div id="html_c1856fcaf45f12cb667829214cb267c6" style="width: 100.0%; height: 100.0%;"><b>Cape of Good Hope</b><br>Dramatic cliffs</div>`)[0];
-                popup_c9d6db72caed107b7b408570436d07f2.setContent(html_c1856fcaf45f12cb667829214cb267c6);
-            
-        
+    // Marker 1: Cape Town City (Day 1)
+    var marker_1 = L.marker([-33.9249, 18.4241], {
+      icon: createNumberedIcon(1),
+    }).addTo(map);
+    marker_1.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 1: Cape Town City</b><br>Arrival & base for the week</div>`,
+    );
+    marker_1.bindTooltip(`<div>Day 1: Cape Town City</div>`, { sticky: true });
 
-        marker_201dae5b906ea99d4fbb91d931f567f0.bindPopup(popup_c9d6db72caed107b7b408570436d07f2)
-        ;
+    // Marker 2: Boulders Beach (Day 2)
+    var marker_2 = L.marker([-34.1975, 18.4501], {
+      icon: createNumberedIcon(2),
+    }).addTo(map);
+    marker_2.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Boulders Beach</b><br>African penguins</div>`,
+    );
+    marker_2.bindTooltip(`<div>Day 2: Boulders Beach</div>`, { sticky: true });
 
-        
-    
-    
-            marker_201dae5b906ea99d4fbb91d931f567f0.bindTooltip(
-                `<div>
-                     Cape of Good Hope
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_201dae5b906ea99d4fbb91d931f567f0.setIcon(icon_a7eeb322935f30fc47b426c281bb12c8);
-            
-    
-            var marker_1c85a2cc655ec61dc677bda6053f0121 = L.marker(
-                [-33.9249, 18.4241],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_0791ee38138edf7d6ace07c01103ca27 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "red",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_e63991a2198cd2348ef74508e1c3a2d0 = L.popup({
-  "maxWidth": "100%",
-});
+    // Marker 3: Cape of Good Hope (Day 2)
+    var marker_3 = L.marker([-34.3567, 18.4975], {
+      icon: createNumberedIcon(3),
+    }).addTo(map);
+    marker_3.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: Cape of Good Hope</b><br>Dramatic cliffs</div>`,
+    );
+    marker_3.bindTooltip(`<div>Day 2: Cape of Good Hope</div>`, {
+      sticky: true,
+    });
 
-        
-            
-                var html_ae867c7fbc8b09f47c3db1fc9fb08675 = $(`<div id="html_ae867c7fbc8b09f47c3db1fc9fb08675" style="width: 100.0%; height: 100.0%;"><b>Bo-Kaap</b><br>Colorful houses</div>`)[0];
-                popup_e63991a2198cd2348ef74508e1c3a2d0.setContent(html_ae867c7fbc8b09f47c3db1fc9fb08675);
-            
-        
+    // Marker 4: V&A Waterfront (Day 2)
+    var marker_4 = L.marker([-33.9069, 18.4233], {
+      icon: createNumberedIcon(4),
+    }).addTo(map);
+    marker_4.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 2: V&amp;A Waterfront</b><br>Harbour dining</div>`,
+    );
+    marker_4.bindTooltip(`<div>Day 2: V&amp;A Waterfront</div>`, {
+      sticky: true,
+    });
 
-        marker_1c85a2cc655ec61dc677bda6053f0121.bindPopup(popup_e63991a2198cd2348ef74508e1c3a2d0)
-        ;
+    // Marker 5: Chapman's Peak Drive (Day 3)
+    var marker_5 = L.marker([-34.09, 18.36], {
+      icon: createNumberedIcon(5),
+    }).addTo(map);
+    marker_5.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Chapman's Peak Drive</b><br>Scenic coastal road</div>`,
+    );
+    marker_5.bindTooltip(`<div>Day 3: Chapman's Peak Drive</div>`, {
+      sticky: true,
+    });
 
-        
-    
-    
-            marker_1c85a2cc655ec61dc677bda6053f0121.bindTooltip(
-                `<div>
-                     Bo-Kaap
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_1c85a2cc655ec61dc677bda6053f0121.setIcon(icon_0791ee38138edf7d6ace07c01103ca27);
-            
-    
-            var marker_bad70f4939da9d92039a5bba10bcf13f = L.marker(
-                [-33.9069, 18.4233],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_376d490f0b2b361148465187e5d5741e = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "red",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_d9e39d20734adbf65ef10bbfab9f62ee = L.popup({
-  "maxWidth": "100%",
-});
+    // Marker 6: Creation Winery (Day 3)
+    var marker_6 = L.marker([-34.0392, 19.0114], {
+      icon: createNumberedIcon(6),
+    }).addTo(map);
+    marker_6.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Creation Winery</b><br>Wine tasting</div>`,
+    );
+    marker_6.bindTooltip(`<div>Day 3: Creation Winery</div>`, { sticky: true });
 
-        
-            
-                var html_7e3c6351cf13cbda62618a5f3a59872e = $(`<div id="html_7e3c6351cf13cbda62618a5f3a59872e" style="width: 100.0%; height: 100.0%;"><b>V&A Waterfront</b><br>Harbor dining</div>`)[0];
-                popup_d9e39d20734adbf65ef10bbfab9f62ee.setContent(html_7e3c6351cf13cbda62618a5f3a59872e);
-            
-        
+    // Marker 7: Hermanus (Day 3)
+    var marker_7 = L.marker([-34.4187, 19.2345], {
+      icon: createNumberedIcon(7),
+    }).addTo(map);
+    marker_7.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Hermanus</b><br>Whale watching</div>`,
+    );
+    marker_7.bindTooltip(`<div>Day 3: Hermanus</div>`, { sticky: true });
 
-        marker_bad70f4939da9d92039a5bba10bcf13f.bindPopup(popup_d9e39d20734adbf65ef10bbfab9f62ee)
-        ;
+    // Marker 8: Ashia Cheetah Sanctuary (Day 4)
+    var marker_8 = L.marker([-33.8, 18.95], {
+      icon: createNumberedIcon(8),
+    }).addTo(map);
+    marker_8.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 4: Ashia Cheetah Sanctuary</b><br>Cheetah conservation</div>`,
+    );
+    marker_8.bindTooltip(`<div>Day 4: Ashia Cheetah Sanctuary</div>`, {
+      sticky: true,
+    });
 
-        
-    
-    
-            marker_bad70f4939da9d92039a5bba10bcf13f.bindTooltip(
-                `<div>
-                     V&A Waterfront
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_bad70f4939da9d92039a5bba10bcf13f.setIcon(icon_376d490f0b2b361148465187e5d5741e);
-            
-    
-            var marker_ba219c181236b85a14dbc1e479d9043b = L.marker(
-                [-34.4187, 19.2345],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_3a4e83dee4a6a4a68f38135b6cb7b927 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "green",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_5ac42362075a18ce6e26e7a4725fc777 = L.popup({
-  "maxWidth": "100%",
-});
+    // Marker 9: Franschhoek (Day 4)
+    var marker_9 = L.marker([-33.9139, 19.1174], {
+      icon: createNumberedIcon(9),
+    }).addTo(map);
+    marker_9.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 4: Franschhoek</b><br>Wine tram</div>`,
+    );
+    marker_9.bindTooltip(`<div>Day 4: Franschhoek</div>`, { sticky: true });
 
-        
-            
-                var html_dbe630cfae0ac0900ce00cea4e72ebc7 = $(`<div id="html_dbe630cfae0ac0900ce00cea4e72ebc7" style="width: 100.0%; height: 100.0%;"><b>Hermanus</b><br>Whale watching</div>`)[0];
-                popup_5ac42362075a18ce6e26e7a4725fc777.setContent(html_dbe630cfae0ac0900ce00cea4e72ebc7);
-            
-        
+    // Marker 10: West Coast Safari (Day 5)
+    var marker_10 = L.marker([-33.2, 18.1], {
+      icon: createNumberedIcon(10),
+    }).addTo(map);
+    marker_10.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: West Coast Safari</b><br>Game reserve & national park</div>`,
+    );
+    marker_10.bindTooltip(`<div>Day 5: West Coast Safari</div>`, {
+      sticky: true,
+    });
 
-        marker_ba219c181236b85a14dbc1e479d9043b.bindPopup(popup_5ac42362075a18ce6e26e7a4725fc777)
-        ;
+    // Marker 11: Bloubergstrand (Day 5)
+    var marker_11 = L.marker([-33.8167, 18.4333], {
+      icon: createNumberedIcon(11),
+    }).addTo(map);
+    marker_11.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: Bloubergstrand</b><br>Iconic Table Mountain view</div>`,
+    );
+    marker_11.bindTooltip(`<div>Day 5: Bloubergstrand</div>`, { sticky: true });
 
-        
-    
-    
-            marker_ba219c181236b85a14dbc1e479d9043b.bindTooltip(
-                `<div>
-                     Hermanus
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_ba219c181236b85a14dbc1e479d9043b.setIcon(icon_3a4e83dee4a6a4a68f38135b6cb7b927);
-            
-    
-            var marker_1c3ec5266aa02314b8828af9d7f99276 = L.marker(
-                [-34.0392, 19.0114],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_b734b59fca339be7a24bca34c15ce528 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "purple",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_dd2a105f0112cf2da2700ae18fa538fb = L.popup({
-  "maxWidth": "100%",
-});
+    // Marker 12: Table Mountain (Day 5)
+    var marker_12 = L.marker([-33.9571, 18.4034], {
+      icon: createNumberedIcon(12),
+    }).addTo(map);
+    marker_12.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 5: Table Mountain</b><br>Cableway to the summit</div>`,
+    );
+    marker_12.bindTooltip(`<div>Day 5: Table Mountain</div>`, { sticky: true });
 
-        
-            
-                var html_b7ba911dcaed686b33968fd61482e5b1 = $(`<div id="html_b7ba911dcaed686b33968fd61482e5b1" style="width: 100.0%; height: 100.0%;"><b>Creation Wines</b><br>Wine tasting</div>`)[0];
-                popup_dd2a105f0112cf2da2700ae18fa538fb.setContent(html_b7ba911dcaed686b33968fd61482e5b1);
-            
-        
+    // Marker 13: Camps Bay (Day 6)
+    var marker_13 = L.marker([-33.9508, 18.3762], {
+      icon: createNumberedIcon(13),
+    }).addTo(map);
+    marker_13.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 6: Camps Bay</b><br>Beach & Atlantic views</div>`,
+    );
+    marker_13.bindTooltip(`<div>Day 6: Camps Bay</div>`, { sticky: true });
 
-        marker_1c3ec5266aa02314b8828af9d7f99276.bindPopup(popup_dd2a105f0112cf2da2700ae18fa538fb)
-        ;
-
-        
-    
-    
-            marker_1c3ec5266aa02314b8828af9d7f99276.bindTooltip(
-                `<div>
-                     Creation Wines
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_1c3ec5266aa02314b8828af9d7f99276.setIcon(icon_b734b59fca339be7a24bca34c15ce528);
-            
-    
-            var marker_d5682e373fd0bda86cb43889248350fb = L.marker(
-                [-33.9139, 19.1174],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_1bb81cc7ba6763b16b424c23511afd76 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "purple",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_de941053d395d0189c9b3de112c58d0c = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_eb7c4f9acc742b999f103c377a69c644 = $(`<div id="html_eb7c4f9acc742b999f103c377a69c644" style="width: 100.0%; height: 100.0%;"><b>Franschhoek</b><br>Wine tram area</div>`)[0];
-                popup_de941053d395d0189c9b3de112c58d0c.setContent(html_eb7c4f9acc742b999f103c377a69c644);
-            
-        
-
-        marker_d5682e373fd0bda86cb43889248350fb.bindPopup(popup_de941053d395d0189c9b3de112c58d0c)
-        ;
-
-        
-    
-    
-            marker_d5682e373fd0bda86cb43889248350fb.bindTooltip(
-                `<div>
-                     Franschhoek
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_d5682e373fd0bda86cb43889248350fb.setIcon(icon_1bb81cc7ba6763b16b424c23511afd76);
-            
-    
-            var marker_babb6c7af84c27d81f856e3e471c2b18 = L.marker(
-                [-33.8, 18.95],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_5e3196ebfa462c663828338289e878b9 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "green",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_74a21b00cac43af359e9b936d51b308e = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_c36b27a31a424e20cf5e68a61b4efc83 = $(`<div id="html_c36b27a31a424e20cf5e68a61b4efc83" style="width: 100.0%; height: 100.0%;"><b>Ashia Cheetah Sanctuary</b><br>Cheetah conservation</div>`)[0];
-                popup_74a21b00cac43af359e9b936d51b308e.setContent(html_c36b27a31a424e20cf5e68a61b4efc83);
-            
-        
-
-        marker_babb6c7af84c27d81f856e3e471c2b18.bindPopup(popup_74a21b00cac43af359e9b936d51b308e)
-        ;
-
-        
-    
-    
-            marker_babb6c7af84c27d81f856e3e471c2b18.bindTooltip(
-                `<div>
-                     Ashia Cheetah Sanctuary
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_babb6c7af84c27d81f856e3e471c2b18.setIcon(icon_5e3196ebfa462c663828338289e878b9);
-            
-    
-            var marker_a2f305431ccf1603520a079822cecd35 = L.marker(
-                [-33.2, 18.1],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_3822f54aa95421c70ecde9a0e27f9ca1 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "red",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_6b6e56589cb6c308a9b351579a06eb15 = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_57831feb07ef554b31163fa849afa3aa = $(`<div id="html_57831feb07ef554b31163fa849afa3aa" style="width: 100.0%; height: 100.0%;"><b>West Coast National Park</b><br>Coastal scenery</div>`)[0];
-                popup_6b6e56589cb6c308a9b351579a06eb15.setContent(html_57831feb07ef554b31163fa849afa3aa);
-            
-        
-
-        marker_a2f305431ccf1603520a079822cecd35.bindPopup(popup_6b6e56589cb6c308a9b351579a06eb15)
-        ;
-
-        
-    
-    
-            marker_a2f305431ccf1603520a079822cecd35.bindTooltip(
-                `<div>
-                     West Coast National Park
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_a2f305431ccf1603520a079822cecd35.setIcon(icon_3822f54aa95421c70ecde9a0e27f9ca1);
-            
-    
-            var marker_dfa9b1947f371ce3367b8de38ef1e232 = L.marker(
-                [-33.8167, 18.4333],
-                {
-}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-            var icon_f26ade344d6d8f08406671f1a92d3738 = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "red",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
-}
-            );
-        
-    
-        var popup_0c67cb5da241cd0bd7934250cac6d63b = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_717ec17805fada7e4fe0cc406887f35b = $(`<div id="html_717ec17805fada7e4fe0cc406887f35b" style="width: 100.0%; height: 100.0%;"><b>Bloubergstrand</b><br>Iconic Table Mountain view</div>`)[0];
-                popup_0c67cb5da241cd0bd7934250cac6d63b.setContent(html_717ec17805fada7e4fe0cc406887f35b);
-            
-        
-
-        marker_dfa9b1947f371ce3367b8de38ef1e232.bindPopup(popup_0c67cb5da241cd0bd7934250cac6d63b)
-        ;
-
-        
-    
-    
-            marker_dfa9b1947f371ce3367b8de38ef1e232.bindTooltip(
-                `<div>
-                     Bloubergstrand
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_dfa9b1947f371ce3367b8de38ef1e232.setIcon(icon_f26ade344d6d8f08406671f1a92d3738);
-            
-    
-            var poly_line_973ac6495d29dc532d0d5fedaf1b8d4f = L.polyline(
-                [[-33.9249, 18.4241], [-34.1975, 18.4501], [-34.3567, 18.4975], [-33.9249, 18.4241], [-33.9069, 18.4233]],
-                {"bubblingMouseEvents": true, "color": "#2563eb", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#2563eb", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-        var popup_da5987103e3282c46edfb24f012a3021 = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_585b6b31566501aca93a45e84b0679dc = $(`<div id="html_585b6b31566501aca93a45e84b0679dc" style="width: 100.0%; height: 100.0%;">Day 2: Penguins & Cape Point</div>`)[0];
-                popup_da5987103e3282c46edfb24f012a3021.setContent(html_585b6b31566501aca93a45e84b0679dc);
-            
-        
-
-        poly_line_973ac6495d29dc532d0d5fedaf1b8d4f.bindPopup(popup_da5987103e3282c46edfb24f012a3021)
-        ;
-
-        
-    
-    
-            var poly_line_3c0cb1a9e6ca1f87dffa546107dd8674 = L.polyline(
-                [[-33.9249, 18.4241], [-34.0392, 19.0114], [-34.4187, 19.2345]],
-                {"bubblingMouseEvents": true, "color": "#9333ea", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#9333ea", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-        var popup_0bcf4bcf4c38d9c86477c102d551cd39 = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_599b48a411077c1f93dec37381a50280 = $(`<div id="html_599b48a411077c1f93dec37381a50280" style="width: 100.0%; height: 100.0%;">Day 3: Wine & Whales</div>`)[0];
-                popup_0bcf4bcf4c38d9c86477c102d551cd39.setContent(html_599b48a411077c1f93dec37381a50280);
-            
-        
-
-        poly_line_3c0cb1a9e6ca1f87dffa546107dd8674.bindPopup(popup_0bcf4bcf4c38d9c86477c102d551cd39)
-        ;
-
-        
-    
-    
-            var poly_line_a5db8300f0d87b72365668fecab6241f = L.polyline(
-                [[-34.4187, 19.2345], [-33.8, 18.95], [-33.9139, 19.1174], [-33.9249, 18.4241]],
-                {"bubblingMouseEvents": true, "color": "#16a34a", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#16a34a", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-        var popup_bc6ff2554f055a6eda84192eba4e563a = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_ab92462ffa150ae097807205d2fcb191 = $(`<div id="html_ab92462ffa150ae097807205d2fcb191" style="width: 100.0%; height: 100.0%;">Day 4: Cheetahs & Wine</div>`)[0];
-                popup_bc6ff2554f055a6eda84192eba4e563a.setContent(html_ab92462ffa150ae097807205d2fcb191);
-            
-        
-
-        poly_line_a5db8300f0d87b72365668fecab6241f.bindPopup(popup_bc6ff2554f055a6eda84192eba4e563a)
-        ;
-
-        
-    
-    
-            var poly_line_90daefc89c0442ca8f3b8ab1ee47447d = L.polyline(
-                [[-33.9249, 18.4241], [-33.2, 18.1], [-33.8167, 18.4333], [-33.9249, 18.4241]],
-                {"bubblingMouseEvents": true, "color": "#dc2626", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#dc2626", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
-            ).addTo(map_4ff4fa95e6c44c46335217dd22444bf6);
-        
-    
-        var popup_3231a08f0a33a802664ac4d776b3d762 = L.popup({
-  "maxWidth": "100%",
-});
-
-        
-            
-                var html_134720b31238560b4726db9a3a391d28 = $(`<div id="html_134720b31238560b4726db9a3a391d28" style="width: 100.0%; height: 100.0%;">Day 5: West Coast</div>`)[0];
-                popup_3231a08f0a33a802664ac4d776b3d762.setContent(html_134720b31238560b4726db9a3a391d28);
-            
-        
-
-        poly_line_90daefc89c0442ca8f3b8ab1ee47447d.bindPopup(popup_3231a08f0a33a802664ac4d776b3d762)
-        ;
-
-        
-    
-</script>
+    // Marker 14: District Six Museum (Day 6)
+    var marker_14 = L.marker([-33.9271, 18.4268], {
+      icon: createNumberedIcon(14),
+    }).addTo(map);
+    marker_14.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 6: District Six Museum</b><br>Apartheid history</div>`,
+    );
+    marker_14.bindTooltip(`<div>Day 6: District Six Museum</div>`, {
+      sticky: true,
+    });
+  </script>
 </html>
