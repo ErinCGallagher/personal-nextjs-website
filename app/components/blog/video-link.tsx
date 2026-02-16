@@ -30,7 +30,7 @@ export function VideoLink({ url, title }: VideoLinkProps) {
   }
 
   return (
-    <div className="my-6 p-4 rounded-lg bg-gray-100">
+    <div className="relative my-6 p-4 rounded-lg bg-gray-100">
       <Link
         href={url}
         target="_blank"
@@ -63,6 +63,15 @@ export function VideoLink({ url, title }: VideoLinkProps) {
           <span className="text-m text-[#8586A9]">Watch on YouTube →</span>
         </div>
       </Link>
+      <div className="absolute bottom-3 right-3 pointer-events-none">
+        <Image
+          src="/icons/trail-tales-logo.png"
+          alt="Trail Tales"
+          width={65}
+          height={65}
+          className="rounded-sm opacity-90"
+        />
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const CHANNEL_URL = "https://www.youtube.com/@trailtalestravel";
-const SUBSCRIBER_COUNT = "1,590";
+const SUBSCRIBER_COUNT = "1,610";
 const FEATURED_VIDEO = {
   id: "SC_GlDGKX7U",
   title: "Most Popular Video",
