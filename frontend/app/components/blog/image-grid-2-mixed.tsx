@@ -3,6 +3,8 @@ import { addRoundedCornersToImages } from "./image-utils";
 
 interface ImageGrid2MixedProps {
   children: ReactNode;
+  description1?: string;
+  description2?: string;
 }
 
 /**
@@ -15,14 +17,22 @@ interface ImageGrid2MixedProps {
  *
  * Layout:
  * [Landscape (2/3)] [Portrait (1/3)]
+ *
+ * Optional: description1 and description2 display italic captions below each image.
  */
-export function ImageGrid2Mixed({ children }: ImageGrid2MixedProps) {
+export function ImageGrid2Mixed({ children, description1, description2 }: ImageGrid2MixedProps) {
   const images = addRoundedCornersToImages(children);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
-      <div className="md:col-span-2">{images[0]}</div>
-      <div className="md:col-span-1 md:flex md:items-center">{images[1]}</div>
+      <div className="md:col-span-2">
+        {images[0]}
+        {description1 && <p className="image-description text-center italic !mt-2">{description1}</p>}
+      </div>
+      <div className="md:col-span-1 md:flex md:flex-col md:justify-center">
+        {images[1]}
+        {description2 && <p className="image-description text-center italic !mt-2">{description2}</p>}
+      </div>
     </div>
   );
 }
