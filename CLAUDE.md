@@ -99,4 +99,4 @@ YOU MUST follow this debugging framework for ANY technical issue:
 - Use semantic commits, the commit message should be prefixed with `fix:`, `feat:`, `chore:` appropriately
 - YOU MUST NEVER add the AI assistant as a coauthor or contributor to commits or PR descriptions
 - When starting work without a clear branch for the current task, YOU MUST create a WIP branch
-
+- please use double quotes in this project " not '

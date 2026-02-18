@@ -1,20 +1,20 @@
 /**
  * Use this script when a new table or column is added to the DB.
  * It will apply this change to all environments
- * 
+ *
  * Tracks applied migrations in a `migrations` table to avoid re-running them.
  * Can be run directly as a script via `pnpm migrate`
- * 
+ *
  * How to Run:
  * - Directly:  pnpm migrate
  * - In tests: test-setup.ts
  * */
-import fs from 'fs';
-import path from 'path';
-import { Pool } from 'pg';
+import fs from "fs";
+import path from "path";
+import { Pool } from "pg";
 
 export async function runMigrations(pool: Pool): Promise<void> {
-  const migrationsDir = path.join(__dirname, '..', 'migrations');
+  const migrationsDir = path.join(__dirname, "..", "migrations");
   const files = fs.readdirSync(migrationsDir).sort();
 
   await pool.query(`
@@ -25,11 +25,11 @@ export async function runMigrations(pool: Pool): Promise<void> {
   `);
 
   for (const file of files) {
-    if (!file.endsWith('.sql')) continue;
+    if (!file.endsWith(".sql")) continue;
 
     const { rows } = await pool.query(
-      'SELECT filename FROM migrations WHERE filename = $1',
-      [file]
+      "SELECT filename FROM migrations WHERE filename = $1",
+      [file],
     );
 
     if (rows.length > 0) {
@@ -37,9 +37,9 @@ export async function runMigrations(pool: Pool): Promise<void> {
       continue;
     }
 
-    const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+    const sql = fs.readFileSync(path.join(migrationsDir, file), "utf8");
     await pool.query(sql);
-    await pool.query('INSERT INTO migrations (filename) VALUES ($1)', [file]);
+    await pool.query("INSERT INTO migrations (filename) VALUES ($1)", [file]);
     console.log(`Applied ${file}`);
   }
 }
