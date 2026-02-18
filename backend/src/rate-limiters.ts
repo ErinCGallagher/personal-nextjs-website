@@ -1,6 +1,6 @@
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
-const ipLimiter = rateLimit({
+export const ipLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 min
   max: 5, // 5 requests in 1 min
   keyGenerator: (req) => ipKeyGenerator(req) || "unknown",
@@ -8,7 +8,7 @@ const ipLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const anonymousIdLimiter = rateLimit({
+export const anonymousIdLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 min
   max: 5, // 5 requests in 1 min
   keyGenerator: (req) => req.body.anonymous_id || ipKeyGenerator(req),
@@ -16,7 +16,7 @@ const anonymousIdLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const readLimiter = rateLimit({
+export const readLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 min
   max: 20, // 20 requests in 1 min
   keyGenerator: (req) => ipKeyGenerator(req),

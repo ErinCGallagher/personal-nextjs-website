@@ -2,7 +2,7 @@
 // Handles retrieving like counts and toggling likes per post, identified by slug.
 import { Router } from "express";
 import { likesQuerySchema, likeBodySchema } from "../schemas";
-import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rateLimiters";
+import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rate-limiters";
 import { z } from "zod";
 import pool from "../db";
 
