@@ -1,3 +1,6 @@
+/**
+ * Large post card used to highlight a featured post on the blog listing page.
+ */
 import Link from "next/link";
 import Image from "next/image";
 import { getTagColor, formatDate } from "@/app/blog/utils";

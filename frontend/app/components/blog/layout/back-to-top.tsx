@@ -1,3 +1,7 @@
+/**
+ * Floating button that scrolls the page back to the top. Only becomes visible
+ * after the user has scrolled down 300px.
+ */
 "use client";
 
 import { useState, useEffect } from "react";

@@ -1,3 +1,6 @@
+/**
+ * Compact post card used for non-featured posts on the blog listing page.
+ */
 import Link from "next/link";
 import Image from "next/image";
 import { getTagColor, formatDate } from "@/app/blog/utils";

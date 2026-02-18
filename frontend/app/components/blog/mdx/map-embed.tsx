@@ -1,3 +1,7 @@
+/**
+ * MDX component that embeds an iframe map (e.g. a Google My Maps export)
+ * into a blog post.
+ */
 interface MapEmbedProps {
   src: string;
   title?: string;

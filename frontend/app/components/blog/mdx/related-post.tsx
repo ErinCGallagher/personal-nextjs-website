@@ -1,3 +1,7 @@
+/**
+ * MDX components for surfacing related posts within blog content.
+ * RelatedPost renders a single linked post card; RelatedPosts wraps a group of them.
+ */
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";

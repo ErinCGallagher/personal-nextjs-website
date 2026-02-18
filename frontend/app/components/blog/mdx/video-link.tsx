@@ -1,3 +1,7 @@
+/**
+ * MDX component that renders a YouTube video as a clickable thumbnail linking
+ * to the video. Extracts the video ID from various YouTube URL formats.
+ */
 import Image from "next/image";
 import Link from "next/link";
 
