@@ -16,7 +16,7 @@ import { api } from "@/app/lib/api";
 function getAnonymousId(): string {
   let id = localStorage.getItem("anonymous_id");
   if (!id) {
-    id = crypto.randomUUID();
+    id = crypto.randomUUID(); // generates a UUID v4
     localStorage.setItem("anonymous_id", id);
   }
   return id;
