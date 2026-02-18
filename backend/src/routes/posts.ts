@@ -1,6 +1,8 @@
 // Express router for blog post endpoints.
 // Handles retrieving like counts and toggling likes per post, identified by slug.
 import { Router } from "express";
+import { likesQuerySchema, likeBodySchema } from "../schemas";
+import { z } from "zod";
 import pool from "../db";
 
 const router = Router();
@@ -8,8 +10,16 @@ const router = Router();
 // GET /api/posts/:slug/likes?anonymous_id=xxx
 // Returns the total like count and whether the given anonymous_id has liked the post
 router.get("/:slug/likes", async (req, res) => {
-  const { slug } = req.params;
-  const { anonymous_id } = req.query;
+  const result = likesQuerySchema.safeParse({
+    slug: req.params.slug,
+    anonymous_id: req.query.anonymous_id,
+  });
+
+  if (!result.success) {
+    return res.status(400).json({ error: z.treeifyError(result.error) });
+  }
+
+  const { slug, anonymous_id } = result.data;
 
   const { rows } = await pool.query<{ count: string; liked: boolean }>(
     `SELECT
@@ -26,8 +36,17 @@ router.get("/:slug/likes", async (req, res) => {
 // POST /api/posts/:slug/like
 // Toggles a like on a post — likes if not liked, unlikes if already liked
 router.post("/:slug/like", async (req, res) => {
-  const { slug } = req.params;
-  const { anonymous_id } = req.body;
+  const result = likeBodySchema.safeParse({
+    slug: req.params.slug,
+    anonymous_id: req.body.anonymous_id,
+  });
+
+  if (!result.success) {
+    res.status(400).json({ error: z.treeifyError(result.error) });
+    return;
+  }
+
+  const { slug, anonymous_id } = result.data;
 
   if (!anonymous_id) {
     res.status(400).json({ error: "anonymous_id is required" });
