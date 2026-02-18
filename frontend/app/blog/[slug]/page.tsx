@@ -6,6 +6,7 @@ import { BlogContent } from "@/app/components/blog/blog-content";
 import { CustomMDX } from "@/app/components/blog/mdx";
 import { TableOfContents } from "@/app/components/blog/table-of-contents";
 import { BackToTop } from "@/app/components/blog/back-to-top";
+import { LikeButton } from "@/app/components/blog/like-button";
 
 export async function generateMetadata({
   params,
@@ -127,27 +128,30 @@ export default async function Page({
             <TableOfContents source={post.content} />
           </aside>
           <main className="flex-1 min-w-0 max-w-4xl mx-auto px-8 md:px-16 py-12 bg-white text-foreground rounded-lg">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="relative w-10 h-10 flex-shrink-0">
-                <Image
-                  src={post.metadata.authorImage || "/default-author.jpg"}
-                  alt={post.metadata.author || "Erin Gallagher"}
-                  fill
-                  className="object-cover rounded-full"
-                />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 flex-shrink-0">
+                  <Image
+                    src={post.metadata.authorImage || "/default-author.jpg"}
+                    alt={post.metadata.author || "Erin Gallagher"}
+                    fill
+                    className="object-cover rounded-full"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-sm text-neutral-900">
+                    Written by{" "}
+                    <span className="font-medium">{post.metadata.author}</span>
+                  </p>
+                  <p className="text-sm text-neutral-600">
+                    {formatDate(post.metadata.publishedAt)}
+                    {post.metadata.readingTime && (
+                      <span> · {post.metadata.readingTime} min read</span>
+                    )}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <p className="text-sm text-neutral-900">
-                  Written by{" "}
-                  <span className="font-medium">{post.metadata.author}</span>
-                </p>
-                <p className="text-sm text-neutral-600">
-                  {formatDate(post.metadata.publishedAt)}
-                  {post.metadata.readingTime && (
-                    <span> · {post.metadata.readingTime} min read</span>
-                  )}
-                </p>
-              </div>
+              <LikeButton slug={slug} />
             </div>
             {post.metadata.tags && post.metadata.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-12">

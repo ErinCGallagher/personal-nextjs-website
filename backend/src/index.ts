@@ -1,9 +1,11 @@
 import express from "express";
+import cors from "cors";
 import postsRouter from "./routes/posts";
 
 const app = express();
 const port = process.env.PORT || 3001;
 
+app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:3000" }));
 app.use(express.json());
 
 // GET /health
