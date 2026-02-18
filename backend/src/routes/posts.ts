@@ -2,14 +2,39 @@
 // Handles retrieving like counts and toggling likes per post, identified by slug.
 import { Router } from "express";
 import { likesQuerySchema, likeBodySchema } from "../schemas";
+import { rateLimit, ipKeyGenerator } from "express-rate-limit";
 import { z } from "zod";
 import pool from "../db";
 
 const router = Router();
 
+const ipLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 min
+  max: 5, // 5 requests in 1 min
+  keyGenerator: (req) => ipKeyGenerator(req) || "unknown",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const anonymousIdLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 min
+  max: 5, // 5 requests in 1 min
+  keyGenerator: (req) => req.body.anonymous_id || ipKeyGenerator(req),
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const readLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 min
+  max: 20, // 20 requests in 1 min
+  keyGenerator: (req) => ipKeyGenerator(req),
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // GET /api/posts/:slug/likes?anonymous_id=xxx
 // Returns the total like count and whether the given anonymous_id has liked the post
-router.get("/:slug/likes", async (req, res) => {
+router.get("/:slug/likes", readLimiter, async (req, res) => {
   const result = likesQuerySchema.safeParse({
     slug: req.params.slug,
     anonymous_id: req.query.anonymous_id,
@@ -35,7 +60,7 @@ router.get("/:slug/likes", async (req, res) => {
 
 // POST /api/posts/:slug/like
 // Toggles a like on a post — likes if not liked, unlikes if already liked
-router.post("/:slug/like", async (req, res) => {
+router.post("/:slug/like", ipLimiter, anonymousIdLimiter, async (req, res) => {
   const result = likeBodySchema.safeParse({
     slug: req.params.slug,
     anonymous_id: req.body.anonymous_id,
