@@ -1,8 +1,8 @@
 /**
  * Like button for blog posts.
  *
- * Fetches the current like count on mount and allows anonymous users to toggle
- * a like. Liked state is persisted in localStorage so it survives page refreshes.
+ * Fetches the current like count and liked state on mount, identified by a
+ * UUID persisted in localStorage. Allows anonymous users to toggle a like.
  * UI updates optimistically on click; the backend is synced in the background.
  */
 "use client";
@@ -11,7 +11,8 @@ import { useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { api } from "@/app/lib/api";
 
-// TODO: update how this is fetched
+// Persisted in localStorage until browser data is cleared. Used for casual
+// deduplication without requiring a login.
 function getAnonymousId(): string {
   let id = localStorage.getItem("anonymous_id");
   if (!id) {
@@ -19,19 +20,6 @@ function getAnonymousId(): string {
     localStorage.setItem("anonymous_id", id);
   }
   return id;
-}
-
-function getLikedSlugs(): Set<string> {
-  try {
-    const stored = localStorage.getItem("liked_posts");
-    return new Set(stored ? JSON.parse(stored) : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function setLikedSlugs(slugs: Set<string>) {
-  localStorage.setItem("liked_posts", JSON.stringify([...slugs]));
 }
 
 interface Props {
@@ -44,11 +32,12 @@ export function LikeButton({ slug }: Props) {
   const [pulsing, setPulsing] = useState(false);
 
   useEffect(() => {
-    setLiked(getLikedSlugs().has(slug));
-
-    fetch(api.posts.likes(slug))
+    fetch(api.posts.likes(slug, getAnonymousId()))
       .then((res) => res.json())
-      .then((data) => setCount(data.count))
+      .then((data) => {
+        setCount(data.count);
+        setLiked(data.liked);
+      })
       .catch(() => {});
   }, [slug]);
 
@@ -59,10 +48,6 @@ export function LikeButton({ slug }: Props) {
     setLiked(nowLiked);
     setCount((c) => (c ?? 0) + (nowLiked ? 1 : -1));
     if (nowLiked) setPulsing(true);
-
-    const likedSlugs = getLikedSlugs();
-    nowLiked ? likedSlugs.add(slug) : likedSlugs.delete(slug);
-    setLikedSlugs(likedSlugs);
 
     fetch(api.posts.like(slug), {
       method: "POST",
@@ -76,6 +61,8 @@ export function LikeButton({ slug }: Props) {
       })
       .catch(() => {});
   }
+
+  if (count === null) return null;
 
   const purple = "var(--grey-blue)";
 

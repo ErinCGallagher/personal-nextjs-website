@@ -5,25 +5,40 @@ import app from "../index";
 const ANON_ID = "00000000-0000-0000-0000-000000000001";
 
 describe("GET /api/posts/:slug/likes", () => {
-  it("returns 0 for a post with no likes", async () => {
+  it("returns count 0 and liked false when no likes exist", async () => {
     const res = await request(app).get("/api/posts/cape-town-itinerary/likes");
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ count: 0 });
+    expect(res.body).toEqual({ count: 0, liked: false });
+  });
+
+  it("returns liked false when anonymous_id has not liked the post", async () => {
+    await request(app)
+      .post("/api/posts/cape-town-itinerary/like")
+      .send({ anonymous_id: ANON_ID });
+
+    const OTHER_ID = "00000000-0000-0000-0000-000000000002";
+    const res = await request(app).get(
+      `/api/posts/cape-town-itinerary/likes?anonymous_id=${OTHER_ID}`
+    );
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ count: 1, liked: false });
+  });
+
+  it("returns liked true when anonymous_id has liked the post", async () => {
+    await request(app)
+      .post("/api/posts/cape-town-itinerary/like")
+      .send({ anonymous_id: ANON_ID });
+
+    const res = await request(app).get(
+      `/api/posts/cape-town-itinerary/likes?anonymous_id=${ANON_ID}`
+    );
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ count: 1, liked: true });
   });
 
   it("returns 404 when slug is missing", async () => {
     const res = await request(app).get("/api/posts//likes");
     expect(res.status).toBe(404);
-  });
-
-  it("returns the correct count after a like", async () => {
-    await request(app)
-      .post("/api/posts/cape-town-itinerary/like")
-      .send({ anonymous_id: ANON_ID });
-
-    const res = await request(app).get("/api/posts/cape-town-itinerary/likes");
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({ count: 1 });
   });
 });
 

@@ -5,17 +5,22 @@ import pool from "../db";
 
 const router = Router();
 
-// GET /api/posts/:slug/likes
-// Returns the total like count for a post
+// GET /api/posts/:slug/likes?anonymous_id=xxx
+// Returns the total like count and whether the given anonymous_id has liked the post
 router.get("/:slug/likes", async (req, res) => {
   const { slug } = req.params;
+  const { anonymous_id } = req.query;
 
-  const { rows } = await pool.query<{ count: string }>(
-    "SELECT COUNT(*) AS count FROM post_likes WHERE post_slug = $1",
-    [slug],
+  const { rows } = await pool.query<{ count: string; liked: boolean }>(
+    `SELECT
+      COUNT(*) AS count,
+      (COUNT(*) FILTER (WHERE anonymous_id = $2)) > 0 AS liked
+    FROM post_likes
+    WHERE post_slug = $1`,
+    [slug, anonymous_id ?? null],
   );
 
-  res.json({ count: parseInt(rows[0].count, 10) });
+  res.json({ count: parseInt(rows[0].count, 10), liked: rows[0].liked });
 });
 
 // POST /api/posts/:slug/like
