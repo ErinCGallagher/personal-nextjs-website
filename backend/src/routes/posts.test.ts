@@ -2,7 +2,7 @@ import request from "supertest";
 import { describe, it, expect } from "vitest";
 import app from "../index";
 
-const ANON_ID = "00000000-0000-0000-0000-000000000001";
+const ANON_ID = "550e8400-e29b-41d4-a716-446655440001";
 
 describe("GET /api/posts/:slug/likes", () => {
   it("returns count 0 and liked false when no likes exist", async () => {
@@ -16,7 +16,7 @@ describe("GET /api/posts/:slug/likes", () => {
       .post("/api/posts/cape-town-itinerary/like")
       .send({ anonymous_id: ANON_ID });
 
-    const OTHER_ID = "00000000-0000-0000-0000-000000000002";
+    const OTHER_ID = "550e8400-e29b-41d4-a716-446655440002";
     const res = await request(app).get(
       `/api/posts/cape-town-itinerary/likes?anonymous_id=${OTHER_ID}`
     );

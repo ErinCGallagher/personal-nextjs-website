@@ -49,11 +49,6 @@ router.post("/:slug/like", ipLimiter, anonymousIdLimiter, async (req, res) => {
 
   const { slug, anonymous_id } = result.data;
 
-  if (!anonymous_id) {
-    res.status(400).json({ error: "anonymous_id is required" });
-    return;
-  }
-
   // Ensure the post record exists before inserting a like
   await pool.query(
     "INSERT INTO posts (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING",
