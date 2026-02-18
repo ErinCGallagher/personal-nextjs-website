@@ -54,6 +54,8 @@ pnpm test
 pnpm test:watch
 ```
 
+The [Vitest VS Code extension](https://marketplace.visualstudio.com/items?itemName=vitest.explorer) is recommended for running and debugging individual tests from the editor.
+
 ## Endpoints
 
 ### Posts
