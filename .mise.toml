@@ -1,0 +1,7 @@
+[tools]
+postgres = "17"
+
+[env]
+PGDATA = "{{config_root}}/.postgres"
+DATABASE_URL = "postgresql://localhost/blog_dev"
+TEST_DATABASE_URL = "postgresql://localhost/blog_test"

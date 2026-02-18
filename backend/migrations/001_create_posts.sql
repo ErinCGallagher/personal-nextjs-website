@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS posts (
+  slug TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

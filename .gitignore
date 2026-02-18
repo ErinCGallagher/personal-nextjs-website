@@ -30,6 +30,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# postgres data directory (managed by mise)
+.postgres
+
 # vercel
 .vercel
 
