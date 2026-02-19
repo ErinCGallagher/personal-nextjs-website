@@ -1,5 +1,6 @@
 [build]
 rootDirectory = "backend"
+buildCommand = "pnpm install && pnpm build"
 
 [deploy]
 startCommand = "node dist/index.js"
