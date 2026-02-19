@@ -7,6 +7,8 @@ const connectionString =
     ? process.env.TEST_DATABASE_URL
     : process.env.DATABASE_URL;
 
+console.log("DB URL:", connectionString?.replace(/:\/\/.*@/, "://***@"));
+
 const pool = new Pool({ connectionString });
 
 export default pool;
