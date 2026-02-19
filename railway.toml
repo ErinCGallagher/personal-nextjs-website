@@ -2,4 +2,4 @@
 buildCommand = "pnpm install && pnpm --filter backend build"
 
 [deploy]
-startCommand = "node backend/dist/migrate.js && node backend/dist/index.js"
+startCommand = "node backend/dist/index.js"
