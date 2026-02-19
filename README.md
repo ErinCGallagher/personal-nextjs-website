@@ -1,17 +1,23 @@
-This is a [Next.js](https://nextjs.org) project using [MDX](https://mdxjs.com/)
+# egallagher.com
 
-What you'll find:
+Personal website and travel blog. Built as a pnpm monorepo with a Next.js frontend and an Express backend.
 
-- A bit about me
-- Favourite Apps
-- Speaking Engagements & talk resources
-- Resume
-- Travel blog
-- Fun game I made with Unity
+## What's on the site
 
-## Getting Started
+- About me, resume, speaking engagements
+- Travel blog with MDX posts
+- A Unity game
 
-This is a pnpm monorepo with `frontend` and `backend` workspaces.
+## Tech stack
+
+| | |
+|---|---|
+| Frontend | Next.js, Tailwind CSS, MDX |
+| Backend | Express, PostgreSQL |
+| Package manager | pnpm (monorepo) |
+| Hosting | Vercel (frontend), TBD (backend) |
+
+## Getting started
 
 Install all dependencies from the root:
 
@@ -19,179 +25,25 @@ Install all dependencies from the root:
 pnpm install
 ```
 
-### Frontend
-
-Run the Next.js development server:
+Run the frontend:
 
 ```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the result. The page auto-updates as you edit files in `frontend/app/`.
-
-### Backend
-
-Run the Express development server (with hot-reloading):
+Run the backend:
 
 ```bash
 pnpm dev:backend
 ```
 
-The server runs on [http://localhost:3001](http://localhost:3001) by default. Set a `PORT` environment variable to override.
+See [`frontend/README.md`](./frontend/README.md) and [`backend/README.md`](./backend/README.md) for setup details.
 
-Available endpoints:
+## Recommended VS Code extensions
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/health` | Health check |
-
-To build the backend for production:
-
-```bash
-pnpm --filter backend build
-```
-
-Output is written to `backend/dist/`. Run it with:
-
-```bash
-pnpm --filter backend start
-```
-
-## Useful VSCode Extensions
-
-**MDX**
-
-Id: unifiedjs.vscode-mdx
-
-VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx
-
-**Prettier - Code Formater**
-
-Id: esbenp.prettier-vscode
-
-VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
-
-## Deploy on Vercel
-
-[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-Every commit will be built and deployed by vercel. If the commit is outside the main branch, it will still be built by vercel and a status email will be sent once complete
-
-## Custom MDX Blog Components
-
-### VideoLink
-
-Creates a YouTube video preview card with thumbnail, title, and play button. Supports various YouTube URL formats.
-
-```jsx
-<VideoLink
-  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-  title="Video Title (optional)"
-/>
-```
-
-### MapEmbed
-
-Embeds an interactive map using an iframe.
-
-```jsx
-<MapEmbed
-  src="/maps/namibia_map.html"
-  title="Namibia Road Trip Route"
-  height="400px"
-/>
-```
-
-### ImageSingle
-
-Displays a single image centred with constrained width (max-width: 24rem). Useful for smaller standalone images that shouldn't span full width.
-
-```jsx
-<ImageSingle>
-  <img
-    src="/images/namibia/trip-overview.jpg"
-    alt="Trip Overview"
-    width={1587}
-    height={2245}
-  />
-</ImageSingle>
-```
-
-### ImageGrid2
-
-Displays 2 images side by side with equal width. On mobile, images stack vertically.
-
-```jsx
-<ImageGrid2>
-  <img
-    src="/images/namibia/car-camping.jpg"
-    alt="Toyota Helix with car camping setup"
-    width={1290}
-    height={1668}
-  />
-  <img
-    src="/images/namibia/car-hilix.jpg"
-    alt="Toyota Helix"
-    width={1148}
-    height={1479}
-  />
-</ImageGrid2>
-```
-
-### ImageGrid2Mixed
-
-Displays 2 images with landscape image on left (2/3 width) and portrait image on right (1/3 width, vertically centred). On mobile, images stack vertically.
-
-```jsx
-<ImageGrid2Mixed>
-  <img
-    src="/images/landscape.jpg"
-    alt="Landscape photo"
-    width={4000}
-    height={3000}
-  />
-  <img
-    src="/images/portrait.jpg"
-    alt="Portrait photo"
-    width={3000}
-    height={4000}
-  />
-</ImageGrid2Mixed>
-```
-
-### ImageGrid4
-
-Displays 4 images in an alternating asymmetric layout. On mobile, images stack vertically.
-
-Layout:
-
-- Row 1: Landscape (2/3 width) + Portrait (1/3 width, vertically centred)
-- Row 2: Portrait (1/3 width, vertically centred) + Landscape (2/3 width)
-
-```jsx
-<ImageGrid4>
-  <img
-    src="/images/landscape1.jpg"
-    alt="Landscape 1"
-    width={4000}
-    height={3000}
-  />
-  <img
-    src="/images/portrait1.jpg"
-    alt="Portrait 1"
-    width={3000}
-    height={4000}
-  />
-  <img
-    src="/images/portrait2.jpg"
-    alt="Portrait 2"
-    width={3000}
-    height={4000}
-  />
-  <img
-    src="/images/landscape2.jpg"
-    alt="Landscape 2"
-    width={4000}
-    height={3000}
-  />
-</ImageGrid4>
-```
+| Extension | ID |
+|---|---|
+| MDX | `unifiedjs.vscode-mdx` |
+| Prettier | `esbenp.prettier-vscode` |
+| Vitest | `vitest.explorer` |
+| Code Spell Checker | `streetsidesoftware.code-spell-checker` |

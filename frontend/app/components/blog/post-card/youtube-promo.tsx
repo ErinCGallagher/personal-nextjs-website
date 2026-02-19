@@ -1,3 +1,7 @@
+/**
+ * Promotional banner for the Trail Tales YouTube channel, displayed on the
+ * blog listing page alongside post cards.
+ */
 import Image from "next/image";
 import Link from "next/link";
 

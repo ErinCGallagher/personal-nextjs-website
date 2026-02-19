@@ -1,6 +1,11 @@
+/**
+ * Table of contents generated from a post's headings. Highlights the active
+ * section as the user scrolls. Renders inline on desktop and as a collapsible
+ * on mobile.
+ */
 "use client";
 
-import { slugify } from "./mdx";
+import { slugify } from "../mdx/mdx";
 import { useState, useEffect, useRef, useMemo } from "react";
 
 type Heading = {

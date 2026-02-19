@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import { getBlogPosts } from "@/app/blog/utils";
-import { FeaturedPost } from "@/app/components/blog/featured-post";
-import { SmallPost } from "@/app/components/blog/small-post";
-import { YouTubePromo } from "@/app/components/blog/youtube-promo";
+import { FeaturedPost } from "@/app/components/blog/post-card/featured-post";
+import { SmallPost } from "@/app/components/blog/post-card/small-post";
+import { YouTubePromo } from "@/app/components/blog/post-card/youtube-promo";
 
 export const metadata: Metadata = {
   title: "Trail Tales Travel Blog",

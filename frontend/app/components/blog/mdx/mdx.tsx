@@ -1,3 +1,8 @@
+/**
+ * MDX renderer for blog posts. Registers custom components (image grids, maps,
+ * video links, related posts) and overrides default HTML elements with styled
+ * versions. Also exports the slugify utility used by the table of contents.
+ */
 import Link from "next/link";
 import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";

@@ -1,3 +1,7 @@
+/**
+ * Shared utility for MDX image grid components. Applies rounded corners to
+ * child image elements without requiring each grid to duplicate the logic.
+ */
 import { ReactNode, Children, cloneElement, isValidElement, ReactElement } from "react";
 
 export function addRoundedCornersToImages(children: ReactNode): ReactNode[] {
