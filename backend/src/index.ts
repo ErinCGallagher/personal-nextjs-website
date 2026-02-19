@@ -4,21 +4,33 @@ import helmet from "helmet";
 import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
+import pool from "./db";
 
 const app = express();
 const port = process.env.PORT || 3001;
-app.set('trust proxy', 1); // provide ip for rate limiting
+app.set("trust proxy", 1); // provide ip for rate limiting
 
 app.use(helmet());
 app.use(globalLimiter);
 // Supports a comma-separated list of origins for multi-domain deployments
-const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(",");
+const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(
+  ",",
+);
 app.use(cors({ origin: corsOrigins }));
 app.use(express.json());
 
 // GET /health
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+// app.get("/health", (_req, res) => {
+//   res.json({ status: "ok" });
+// });
+
+app.get("/health", async (req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    res.json({ status: "ok" });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err });
+  }
 });
 
 // Post routes: likes and comments on blog posts

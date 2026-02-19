@@ -7,10 +7,6 @@ const connectionString =
     ? process.env.TEST_DATABASE_URL
     : process.env.DATABASE_URL;
 
-
-const pool = new Pool({
-  connectionString,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false
-});
+const pool = new Pool({ connectionString });
 
 export default pool;
