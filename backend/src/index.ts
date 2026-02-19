@@ -11,7 +11,9 @@ app.set('trust proxy', 1); // provide ip for rate limiting
 
 app.use(helmet());
 app.use(globalLimiter);
-app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:3000" }));
+// Supports a comma-separated list of origins for multi-domain deployments
+const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(",");
+app.use(cors({ origin: corsOrigins }));
 app.use(express.json());
 
 // GET /health
