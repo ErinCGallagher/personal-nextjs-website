@@ -1,6 +1,5 @@
 [build]
-rootDirectory = "backend"
-buildCommand = "pnpm install && pnpm build"
+buildCommand = "pnpm install && pnpm --filter backend build"
 
 [deploy]
-startCommand = "node dist/migrate.js && node dist/index.js"
+startCommand = "node backend/dist/migrate.js && node backend/dist/index.js"
