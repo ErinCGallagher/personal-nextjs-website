@@ -6,5 +6,6 @@ export default defineConfig({
       TEST_DATABASE_URL: 'postgresql://localhost/blog_test',
     },
     setupFiles: ['./src/test-setup.ts'],
+    exclude: ['dist/**', 'node_modules/**'],
   },
 });
