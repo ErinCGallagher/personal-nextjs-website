@@ -15,8 +15,5 @@
       "sharp",
       "unrs-resolver"
     ]
-  },
-  "dependencies": {
-    "express-rate-limit": "^8.2.1"
   }
 }
