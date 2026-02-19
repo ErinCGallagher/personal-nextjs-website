@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { globalLimiter } from "./rate-limiters";
+import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
 
 const app = express();
@@ -20,6 +21,8 @@ app.get("/health", (_req, res) => {
 
 // Post routes: likes and comments on blog posts
 app.use("/api/posts", postsRouter);
+
+app.use(errorHandler);
 
 // Skips starting the server when running tests so supertest can import the app directly
 if (process.env.NODE_ENV !== "test") {
