@@ -1,5 +1,5 @@
 /**
- * API client helpers. Centralises the backend base URL and endpoint paths so
+ * API client helpers. Centralizes the backend base URL and endpoint paths so
  * they can be updated in one place.
  */
 
@@ -10,5 +10,7 @@ export const api = {
     likes: (slug: string, anonymousId: string) =>
       `${baseUrl}/api/posts/${slug}/likes?anonymous_id=${anonymousId}`,
     like: (slug: string) => `${baseUrl}/api/posts/${slug}/like`,
+    comments: (slug: string) => `${baseUrl}/api/posts/${slug}/comments`,
+    comment: (slug: string) => `${baseUrl}/api/posts/${slug}/comment`,
   },
 };

@@ -46,6 +46,7 @@ export async function runMigrations(pool: Pool): Promise<void> {
 
 // Run when executed directly via `pnpm migrate`
 if (require.main === module) {
+  require("dotenv").config();
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   runMigrations(pool)
     .then(() => pool.end())
