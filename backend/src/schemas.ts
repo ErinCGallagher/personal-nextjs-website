@@ -11,3 +11,15 @@ export const likeBodySchema = z.object({
   slug: slugSchema,
   anonymous_id: z.uuid(),
 });
+
+export const commentsQuerySchema = z.object({
+  slug: slugSchema,
+});
+
+export const commentBodySchema = z.object({
+  slug: slugSchema,
+  anonymous_id: z.uuid(),
+  name: z.string().min(1).max(100),
+  email: z.string().email(),
+  body: z.string().min(1).max(5000),
+});
