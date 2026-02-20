@@ -19,4 +19,5 @@ export interface CommentRow {
   created_at: Date;
   status_updated_at: Date | null;
   status_updated_by: string | null;
+  user_name?: string;
 }
