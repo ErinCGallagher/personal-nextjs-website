@@ -2,16 +2,16 @@
  * Helper functions for comment display
  */
 
-// Color palette that matches the blog theme
+// Color palette that matches the blog theme (lighter shades)
 const AVATAR_COLORS = [
-  "#6B7280", // gray
-  "#8B5CF6", // purple (grey-blue variant)
-  "#3B82F6", // blue
-  "#10B981", // green
-  "#F59E0B", // amber
-  "#EF4444", // red
-  "#EC4899", // pink
-  "#14B8A6", // teal
+  "#9CA3AF", // light gray
+  "#A78BFA", // light purple
+  "#60A5FA", // light blue
+  "#34D399", // light green
+  "#FBBF24", // light amber
+  "#F87171", // light red
+  "#F472B6", // light pink
+  "#2DD4BF", // light teal
 ];
 
 /**

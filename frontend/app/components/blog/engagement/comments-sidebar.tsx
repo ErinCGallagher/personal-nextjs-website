@@ -124,7 +124,7 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
             </p>
           ) : (
             <div className="space-y-0">
-              {comments.map((comment) => (
+              {comments.map((comment, index) => (
                 <div key={comment.id} className="pb-4">
                   <div className="flex gap-3">
                     <div
@@ -147,7 +147,9 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
                       </p>
                     </div>
                   </div>
-                  <div className="mx-4 mt-4 border-b border-gray-200 last:border-b-0" />
+                  {index < comments.length - 1 && (
+                    <div className="mt-4 border-b border-gray-200" />
+                  )}
                 </div>
               ))}
             </div>
