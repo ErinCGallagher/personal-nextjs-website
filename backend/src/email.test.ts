@@ -50,7 +50,7 @@ describe("sendNewCommentNotification", () => {
 
     expect(mockSend).toHaveBeenCalledTimes(1);
     expect(mockSend).toHaveBeenCalledWith({
-      from: "noreply@test.com",
+      from: "Erin Gallagher <noreply@test.com>",
       to: "admin@test.com",
       subject: "New comment pending approval: test-post",
       html: expect.stringContaining("test-post"),
@@ -78,7 +78,7 @@ describe("sendNewCommentNotification", () => {
 
     expect(mockSend).toHaveBeenCalledWith(
       expect.objectContaining({
-        from: "onboarding@resend.dev",
+        from: "Erin Gallagher <onboarding@resend.dev>",
       }),
     );
   });

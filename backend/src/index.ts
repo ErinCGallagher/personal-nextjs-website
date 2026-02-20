@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
@@ -12,6 +13,13 @@ import pool from "./db";
 const app = express();
 const port = process.env.PORT || 3001;
 app.set("trust proxy", 1); // provide ip for rate limiting
+
+const PgSession = connectPgSimple(session);
+const sessionStore = new PgSession({
+  pool: pool,
+  tableName: "session",
+  createTableIfMissing: true,
+});
 
 app.use(helmet());
 app.use(globalLimiter);
@@ -25,6 +33,7 @@ app.use(express.json());
 // Session configuration for admin authentication
 app.use(
   session({
+    store: sessionStore,
     secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
     resave: false,
     saveUninitialized: false,

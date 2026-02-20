@@ -40,7 +40,7 @@ export async function sendNewCommentNotification({
 
   try {
     await resend.emails.send({
-      from: fromEmail,
+      from: `Erin Gallagher <${fromEmail}>`,
       to: toEmail,
       ...(replyToEmail && { replyTo: replyToEmail }),
       subject: `New comment pending approval: ${postSlug}`,
