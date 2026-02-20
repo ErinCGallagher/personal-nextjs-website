@@ -52,18 +52,62 @@ The [Vitest VS Code extension](https://marketplace.visualstudio.com/items?itemNa
 
 ## Endpoints
 
+### Health Check
+
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/health` | Health check |
-| GET | `/api/posts/:slug/likes?anonymous_id=` | Like count and liked state for a post |
+| GET | `/health` | Health check and database connection test |
+
+### Post Interactions
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/posts/:slug/likes?anonymous_id=` | Like count, comment count, and liked state for a post |
 | POST | `/api/posts/:slug/like` | Toggle a like on a post |
+| GET | `/api/posts/:slug/comments` | Get all approved comments for a post |
+| POST | `/api/posts/:slug/comment` | Create a comment on a post (sends email notification) |
+
+### Admin
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/admin/login` | Authenticate admin with password |
+| POST | `/api/admin/logout` | Destroy admin session |
+| GET | `/api/admin/comments?status=Pending` | List comments filtered by status (Pending/Approved/Rejected) |
+| PATCH | `/api/admin/comments/:id` | Update comment status |
+
+### Examples
 
 ```bash
-# Get like count
-curl http://localhost:3001/api/posts/cape-town-itinerary/likes
+# Get like count and comment count
+curl http://localhost:3001/api/posts/cape-town-itinerary/likes?anonymous_id=550e8400-e29b-41d4-a716-446655440001
 
 # Toggle a like
 curl -X POST http://localhost:3001/api/posts/cape-town-itinerary/like \
   -H "Content-Type: application/json" \
   -d '{"anonymous_id": "550e8400-e29b-41d4-a716-446655440001"}'
+
+# Get approved comments
+curl http://localhost:3001/api/posts/cape-town-itinerary/comments
+
+# Create a comment
+curl -X POST http://localhost:3001/api/posts/cape-town-itinerary/comment \
+  -H "Content-Type: application/json" \
+  -d '{"anonymous_id": "550e8400-e29b-41d4-a716-446655440001", "name": "Jane Doe", "email": "jane@example.com", "body": "Great post!"}'
+
+# Admin login
+curl -X POST http://localhost:3001/api/admin/login \
+  -H "Content-Type: application/json" \
+  -d '{"password": "your-password"}' \
+  -c cookies.txt
+
+# List pending comments
+curl http://localhost:3001/api/admin/comments?status=Pending \
+  -b cookies.txt
+
+# Approve a comment
+curl -X PATCH http://localhost:3001/api/admin/comments/COMMENT-UUID \
+  -H "Content-Type: application/json" \
+  -d '{"status": "Approved"}' \
+  -b cookies.txt
 ```
