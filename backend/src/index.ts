@@ -1,9 +1,12 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import session from "express-session";
 import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
+import adminRouter from "./routes/admin";
 import pool from "./db";
 
 const app = express();
@@ -16,8 +19,23 @@ app.use(globalLimiter);
 const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(
   ",",
 );
-app.use(cors({ origin: corsOrigins }));
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
+
+// Session configuration for admin authentication
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
+  })
+);
 
 // GET /health
 // app.get("/health", (_req, res) => {
@@ -35,6 +53,9 @@ app.get("/health", async (req, res) => {
 
 // Post routes: likes and comments on blog posts
 app.use("/api/posts", postsRouter);
+
+// Admin routes: authentication and comment moderation
+app.use("/api/admin", adminRouter);
 
 app.use(errorHandler);
 

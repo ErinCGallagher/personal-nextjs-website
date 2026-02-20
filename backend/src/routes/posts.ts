@@ -1,6 +1,7 @@
 // Express router for blog post endpoints.
 // Handles retrieving like counts and toggling likes per post, identified by slug.
 import { Router } from "express";
+import { createHash } from "crypto";
 import {
   likesQuerySchema,
   likeBodySchema,
@@ -131,9 +132,7 @@ router.get("/:slug/comments", readLimiter, async (req, res, next) => {
     const { slug } = result.data;
 
     const { rows } = await pool.query<CommentRow>(
-      `SELECT c.id, c.post_slug, c.parent_id,
-              encode(digest(c.user_id::text || c.post_slug, 'sha256'), 'hex') as user_id,
-              c.body, c.status, c.created_at, c.status_updated_at, c.status_updated_by, u.name as user_name
+      `SELECT c.id, c.post_slug, c.parent_id, c.user_id, c.body, c.status, c.created_at, c.status_updated_at, c.status_updated_by, u.name as user_name
        FROM comments c
        JOIN users u ON c.user_id = u.anonymous_id
        WHERE c.post_slug = $1 AND c.status = $2
@@ -141,7 +140,15 @@ router.get("/:slug/comments", readLimiter, async (req, res, next) => {
       [slug, CommentStatus.Approved],
     );
 
-    res.json(rows);
+    // Hash user_id with post_slug for privacy (prevents cross-post tracking)
+    const hashedRows = rows.map((row) => ({
+      ...row,
+      user_id: createHash("sha256")
+        .update(row.user_id + row.post_slug)
+        .digest("hex"),
+    }));
+
+    res.json(hashedRows);
   } catch (err) {
     next(err);
   }
