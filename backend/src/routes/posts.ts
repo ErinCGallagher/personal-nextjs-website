@@ -12,6 +12,7 @@ import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rate-limiters";
 import { z } from "zod";
 import pool from "../db";
 import { CommentRow, CommentStatus } from "../models";
+import { sendNewCommentNotification } from "../email";
 
 const router = Router();
 
@@ -196,6 +197,16 @@ router.post("/:slug/comment", readLimiter, async (req, res, next) => {
        RETURNING id, post_slug, parent_id, user_id, body, status, created_at, status_updated_at, status_updated_by`,
       [slug, anonymous_id, body, CommentStatus.Pending],
     );
+
+    // Send email notification asynchronously
+    sendNewCommentNotification({
+      postSlug: slug,
+      commentBody: body,
+      userName: name,
+      userEmail: email,
+    }).catch((error) => {
+      console.error("Failed to send comment notification email:", error);
+    });
 
     res.status(201).json(rows[0]);
   } catch (err) {

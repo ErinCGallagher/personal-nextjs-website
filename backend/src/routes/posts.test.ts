@@ -1,8 +1,13 @@
 import request from "supertest";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import app from "../index";
 
 const ANON_ID = "550e8400-e29b-41d4-a716-446655440001";
+
+// Mock the email module to prevent actual emails during tests
+vi.mock("../email", () => ({
+  sendNewCommentNotification: vi.fn().mockResolvedValue(undefined),
+}));
 
 describe("GET /api/posts/:slug/likes", () => {
   it("returns count 0 and liked false when no likes exist", async () => {

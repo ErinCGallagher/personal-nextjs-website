@@ -10,9 +10,11 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-  // post_likes has ON DELETE CASCADE so deleting posts cleans up likes too
+  // Clean up all tables in correct order to respect foreign key constraints
+  await pool.query("DELETE FROM comments");
   await pool.query("DELETE FROM post_likes");
   await pool.query("DELETE FROM posts");
+  await pool.query("DELETE FROM users");
 });
 
 afterAll(async () => {
