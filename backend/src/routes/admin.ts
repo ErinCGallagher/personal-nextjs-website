@@ -4,6 +4,7 @@
  */
 import { Router } from "express";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 import pool from "../db";
 import { requireAdmin } from "../middleware/admin-auth";
 import { CommentRow, CommentStatus } from "../models";
@@ -25,13 +26,15 @@ router.post("/login", async (req, res, next) => {
     }
 
     const { password } = result.data;
-    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
 
-    if (!adminPassword) {
+    if (!adminPasswordHash) {
       return res.status(500).json({ error: "Admin password not configured" });
     }
 
-    if (password === adminPassword) {
+    const isValid = await bcrypt.compare(password, adminPasswordHash);
+
+    if (isValid) {
       req.session.isAdmin = true;
       res.json({ success: true });
     } else {
