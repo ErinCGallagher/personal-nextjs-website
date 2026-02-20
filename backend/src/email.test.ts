@@ -3,25 +3,28 @@
  * Tests email sending with mocked Resend API.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { sendNewCommentNotification } from "./email";
+
+// Create a mock send function
+const mockSend = vi.fn();
 
 // Mock the Resend module
 vi.mock("resend", () => {
-  const mockSend = vi.fn();
   return {
-    Resend: vi.fn(() => ({
-      emails: {
+    Resend: class {
+      emails = {
         send: mockSend,
-      },
-    })),
+      };
+    },
   };
 });
+
+// Import after mocking
+const { sendNewCommentNotification } = await import("./email");
 
 describe("sendNewCommentNotification", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    vi.resetModules();
     process.env = { ...originalEnv };
     vi.clearAllMocks();
   });
@@ -36,9 +39,7 @@ describe("sendNewCommentNotification", () => {
     process.env.FROM_EMAIL = "noreply@test.com";
     process.env.ADMIN_URL = "http://localhost:3000";
 
-    const { Resend } = await import("resend");
-    const mockResendInstance = new Resend();
-    const mockSend = mockResendInstance.emails.send;
+    mockSend.mockResolvedValueOnce({ id: "test-id" });
 
     await sendNewCommentNotification({
       postSlug: "test-post",
@@ -66,9 +67,7 @@ describe("sendNewCommentNotification", () => {
     process.env.NOTIFICATION_EMAIL = "admin@test.com";
     delete process.env.FROM_EMAIL;
 
-    const { Resend } = await import("resend");
-    const mockResendInstance = new Resend();
-    const mockSend = mockResendInstance.emails.send;
+    mockSend.mockResolvedValueOnce({ id: "test-id" });
 
     await sendNewCommentNotification({
       postSlug: "test-post",
@@ -89,10 +88,6 @@ describe("sendNewCommentNotification", () => {
     delete process.env.NOTIFICATION_EMAIL;
 
     const consoleSpy = vi.spyOn(console, "warn");
-
-    const { Resend } = await import("resend");
-    const mockResendInstance = new Resend();
-    const mockSend = mockResendInstance.emails.send;
 
     await sendNewCommentNotification({
       postSlug: "test-post",
@@ -115,10 +110,6 @@ describe("sendNewCommentNotification", () => {
 
     const consoleSpy = vi.spyOn(console, "warn");
 
-    const { Resend } = await import("resend");
-    const mockResendInstance = new Resend();
-    const mockSend = mockResendInstance.emails.send;
-
     await sendNewCommentNotification({
       postSlug: "test-post",
       commentBody: "Test",
@@ -138,9 +129,6 @@ describe("sendNewCommentNotification", () => {
     process.env.RESEND_API_KEY = "test-api-key";
     process.env.NOTIFICATION_EMAIL = "admin@test.com";
 
-    const { Resend } = await import("resend");
-    const mockResendInstance = new Resend();
-    const mockSend = mockResendInstance.emails.send;
     mockSend.mockRejectedValueOnce(new Error("API Error"));
 
     const consoleSpy = vi.spyOn(console, "error");
@@ -164,9 +152,7 @@ describe("sendNewCommentNotification", () => {
     process.env.RESEND_API_KEY = "test-api-key";
     process.env.NOTIFICATION_EMAIL = "admin@test.com";
 
-    const { Resend } = await import("resend");
-    const mockResendInstance = new Resend();
-    const mockSend = mockResendInstance.emails.send;
+    mockSend.mockResolvedValueOnce({ id: "test-id" });
 
     await sendNewCommentNotification({
       postSlug: "test-post",
