@@ -131,7 +131,9 @@ router.get("/:slug/comments", readLimiter, async (req, res, next) => {
     const { slug } = result.data;
 
     const { rows } = await pool.query<CommentRow>(
-      `SELECT c.id, c.post_slug, c.parent_id, c.user_id, c.body, c.status, c.created_at, c.status_updated_at, c.status_updated_by, u.name as user_name
+      `SELECT c.id, c.post_slug, c.parent_id,
+              encode(digest(c.user_id::text || c.post_slug, 'sha256'), 'hex') as user_id,
+              c.body, c.status, c.created_at, c.status_updated_at, c.status_updated_by, u.name as user_name
        FROM comments c
        JOIN users u ON c.user_id = u.anonymous_id
        WHERE c.post_slug = $1 AND c.status = $2
