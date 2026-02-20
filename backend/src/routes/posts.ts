@@ -1,7 +1,12 @@
 // Express router for blog post endpoints.
 // Handles retrieving like counts and toggling likes per post, identified by slug.
 import { Router } from "express";
-import { likesQuerySchema, likeBodySchema, commentsQuerySchema, commentBodySchema } from "../schemas";
+import {
+  likesQuerySchema,
+  likeBodySchema,
+  commentsQuerySchema,
+  commentBodySchema,
+} from "../schemas";
 import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rate-limiters";
 import { z } from "zod";
 import pool from "../db";
@@ -10,7 +15,7 @@ import { CommentRow, CommentStatus } from "../models";
 const router = Router();
 
 // GET /api/posts/:slug/likes?anonymous_id=xxx
-// Returns the total like count and whether the given anonymous_id has liked the post
+// Returns the total like count, comment count and whether the given anonymous_id has liked the post
 router.get("/:slug/likes", readLimiter, async (req, res, next) => {
   try {
     const result = likesQuerySchema.safeParse({
@@ -33,7 +38,18 @@ router.get("/:slug/likes", readLimiter, async (req, res, next) => {
       [slug, anonymous_id ?? null],
     );
 
-    res.json({ count: parseInt(rows[0].count, 10), liked: rows[0].liked });
+    const commentCountResult = await pool.query<{ count: string }>(
+      `SELECT COUNT(*) AS count
+       FROM comments
+       WHERE post_slug = $1 AND status = $2`,
+      [slug, CommentStatus.Approved],
+    );
+
+    res.json({
+      likeCount: parseInt(rows[0].count, 10),
+      liked: rows[0].liked,
+      commentCount: parseInt(commentCountResult.rows[0].count, 10),
+    });
   } catch (err) {
     next(err);
   }
@@ -41,59 +57,64 @@ router.get("/:slug/likes", readLimiter, async (req, res, next) => {
 
 // POST /api/posts/:slug/like
 // Toggles a like on a post — likes if not liked, unlikes if already liked
-router.post("/:slug/like", ipLimiter, anonymousIdLimiter, async (req, res, next) => {
-  try {
-    const result = likeBodySchema.safeParse({
-      slug: req.params.slug,
-      anonymous_id: req.body.anonymous_id,
-    });
+router.post(
+  "/:slug/like",
+  ipLimiter,
+  anonymousIdLimiter,
+  async (req, res, next) => {
+    try {
+      const result = likeBodySchema.safeParse({
+        slug: req.params.slug,
+        anonymous_id: req.body.anonymous_id,
+      });
 
-    if (!result.success) {
-      res.status(400).json({ error: z.treeifyError(result.error) });
-      return;
-    }
+      if (!result.success) {
+        res.status(400).json({ error: z.treeifyError(result.error) });
+        return;
+      }
 
-    const { slug, anonymous_id } = result.data;
+      const { slug, anonymous_id } = result.data;
 
-    // Ensure the post record exists before inserting a like
-    await pool.query(
-      "INSERT INTO posts (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING",
-      [slug],
-    );
-
-    const existing = await pool.query(
-      "SELECT 1 FROM post_likes WHERE anonymous_id = $1 AND post_slug = $2",
-      [anonymous_id, slug],
-    );
-
-    if (existing.rows.length > 0) {
-      // Dislike
+      // Ensure the post record exists before inserting a like
       await pool.query(
-        "DELETE FROM post_likes WHERE anonymous_id = $1 AND post_slug = $2",
+        "INSERT INTO posts (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING",
+        [slug],
+      );
+
+      const existing = await pool.query(
+        "SELECT 1 FROM post_likes WHERE anonymous_id = $1 AND post_slug = $2",
         [anonymous_id, slug],
       );
-    } else {
-      await pool.query(
-        // Like
-        "INSERT INTO post_likes (anonymous_id, post_slug) VALUES ($1, $2)",
-        [anonymous_id, slug],
+
+      if (existing.rows.length > 0) {
+        // Dislike
+        await pool.query(
+          "DELETE FROM post_likes WHERE anonymous_id = $1 AND post_slug = $2",
+          [anonymous_id, slug],
+        );
+      } else {
+        await pool.query(
+          // Like
+          "INSERT INTO post_likes (anonymous_id, post_slug) VALUES ($1, $2)",
+          [anonymous_id, slug],
+        );
+      }
+
+      // get incremented or decremented like count
+      const { rows } = await pool.query<{ count: string }>(
+        "SELECT COUNT(*) AS count FROM post_likes WHERE post_slug = $1",
+        [slug],
       );
+
+      res.json({
+        liked: existing.rows.length === 0,
+        count: parseInt(rows[0].count, 10),
+      });
+    } catch (err) {
+      next(err);
     }
-
-    // get incremented or decremented like count
-    const { rows } = await pool.query<{ count: string }>(
-      "SELECT COUNT(*) AS count FROM post_likes WHERE post_slug = $1",
-      [slug],
-    );
-
-    res.json({
-      liked: existing.rows.length === 0,
-      count: parseInt(rows[0].count, 10),
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 // GET /api/posts/:slug/comments
 // Returns all approved comments for a post

@@ -35,7 +35,7 @@ export function LikeButton({ slug }: Props) {
     fetch(api.posts.likes(slug, getAnonymousId()))
       .then((res) => res.json())
       .then((data) => {
-        setCount(data.count);
+        setCount(data.likeCount);
         setLiked(data.liked);
       })
       .catch(() => {});
