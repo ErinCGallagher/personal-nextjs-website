@@ -164,4 +164,45 @@ describe("sendNewCommentNotification", () => {
     const callArgs = mockSend.mock.calls[0][0];
     expect(callArgs.html).toContain("Line 1<br>Line 2<br>Line 3");
   });
+
+  it("includes reply-to email when REPLY_TO_EMAIL is set", async () => {
+    process.env.RESEND_API_KEY = "test-api-key";
+    process.env.NOTIFICATION_EMAIL = "admin@test.com";
+    process.env.FROM_EMAIL = "noreply@test.com";
+    process.env.REPLY_TO_EMAIL = "personal@example.com";
+
+    mockSend.mockResolvedValueOnce({ id: "test-id" });
+
+    await sendNewCommentNotification({
+      postSlug: "test-post",
+      commentBody: "Test comment",
+      userName: "Test User",
+      userEmail: "test@example.com",
+    });
+
+    expect(mockSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        replyTo: "personal@example.com",
+      }),
+    );
+  });
+
+  it("does not include reply-to when REPLY_TO_EMAIL is not set", async () => {
+    process.env.RESEND_API_KEY = "test-api-key";
+    process.env.NOTIFICATION_EMAIL = "admin@test.com";
+    process.env.FROM_EMAIL = "noreply@test.com";
+    delete process.env.REPLY_TO_EMAIL;
+
+    mockSend.mockResolvedValueOnce({ id: "test-id" });
+
+    await sendNewCommentNotification({
+      postSlug: "test-post",
+      commentBody: "Test comment",
+      userName: "Test User",
+      userEmail: "test@example.com",
+    });
+
+    const callArgs = mockSend.mock.calls[0][0];
+    expect(callArgs.replyTo).toBeUndefined();
+  });
 });
