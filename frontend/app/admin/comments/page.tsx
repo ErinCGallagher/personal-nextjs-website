@@ -22,8 +22,10 @@ interface Comment {
 export default function AdminComments() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [filter, setFilter] = useState<"" | "Pending" | "Approved" | "Rejected">("");
+  const [postFilter, setPostFilter] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   useEffect(() => {
@@ -94,8 +96,31 @@ export default function AdminComments() {
     }
   }
 
+  function toggleExpanded(commentId: string) {
+    setExpandedComments((prev) => {
+      const next = new Set(prev);
+      if (next.has(commentId)) {
+        next.delete(commentId);
+      } else {
+        next.add(commentId);
+      }
+      return next;
+    });
+  }
+
+  // Extract unique post slugs from comments
+  const uniquePostSlugs = Array.from(
+    new Set(comments.map((comment) => comment.post_slug))
+  ).sort();
+
+  // Filter comments based on both status and post filters
+  const filteredComments = comments.filter((comment) => {
+    const matchesPost = !postFilter || comment.post_slug === postFilter;
+    return matchesPost;
+  });
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 pt-24">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -109,67 +134,116 @@ export default function AdminComments() {
           </button>
         </div>
 
-        {/* Filter buttons */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setFilter("")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === ""
-                ? "text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-            style={
-              filter === "" ? { backgroundColor: "var(--grey-blue)" } : undefined
-            }
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilter("Pending")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === "Pending"
-                ? "text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-            style={
-              filter === "Pending"
-                ? { backgroundColor: "var(--grey-blue)" }
-                : undefined
-            }
-          >
-            Pending
-          </button>
-          <button
-            onClick={() => setFilter("Approved")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === "Approved"
-                ? "text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-            style={
-              filter === "Approved"
-                ? { backgroundColor: "var(--grey-blue)" }
-                : undefined
-            }
-          >
-            Approved
-          </button>
-          <button
-            onClick={() => setFilter("Rejected")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === "Rejected"
-                ? "text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-            style={
-              filter === "Rejected"
-                ? { backgroundColor: "var(--grey-blue)" }
-                : undefined
-            }
-          >
-            Rejected
-          </button>
+        {/* Status filter buttons */}
+        <div className="mb-4">
+          <h2 className="text-sm font-medium text-gray-700 mb-2">
+            Filter by Status
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setFilter("")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filter === ""
+                  ? "text-white"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+              style={
+                filter === "" ? { backgroundColor: "var(--grey-blue)" } : undefined
+              }
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilter("Pending")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filter === "Pending"
+                  ? "text-white"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+              style={
+                filter === "Pending"
+                  ? { backgroundColor: "var(--grey-blue)" }
+                  : undefined
+              }
+            >
+              Pending
+            </button>
+            <button
+              onClick={() => setFilter("Approved")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filter === "Approved"
+                  ? "text-white"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+              style={
+                filter === "Approved"
+                  ? { backgroundColor: "var(--grey-blue)" }
+                  : undefined
+              }
+            >
+              Approved
+            </button>
+            <button
+              onClick={() => setFilter("Rejected")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filter === "Rejected"
+                  ? "text-white"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+              style={
+                filter === "Rejected"
+                  ? { backgroundColor: "var(--grey-blue)" }
+                  : undefined
+              }
+            >
+              Rejected
+            </button>
+          </div>
         </div>
+
+        {/* Post filter buttons */}
+        {uniquePostSlugs.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-sm font-medium text-gray-700 mb-2">
+              Filter by Post
+            </h2>
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => setPostFilter("")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  postFilter === ""
+                    ? "text-white"
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
+                style={
+                  postFilter === ""
+                    ? { backgroundColor: "var(--grey-blue)" }
+                    : undefined
+                }
+              >
+                All Posts
+              </button>
+              {uniquePostSlugs.map((slug) => (
+                <button
+                  key={slug}
+                  onClick={() => setPostFilter(slug)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    postFilter === slug
+                      ? "text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                  style={
+                    postFilter === slug
+                      ? { backgroundColor: "var(--grey-blue)" }
+                      : undefined
+                  }
+                >
+                  {slug}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">
@@ -179,7 +253,7 @@ export default function AdminComments() {
 
         {loading ? (
           <div className="text-gray-500">Loading comments...</div>
-        ) : comments.length === 0 ? (
+        ) : filteredComments.length === 0 ? (
           <div className="text-gray-500">No comments found</div>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -207,7 +281,7 @@ export default function AdminComments() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {comments.map((comment) => (
+                {filteredComments.map((comment) => (
                   <tr key={comment.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
@@ -221,8 +295,22 @@ export default function AdminComments() {
                       {comment.post_slug}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-md line-clamp-3">
-                        {comment.body}
+                      <div className="max-w-md">
+                        <div
+                          className={`text-sm text-gray-900 ${
+                            expandedComments.has(comment.id) ? "" : "line-clamp-3"
+                          }`}
+                        >
+                          {comment.body}
+                        </div>
+                        {comment.body.length > 150 && (
+                          <button
+                            onClick={() => toggleExpanded(comment.id)}
+                            className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                          >
+                            {expandedComments.has(comment.id) ? "See less" : "See more"}
+                          </button>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -245,7 +333,7 @@ export default function AdminComments() {
                       {comment.status !== "Approved" && (
                         <button
                           onClick={() => updateStatus(comment.id, "Approved")}
-                          className="text-green-600 hover:text-green-900"
+                          className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
                         >
                           Approve
                         </button>
@@ -253,7 +341,7 @@ export default function AdminComments() {
                       {comment.status !== "Rejected" && (
                         <button
                           onClick={() => updateStatus(comment.id, "Rejected")}
-                          className="text-red-600 hover:text-red-900"
+                          className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
                         >
                           Reject
                         </button>
