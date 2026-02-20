@@ -37,6 +37,9 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(
+    new Set()
+  );
 
   const fetchComments = useCallback(() => {
     setLoading(true);
@@ -59,12 +62,39 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
   useEffect(() => {
     if (isOpen) {
       fetchComments();
+      // Prevent body scroll when sidebar is open
+      document.body.style.overflow = "hidden";
+    } else {
+      // Restore body scroll when sidebar is closed
+      document.body.style.overflow = "";
     }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen, fetchComments]);
 
   function handleCommentSuccess() {
     setShowSuccessMessage(true);
     setTimeout(() => setShowSuccessMessage(false), 15000);
+  }
+
+  function toggleCommentExpansion(commentId: string) {
+    setExpandedComments((prev) => {
+      const next = new Set(prev);
+      if (next.has(commentId)) {
+        next.delete(commentId);
+      } else {
+        next.add(commentId);
+      }
+      return next;
+    });
+  }
+
+  function isCommentLong(text: string): boolean {
+    // Consider a comment long if it has more than 200 chars or multiple lines
+    return text.length > 200 || text.split("\n").length > 3;
   }
 
   return (
@@ -79,7 +109,7 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -115,7 +145,7 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
         />
 
         {/* Comments List */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="p-6">
           {loading ? (
             <p className="text-gray-500">Loading comments...</p>
           ) : comments.length === 0 ? (
@@ -124,34 +154,54 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
             </p>
           ) : (
             <div className="space-y-0">
-              {comments.map((comment, index) => (
-                <div key={comment.id} className="pb-4">
-                  <div className="flex gap-3">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0"
-                      style={{ backgroundColor: getAvatarColor(comment.user_id) }}
-                    >
-                      {getInitials(comment.user_name)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col mb-1">
-                        <span className="text-sm font-semibold text-gray-900">
-                          {comment.user_name || "Anonymous"}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {formatCommentDate(comment.created_at)}
-                        </span>
+              {comments.map((comment, index) => {
+                const isExpanded = expandedComments.has(comment.id);
+                const isLong = isCommentLong(comment.body);
+
+                return (
+                  <div key={comment.id} className="pb-4">
+                    <div className="flex gap-3">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0"
+                        style={{
+                          backgroundColor: getAvatarColor(comment.user_id),
+                        }}
+                      >
+                        {getInitials(comment.user_name)}
                       </div>
-                      <p className="text-gray-800 whitespace-pre-wrap text-sm">
-                        {comment.body}
-                      </p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col mb-1">
+                          <span className="text-sm font-semibold text-gray-900">
+                            {comment.user_name || "Anonymous"}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {formatCommentDate(comment.created_at)}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-gray-800 whitespace-pre-wrap text-sm ${
+                            !isExpanded && isLong ? "line-clamp-4" : ""
+                          }`}
+                        >
+                          {comment.body}
+                        </p>
+                        {isLong && (
+                          <button
+                            onClick={() => toggleCommentExpansion(comment.id)}
+                            className="mt-1 text-sm font-medium hover:opacity-70 transition-opacity"
+                            style={{ color: "var(--grey-blue)" }}
+                          >
+                            {isExpanded ? "See less" : "See more"}
+                          </button>
+                        )}
+                      </div>
                     </div>
+                    {index < comments.length - 1 && (
+                      <div className="mt-4 border-b border-gray-200" />
+                    )}
                   </div>
-                  {index < comments.length - 1 && (
-                    <div className="mt-4 border-b border-gray-200" />
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
