@@ -13,4 +13,13 @@ export const api = {
     comments: (slug: string) => `${baseUrl}/api/posts/${slug}/comments`,
     comment: (slug: string) => `${baseUrl}/api/posts/${slug}/comment`,
   },
+  admin: {
+    login: () => `${baseUrl}/api/admin/login`,
+    logout: () => `${baseUrl}/api/admin/logout`,
+    comments: (status?: string) =>
+      status
+        ? `${baseUrl}/api/admin/comments?status=${status}`
+        : `${baseUrl}/api/admin/comments`,
+    updateComment: (id: string) => `${baseUrl}/api/admin/comments/${id}`,
+  },
 };
