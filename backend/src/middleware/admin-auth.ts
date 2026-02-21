@@ -9,6 +9,13 @@ export function requireAdmin(
   res: Response,
   next: NextFunction
 ): void {
+  console.log("Session check:", {
+    sessionID: req.sessionID,
+    hasSession: !!req.session,
+    isAdmin: req.session?.isAdmin,
+    cookie: req.session?.cookie,
+  });
+
   if (req.session?.isAdmin) {
     next();
   } else {

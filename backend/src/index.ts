@@ -19,6 +19,7 @@ const sessionStore = new PgSession({
   pool: pool,
   tableName: "session",
   createTableIfMissing: true,
+  pruneSessionInterval: 60 * 15, // Prune expired sessions every 15 minutes
 });
 
 app.use(helmet());
@@ -35,13 +36,16 @@ app.use(
   session({
     store: sessionStore,
     secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
+    name: "sessionId",
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: "lax",
+      path: "/",
     },
   })
 );
