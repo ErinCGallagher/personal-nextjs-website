@@ -28,6 +28,8 @@ export default function AdminLogin() {
       });
 
       if (response.ok) {
+        await response.json();
+        router.refresh();
         router.push("/admin/comments");
       } else {
         const data = await response.json();

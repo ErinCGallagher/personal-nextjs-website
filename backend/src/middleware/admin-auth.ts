@@ -14,6 +14,7 @@ export function requireAdmin(
     hasSession: !!req.session,
     isAdmin: req.session?.isAdmin,
     cookie: req.session?.cookie,
+    cookieHeader: req.headers.cookie,
   });
 
   if (req.session?.isAdmin) {
