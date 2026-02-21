@@ -35,12 +35,25 @@ router.post("/login", async (req, res, next) => {
     const isValid = await bcrypt.compare(password, adminPasswordHash);
 
     if (isValid) {
-      req.session.isAdmin = true;
-      req.session.save((err) => {
+      console.log("Login: Password valid, regenerating session");
+      req.session.regenerate((err) => {
         if (err) {
+          console.error("Session regenerate error:", err);
           return res.status(500).json({ error: "Failed to create session" });
         }
-        res.json({ success: true });
+        req.session.isAdmin = true;
+        console.log("Login: Setting isAdmin=true, sessionID:", req.sessionID);
+        req.session.save((err) => {
+          if (err) {
+            console.error("Session save error:", err);
+            return res.status(500).json({ error: "Failed to create session" });
+          }
+          console.log("Login: Session saved successfully", {
+            sessionID: req.sessionID,
+            isAdmin: req.session.isAdmin,
+          });
+          res.json({ success: true });
+        });
       });
     } else {
       res.status(401).json({ error: "Invalid password" });
