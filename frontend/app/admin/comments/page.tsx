@@ -120,15 +120,15 @@ export default function AdminComments() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 pt-24">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8 pt-20 md:pt-24">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+        <div className="flex justify-between items-center mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
             Comment Moderation
           </h1>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
           >
             Logout
           </button>
@@ -139,10 +139,10 @@ export default function AdminComments() {
           <h2 className="text-sm font-medium text-gray-700 mb-2">
             Filter by Status
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-2">
             <button
               onClick={() => setFilter("")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 filter === ""
                   ? "text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -155,7 +155,7 @@ export default function AdminComments() {
             </button>
             <button
               onClick={() => setFilter("Pending")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 filter === "Pending"
                   ? "text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -170,7 +170,7 @@ export default function AdminComments() {
             </button>
             <button
               onClick={() => setFilter("Approved")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 filter === "Approved"
                   ? "text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -185,7 +185,7 @@ export default function AdminComments() {
             </button>
             <button
               onClick={() => setFilter("Rejected")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 filter === "Rejected"
                   ? "text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -207,10 +207,10 @@ export default function AdminComments() {
             <h2 className="text-sm font-medium text-gray-700 mb-2">
               Filter by Post
             </h2>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 overflow-x-auto pb-2">
               <button
                 onClick={() => setPostFilter("")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   postFilter === ""
                     ? "text-white"
                     : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -227,7 +227,7 @@ export default function AdminComments() {
                 <button
                   key={slug}
                   onClick={() => setPostFilter(slug)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                     postFilter === slug
                       ? "text-white"
                       : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -256,64 +256,119 @@ export default function AdminComments() {
         ) : filteredComments.length === 0 ? (
           <div className="text-gray-500">No comments found</div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Author
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Post
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Comment
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredComments.map((comment) => (
-                  <tr key={comment.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {comment.user_name || "Anonymous"}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {comment.email}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {comment.post_slug}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="max-w-md">
-                        <div
-                          className={`text-sm text-gray-900 ${
-                            expandedComments.has(comment.id) ? "" : "line-clamp-3"
+          <>
+            {/* Desktop table view */}
+            <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Author
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Post
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Comment
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredComments.map((comment) => (
+                    <tr key={comment.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {comment.user_name || "Anonymous"}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {comment.email}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {comment.post_slug}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="max-w-md">
+                          <div
+                            className={`text-sm text-gray-900 ${
+                              expandedComments.has(comment.id) ? "" : "line-clamp-3"
+                            }`}
+                          >
+                            {comment.body}
+                          </div>
+                          {comment.body.length > 150 && (
+                            <button
+                              onClick={() => toggleExpanded(comment.id)}
+                              className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                            >
+                              {expandedComments.has(comment.id) ? "See less" : "See more"}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            comment.status === "Approved"
+                              ? "bg-green-100 text-green-800"
+                              : comment.status === "Rejected"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
-                          {comment.body}
-                        </div>
-                        {comment.body.length > 150 && (
+                          {comment.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(comment.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        {comment.status !== "Approved" && (
                           <button
-                            onClick={() => toggleExpanded(comment.id)}
-                            className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                            onClick={() => updateStatus(comment.id, "Approved")}
+                            className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
                           >
-                            {expandedComments.has(comment.id) ? "See less" : "See more"}
+                            Approve
                           </button>
                         )}
+                        {comment.status !== "Rejected" && (
+                          <button
+                            onClick={() => updateStatus(comment.id, "Rejected")}
+                            className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                          >
+                            Reject
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card view */}
+            <div className="md:hidden space-y-4">
+              {filteredComments.map((comment) => (
+                <div key={comment.id} className="bg-white rounded-lg shadow p-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {comment.user_name || "Anonymous"}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {comment.email}
+                        </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           comment.status === "Approved"
@@ -325,15 +380,41 @@ export default function AdminComments() {
                       >
                         {comment.status}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    </div>
+
+                    <div>
+                      <div className="text-xs text-gray-500 mb-1">Post</div>
+                      <div className="text-sm text-gray-900">{comment.post_slug}</div>
+                    </div>
+
+                    <div>
+                      <div className="text-xs text-gray-500 mb-1">Comment</div>
+                      <div
+                        className={`text-sm text-gray-900 ${
+                          expandedComments.has(comment.id) ? "" : "line-clamp-3"
+                        }`}
+                      >
+                        {comment.body}
+                      </div>
+                      {comment.body.length > 150 && (
+                        <button
+                          onClick={() => toggleExpanded(comment.id)}
+                          className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                        >
+                          {expandedComments.has(comment.id) ? "See less" : "See more"}
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="text-xs text-gray-500">
                       {new Date(comment.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
                       {comment.status !== "Approved" && (
                         <button
                           onClick={() => updateStatus(comment.id, "Approved")}
-                          className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                          className="flex-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
                         >
                           Approve
                         </button>
@@ -341,17 +422,17 @@ export default function AdminComments() {
                       {comment.status !== "Rejected" && (
                         <button
                           onClick={() => updateStatus(comment.id, "Rejected")}
-                          className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                          className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
                         >
                           Reject
                         </button>
                       )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
