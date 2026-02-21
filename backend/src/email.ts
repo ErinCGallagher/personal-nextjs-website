@@ -24,7 +24,6 @@ export async function sendNewCommentNotification({
 }: NewCommentNotificationParams): Promise<void> {
   const toEmail = process.env.NOTIFICATION_EMAIL;
   const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
-  const replyToEmail = process.env.REPLY_TO_EMAIL;
 
   if (!toEmail) {
     console.warn(
@@ -42,7 +41,6 @@ export async function sendNewCommentNotification({
     await resend.emails.send({
       from: `Erin Gallagher <${fromEmail}>`,
       to: toEmail,
-      ...(replyToEmail && { replyTo: replyToEmail }),
       subject: `New comment pending approval: ${postSlug}`,
       html: `
         <h2>New Comment Pending Approval</h2>
