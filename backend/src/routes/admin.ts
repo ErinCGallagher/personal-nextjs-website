@@ -36,7 +36,12 @@ router.post("/login", async (req, res, next) => {
 
     if (isValid) {
       req.session.isAdmin = true;
-      res.json({ success: true });
+      req.session.save((err) => {
+        if (err) {
+          return res.status(500).json({ error: "Failed to create session" });
+        }
+        res.json({ success: true });
+      });
     } else {
       res.status(401).json({ error: "Invalid password" });
     }
