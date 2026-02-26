@@ -662,112 +662,6 @@ Modify frontend/app/admin/comments/page.tsx:
 Style using Tailwind classes to match existing admin panel design. Make the AI section visually distinct but not overwhelming.
 ```
 
-### Prompt 10: Enhanced Email Notifications (Pending and Auto-Approved)
-
-```
-Create two types of email notifications: one for pending comments and one for auto-approved comments.
-
-Update backend/src/email.ts:
-
-1. Create sendPendingCommentNotification(comment: Comment, aiReview: AICommentReview | null, notificationEmail: string):
-   - Subject: "New Comment Pending Review"
-   - For comments that need manual review (confidence <= threshold or auto-approve disabled)
-   - Include comment body, author info, post slug
-   - Include AI Review section if aiReview is not null:
-     * Show confidence score as percentage with colour coding
-     * List any flags found as bullet points
-     * Include brief reasoning text
-     * Add disclaimer: "AI assessment provided for reference only. Final moderation decision is at admin discretion."
-   - Include link to admin panel for approval/rejection
-   - Make AI section conditional - only show if aiReview provided
-
-2. Create sendAutoApprovedCommentNotification(comment: Comment, aiReview: AICommentReview, notificationEmail: string):
-   - Subject: "Comment Auto-Approved by AI"
-   - For comments auto-approved based on high confidence
-   - Include message: "This comment was automatically approved based on high AI confidence score (>90%)."
-   - Include comment body, author info, post slug
-   - Include AI Review section showing:
-     * High confidence score with green colour
-     * Reasoning for approval
-     * Any flags (should be empty or minimal)
-   - Include link to admin panel with note: "You can still review or reject this comment if needed."
-   - Style differently to indicate it's already approved
-
-NOTE: These functions are called from processCommentReview() in ai-review.ts (Prompt 6) after the review and potential auto-approval complete.
-
-Test both email templates to ensure they look good and are clearly distinguished.
-```
-
-### Prompt 11: Logging and Monitoring
-
-```
-Add structured logging for AI review operations.
-
-Tasks:
-1. Create backend/src/utils/logger.ts (if doesn't exist) with Winston or similar
-2. Add logging in backend/src/services/ai-review.ts:
-   - Log start of each review (comment ID, timestamp)
-   - Log API call duration
-   - Log success with confidence score and flags
-   - Log failures with error details
-   - Log rate limiting or timeout events
-3. Include structured fields: commentId, postSlug, duration, success, confidenceScore, flags, provider
-
-Optional: Create SQL queries against ai_comment_reviews table to calculate:
-- SELECT status, COUNT(*) FROM ai_comment_reviews GROUP BY status
-- SELECT AVG(confidence_score) FROM ai_comment_reviews WHERE status='completed'
-- SELECT provider, COUNT(*), AVG(api_response_time_ms) FROM ai_comment_reviews GROUP BY provider
-- Most common flags: SELECT flag, COUNT(*) FROM ai_comment_reviews, jsonb_array_elements_text(flags) AS flag GROUP BY flag
-- Error rate by provider
-
-These queries can be added to admin panel later for monitoring dashboard.
-```
-
-### Prompt 12: Configuration and Feature Flags
-
-```
-Add configuration system for AI review and auto-approval features.
-
-Tasks:
-1. Create backend/src/config.ts:
-   - Export config object with validated environment variables
-   - Include:
-     * AI_REVIEW_ENABLED (boolean, default: false)
-     * AI_REVIEW_PROVIDER (string, default: 'gemini')
-     * GEMINI_API_KEY (string, required if AI_REVIEW_ENABLED=true)
-     * AI_AUTO_APPROVE_ENABLED (boolean, default: true)
-     * AI_AUTO_APPROVE_THRESHOLD (number, default: 0.9, range: 0.0-1.0)
-   - Validation rules:
-     * Fail fast if GEMINI_API_KEY missing when AI_REVIEW_ENABLED=true
-     * Validate AI_AUTO_APPROVE_THRESHOLD is between 0 and 1
-     * If AI_AUTO_APPROVE_ENABLED=true but AI_REVIEW_ENABLED=false, throw error (can't auto-approve without AI review)
-   - Use Zod for validation
-
-2. Add new env vars to backend/.env:
-   - AI_REVIEW_ENABLED=true
-   - AI_REVIEW_PROVIDER=gemini
-   - GEMINI_API_KEY=(to be set by user)
-   - AI_AUTO_APPROVE_ENABLED=true
-   - AI_AUTO_APPROVE_THRESHOLD=0.9
-
-3. Update comment submission in backend/src/routes/posts.ts:
-   - Check config.AI_REVIEW_ENABLED before triggering review
-   - Skip AI review entirely if disabled (no record created in ai_comment_reviews)
-   - Comment will simply have null latest_ai_review_id
-
-4. Update processCommentReview() in ai-review.ts:
-   - Import config
-   - Check config.AI_AUTO_APPROVE_ENABLED before auto-approving
-   - Use config.AI_AUTO_APPROVE_THRESHOLD for comparison
-
-5. Update README.md with configuration documentation:
-   - Explain each config option
-   - Recommended threshold values (0.9 or higher)
-   - Warning: Setting threshold too low may auto-approve spam
-   - How to disable auto-approval but keep AI review (set AI_AUTO_APPROVE_ENABLED=false)
-   - How to adjust threshold based on your needs
-```
-
 ### Prompt 13: Integration Testing
 
 ```
@@ -817,19 +711,7 @@ Tasks:
    - Link to Google AI Studio for API key
    - Document configuration options
 
-2. Create backend/docs/ai-review-runbook.md:
-   - Troubleshooting guide for AI review failures
-   - How to disable auto-approval if needed
-   - How to disable entire feature in emergency
-   - SQL queries for monitoring review performance and auto-approval rate
-   - Instructions for switching AI providers in future
-
-3. Add inline code comments explaining:
-   - Why we use fire-and-forget pattern for reviews
-   - Auto-approval threshold reasoning (why 0.9 is recommended)
-   - Why email is sent after review completes
-
-4. Create deployment checklist:
+2. Create deployment checklist:
    - Run migration 005 (creates ai_comment_reviews table)
    - Verify foreign key constraints and indexes created
    - Set GEMINI_API_KEY in production env
@@ -841,6 +723,19 @@ Tasks:
 No code changes needed - documentation only.
 ```
 
+### Prompt 15: Documentation and Deployment Prep
+```
+Finalize documentation and prepare for deployment.
+
+1. Create backend/docs/ai-review-runbook.md:
+   - Troubleshooting guide for AI review failures
+   - How to disable auto-approval if needed
+   - How to disable entire feature in emergency
+   - SQL queries for monitoring review performance and auto-approval rate
+   - Instructions for switching AI providers in future
+
+No code changes needed - documentation only.
+```
 ---
 
 ## Success Criteria
