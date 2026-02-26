@@ -3,7 +3,7 @@
  * Uses Google Gemini to analyze comments for spam, toxicity, relevance, and safety.
  */
 
-import { getGeminiModel } from "./gemini-client";
+import { getGeminiClient } from "./gemini-client";
 import { buildReviewPrompt } from "./ai-review-prompt";
 import { AIReviewResponseSchema, AIReviewResponse } from "../schemas";
 
@@ -59,7 +59,7 @@ export async function reviewComment(
   );
 
   try {
-    const model = getGeminiModel();
+    const client = getGeminiClient();
     const prompt = buildReviewPrompt(commentText, postSlug);
 
     // Create timeout promise (10 seconds)
@@ -68,9 +68,10 @@ export async function reviewComment(
     });
 
     // Call Gemini API with timeout
-    const apiPromise = model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: {
+    const apiPromise = client.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
         temperature: 0.1, // Low temperature for more consistent, predictable responses
         topP: 0.95,
         topK: 40,
@@ -80,8 +81,7 @@ export async function reviewComment(
     });
 
     const result = await Promise.race([apiPromise, timeoutPromise]);
-    const response = await result.response;
-    const responseText = response.text();
+    const responseText = result.text;
 
     const duration = Date.now() - startTime;
     console.log(`[AI Review] Received response in ${duration}ms`);

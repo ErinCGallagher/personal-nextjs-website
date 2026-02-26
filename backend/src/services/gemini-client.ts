@@ -3,13 +3,13 @@
  * Provides a configured Gemini model instance and health check functionality.
  */
 
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
 /**
  * Initialize the Gemini API client
  * @throws {Error} If GEMINI_API_KEY environment variable is not set
  */
-function initializeGeminiClient(): GoogleGenerativeAI {
+function initializeGeminiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -19,21 +19,19 @@ function initializeGeminiClient(): GoogleGenerativeAI {
     );
   }
 
-  return new GoogleGenerativeAI(apiKey);
+  return new GoogleGenAI({ apiKey });
 }
 
 /**
- * Configured Gemini 1.5 Flash model instance for comment review.
- * This model is fast and efficient for content moderation tasks.
+ * Configured Gemini client instance.
  */
-let geminiModel: GenerativeModel | null = null;
+let geminiClient: GoogleGenAI | null = null;
 
-export function getGeminiModel(): GenerativeModel {
-  if (!geminiModel) {
-    const genAI = initializeGeminiClient();
-    geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+export function getGeminiClient(): GoogleGenAI {
+  if (!geminiClient) {
+    geminiClient = initializeGeminiClient();
   }
-  return geminiModel;
+  return geminiClient;
 }
 
 /**
@@ -44,13 +42,14 @@ export function getGeminiModel(): GenerativeModel {
  */
 export async function healthCheck(): Promise<boolean> {
   try {
-    const model = getGeminiModel();
-    const result = await model.generateContent("Hello");
-    const response = await result.response;
-    const text = response.text();
+    const client = getGeminiClient();
+    const result = await client.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: "Hello",
+    });
 
     // If we get any response back, the API is working
-    return text.length > 0;
+    return result.text.length > 0;
   } catch (error) {
     console.error("Gemini API health check failed:", error);
     return false;
