@@ -6,6 +6,17 @@
 import { getGeminiClient } from "./gemini-client";
 import { buildReviewPrompt } from "./ai-review-prompt";
 import { AIReviewResponseSchema, AIReviewResponse } from "../schemas";
+import { config } from "../config";
+import {
+  saveAIReview,
+  markAIReviewError,
+  approveComment,
+  getCommentById,
+} from "../db/ai-reviews";
+import {
+  sendAutoApprovedCommentNotification,
+  sendPendingCommentNotification,
+} from "../email";
 
 /**
  * Error thrown when AI review times out
@@ -146,5 +157,160 @@ export async function reviewComment(
       error
     );
     throw error;
+  }
+}
+
+/**
+ * Processes a comment review end-to-end: calls AI, saves results, auto-approves if applicable, and sends email.
+ * This function is designed to be called asynchronously (fire-and-forget) after comment submission.
+ *
+ * @param commentId - The ID of the comment to review
+ * @param commentText - The text content of the comment
+ * @param postSlug - The slug of the blog post
+ * @param notificationEmail - Email address to send notification to
+ * @param userName - Name of the comment author
+ * @param userEmail - Email of the comment author
+ */
+export async function processCommentReview(
+  commentId: string,
+  commentText: string,
+  postSlug: string,
+  notificationEmail: string,
+  userName: string,
+  userEmail: string
+): Promise<void> {
+  const provider = config.AI_REVIEW_PROVIDER;
+
+  console.log(`[AI Review Process] Starting review for comment ${commentId}`);
+
+  try {
+    // Call AI review service
+    const startTime = Date.now();
+    const reviewResult = await reviewComment(commentText, postSlug);
+    const responseTimeMs = Date.now() - startTime;
+
+    // Save review results to database
+    await saveAIReview(commentId, reviewResult, provider, responseTimeMs);
+
+    console.log(
+      `[AI Review Process] Review saved for comment ${commentId} - Confidence: ${reviewResult.confidenceScore}`
+    );
+
+    // Check if auto-approval should happen
+    if (
+      config.AI_AUTO_APPROVE_ENABLED &&
+      reviewResult.confidenceScore >= config.AI_AUTO_APPROVE_THRESHOLD
+    ) {
+      await approveComment(commentId, "AI-AutoApprove");
+      console.log(
+        `[AI Review Process] Comment ${commentId} auto-approved with confidence ${reviewResult.confidenceScore}`
+      );
+    }
+
+    // Fetch full comment with AI review data to determine email type
+    const comment = await getCommentById(commentId);
+
+    if (!comment) {
+      console.error(
+        `[AI Review Process] Comment ${commentId} not found after review`
+      );
+      return;
+    }
+
+    // Send appropriate email notification based on comment status
+    if (!notificationEmail) {
+      console.warn(
+        `[AI Review Process] No notification email configured, skipping notification for comment ${commentId}`
+      );
+      return;
+    }
+
+    if (comment.status === "Approved") {
+      await sendAutoApprovedCommentNotification({
+        comment: {
+          id: comment.id,
+          post_slug: comment.post_slug,
+          body: comment.body,
+          user_name: comment.user_name || "Unknown User",
+        },
+        aiReview: {
+          confidence_score: reviewResult.confidenceScore,
+          flags: reviewResult.flags,
+          reasoning: reviewResult.reasoning,
+        },
+        notificationEmail,
+        userEmail,
+      });
+      console.log(
+        `[AI Review Process] Auto-approval notification sent for comment ${commentId}`
+      );
+    } else {
+      await sendPendingCommentNotification({
+        comment: {
+          id: comment.id,
+          post_slug: comment.post_slug,
+          body: comment.body,
+          user_name: comment.user_name || "Unknown User",
+        },
+        aiReview: comment.latestAIReview
+          ? {
+              confidence_score: comment.latestAIReview.confidence_score,
+              flags: comment.latestAIReview.flags,
+              reasoning: comment.latestAIReview.reasoning,
+            }
+          : null,
+        notificationEmail,
+        userEmail,
+      });
+      console.log(
+        `[AI Review Process] Pending review notification sent for comment ${commentId}`
+      );
+    }
+  } catch (error) {
+    // Mark review as failed in database
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    try {
+      await markAIReviewError(commentId, errorMessage, provider);
+      console.error(
+        `[AI Review Process] Review failed for comment ${commentId}, error recorded:`,
+        errorMessage
+      );
+    } catch (dbError) {
+      console.error(
+        `[AI Review Process] Failed to record error for comment ${commentId}:`,
+        dbError
+      );
+    }
+
+    // Fetch comment and send pending notification even if review failed
+    if (notificationEmail) {
+      try {
+        const comment = await getCommentById(commentId);
+
+        if (comment) {
+          await sendPendingCommentNotification({
+            comment: {
+              id: comment.id,
+              post_slug: comment.post_slug,
+              body: comment.body,
+              user_name: comment.user_name || "Unknown User",
+            },
+            aiReview: null, // No review data since it failed
+            notificationEmail,
+            userEmail,
+          });
+          console.log(
+            `[AI Review Process] Pending notification sent for comment ${commentId} after review failure`
+          );
+        }
+      } catch (notificationError) {
+        console.error(
+          `[AI Review Process] Failed to send notification for comment ${commentId}:`,
+          notificationError
+        );
+      }
+    }
   }
 }

@@ -13,6 +13,8 @@ import {
 import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rate-limiters";
 import { z } from "zod";
 import { sendNewCommentNotification } from "../email";
+import { config } from "../config";
+import { processCommentReview } from "../services/ai-review";
 import {
   getLikeStats,
   ensurePostExists,
@@ -153,15 +155,42 @@ router.post("/:slug/comment", readLimiter, async (req, res, next) => {
 
     const comment = await createComment(slug, anonymous_id, body);
 
-    // Send email notification asynchronously
-    sendNewCommentNotification({
-      postSlug: slug,
-      commentBody: body,
-      userName: name,
-      userEmail: email,
-    }).catch((error) => {
-      console.error("Failed to send comment notification email:", error);
-    });
+    // Determine notification email
+    const notificationEmail = process.env.NOTIFICATION_EMAIL;
+
+    if (config.AI_REVIEW_ENABLED && notificationEmail) {
+      // Trigger AI review asynchronously (fire-and-forget)
+      // The review process will auto-approve if confidence is high and send appropriate email
+      Promise.resolve()
+        .then(async () => {
+          await processCommentReview(
+            comment.id,
+            body,
+            slug,
+            notificationEmail,
+            name,
+            email
+          );
+        })
+        .catch((error) => {
+          console.error(
+            "AI review process failed for comment",
+            comment.id,
+            ":",
+            error
+          );
+        });
+    } else {
+      // Fallback to immediate email notification if AI review is disabled
+      sendNewCommentNotification({
+        postSlug: slug,
+        commentBody: body,
+        userName: name,
+        userEmail: email,
+      }).catch((error) => {
+        console.error("Failed to send comment notification email:", error);
+      });
+    }
 
     res.status(201).json(comment);
   } catch (err) {
