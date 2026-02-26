@@ -18,6 +18,7 @@ const router = Router();
 
 // GET /api/admin/comments?status=Pending
 // Lists comments filtered by status (default: all)
+// Includes AI review data (confidence score, flags, reasoning) via LEFT JOIN
 router.get("/comments", requireAdmin, async (req, res, next) => {
   try {
     const schema = z.object({
@@ -38,6 +39,7 @@ router.get("/comments", requireAdmin, async (req, res, next) => {
 
     const comments = await getAllComments(status as CommentStatus | undefined);
 
+    // Comments include latestAIReview field with AI review data (or null if no review)
     res.json(comments);
   } catch (err) {
     next(err);

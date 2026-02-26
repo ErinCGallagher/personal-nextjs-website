@@ -1,6 +1,6 @@
 /**
  * Admin comments page.
- * Displays comments with approve/reject functionality.
+ * Displays comments with approve/reject functionality and AI review data.
  * Auth check happens client-side in CommentsClient component.
  */
 import CommentsClient from "./client";

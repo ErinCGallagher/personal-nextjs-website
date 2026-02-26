@@ -11,6 +11,7 @@ beforeAll(async () => {
 
 afterEach(async () => {
   // Clean up all tables in correct order to respect foreign key constraints
+  await pool.query("DELETE FROM ai_comment_reviews");
   await pool.query("DELETE FROM comments");
   await pool.query("DELETE FROM post_likes");
   await pool.query("DELETE FROM posts");
