@@ -10,38 +10,38 @@
 
 ## Phase 1: Foundation
 
-- [ ] **Step 1**: Add database schema for AI reviews
-  - [ ] Create migration file 005_create_ai_comment_reviews.sql
-  - [ ] Create ai_comment_reviews table with all fields (id, comment_id, provider, etc.)
-  - [ ] Add indexes on comment_id and status
-  - [ ] Add latest_ai_review_id column to comments table
-  - [ ] Set up foreign key with CASCADE delete
-  - [ ] Run migration on local database
-  - [ ] Update TypeScript types in models.ts (add AICommentReview interface, update Comment type)
+- [✓] **Step 1**: Add database schema for AI reviews
+  - [✓] Create migration file 005_create_ai_comment_reviews.sql
+  - [✓] Create ai_comment_reviews table with all fields (id, comment_id, provider, etc.)
+  - [✓] Add indexes on comment_id and status
+  - [✓] Add latest_ai_review_id column to comments table
+  - [✓] Set up foreign key with CASCADE delete
+  - [✓] Run migration on local database
+  - [✓] Update TypeScript types in models.ts (add AICommentReview interface, update Comment type)
 
-- [ ] **Step 2**: Set up Gemini API integration
-  - [ ] Install @google/generative-ai package
-  - [ ] Obtain GEMINI_API_KEY from Google AI Studio
-  - [ ] Create gemini-client.ts with client initialization
-  - [ ] Implement health check function
-  - [ ] Test API connectivity
+- [✓] **Step 2**: Set up Gemini API integration
+  - [✓] Install @google/generative-ai package
+  - [✓] Obtain GEMINI_API_KEY from Google AI Studio
+  - [✓] Create gemini-client.ts with client initialization
+  - [✓] Implement health check function
+  - [✓] Test API connectivity
 
-- [ ] **Step 3**: Design AI review prompt & response schema
-  - [ ] Create ai-review-prompt.ts with buildReviewPrompt()
-  - [ ] Define review criteria in prompt
-  - [ ] Add AIReviewResponseSchema to schemas.ts
-  - [ ] Document flag values
+- [✓] **Step 3**: Design AI review prompt & response schema
+  - [✓] Create ai-review-prompt.ts with buildReviewPrompt()
+  - [✓] Define review criteria in prompt
+  - [✓] Add AIReviewResponseSchema to schemas.ts
+  - [✓] Document flag values
 
 ---
 
 ## Phase 2: Core AI Review Service
 
-- [ ] **Step 4**: Implement AI review service
-  - [ ] Create ai-review.ts with reviewComment()
-  - [ ] Integrate Gemini API call
-  - [ ] Add error handling (timeout, invalid JSON, rate limiting)
-  - [ ] Add request logging
-  - [ ] Write unit tests
+- [✓] **Step 4**: Implement AI review service
+  - [✓] Create ai-review.ts with reviewComment()
+  - [✓] Integrate Gemini API call
+  - [✓] Add error handling (timeout, invalid JSON, rate limiting)
+  - [✓] Add request logging
+  - [✓] Write unit tests
 
 - [ ] **Step 5**: Add database functions for AI review data
   - [ ] Create saveAIReview() function (INSERT into ai_comment_reviews, UPDATE comments.latest_ai_review_id)
