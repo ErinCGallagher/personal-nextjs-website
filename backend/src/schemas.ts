@@ -37,3 +37,15 @@ export const travelEntrySchema = z.object({
   rental_car: z.string().max(255).trim().nullable(),
   notes: z.string().trim().nullable(),
 });
+
+/**
+ * Schema for AI review response from Gemini API.
+ * Validates the structure of the AI's comment moderation assessment.
+ */
+export const AIReviewResponseSchema = z.object({
+  confidenceScore: z.number().min(0).max(1),
+  flags: z.array(z.string()),
+  reasoning: z.string(),
+});
+
+export type AIReviewResponse = z.infer<typeof AIReviewResponseSchema>;
