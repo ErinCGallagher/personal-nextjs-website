@@ -83,6 +83,10 @@ export async function reviewComment(
     const result = await Promise.race([apiPromise, timeoutPromise]);
     const responseText = result.text;
 
+    if (!responseText) {
+      throw new AIReviewInvalidResponseError("Empty response from Gemini API");
+    }
+
     const duration = Date.now() - startTime;
     console.log(`[AI Review] Received response in ${duration}ms`);
 

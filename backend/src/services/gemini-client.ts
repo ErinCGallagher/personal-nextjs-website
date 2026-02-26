@@ -49,7 +49,7 @@ export async function healthCheck(): Promise<boolean> {
     });
 
     // If we get any response back, the API is working
-    return result.text.length > 0;
+    return result.text ? result.text.length > 0 : false;
   } catch (error) {
     console.error("Gemini API health check failed:", error);
     return false;
