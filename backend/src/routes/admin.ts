@@ -8,12 +8,13 @@ import bcrypt from "bcrypt";
 import pool from "../db";
 import { requireAdmin } from "../middleware/admin-auth";
 import { CommentRow, CommentStatus, TravelEntry } from "../models";
+import { loginLimiter } from "../rate-limiters";
 
 const router = Router();
 
 // POST /api/admin/login
 // Authenticates admin with password
-router.post("/login", async (req, res, next) => {
+router.post("/login", loginLimiter, async (req, res, next) => {
   try {
     const schema = z.object({
       password: z.string(),
