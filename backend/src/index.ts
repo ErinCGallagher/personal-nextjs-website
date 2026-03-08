@@ -8,6 +8,7 @@ import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
 import adminRouter from "./routes/admin";
+import travelRouter from "./routes/travel";
 import pool from "./db";
 
 const app = express();
@@ -54,6 +55,9 @@ app.use("/api/posts", postsRouter);
 
 // Admin routes: authentication and comment moderation
 app.use("/api/admin", adminRouter);
+
+// Travel routes: public travel visualization data
+app.use("/api/travel", travelRouter);
 
 app.use(errorHandler);
 
