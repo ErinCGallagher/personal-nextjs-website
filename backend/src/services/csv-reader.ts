@@ -46,7 +46,9 @@ export async function readTravelCSV(): Promise<TravelEntry[]> {
     return [];
   }
 
-  const csvHeaders = Object.keys(data[0]).map((h) => h.toLowerCase().trim());
+  const csvHeaders = Object.keys(data[0]).map((h) =>
+    h.toLowerCase().trim().replace(/\s+/g, "_"),
+  );
   const expectedLower = EXPECTED_HEADERS.map((h) => h.toLowerCase());
 
   // Check that all required headers exist
@@ -70,7 +72,8 @@ export async function readTravelCSV(): Promise<TravelEntry[]> {
       const lowerExpected = expectedHeader.toLowerCase();
       // Find the matching key in the row (case-insensitive)
       const matchingKey = Object.keys(row).find(
-        (key) => key.toLowerCase().trim() === lowerExpected,
+        (key) =>
+          key.toLowerCase().trim().replace(/\s+/g, "_") === lowerExpected,
       );
       if (matchingKey !== undefined) {
         const value = row[matchingKey];

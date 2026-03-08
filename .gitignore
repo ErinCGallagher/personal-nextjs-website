@@ -19,7 +19,7 @@ frontend/out/
 backend/dist
 
 # backend data
-backend/data
+backend/data/
 
 # misc
 .DS_Store

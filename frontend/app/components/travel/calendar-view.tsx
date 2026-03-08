@@ -316,9 +316,11 @@ export default function CalendarView({ travels }: CalendarViewProps) {
                   <div className="text-xs sm:text-xs text-gray-900">
                     <div className="font-medium text-xs">{travel.country}</div>
                     <div className="text-gray-800 text-xs">{travel.city}</div>
-                    {travel.notes && (
-                      <div className="text-gray-700 mt-0.5 text-xs">📝</div>
-                    )}
+                    <div className="text-gray-700 mt-0.5 text-xs flex gap-1">
+                      {travel.flight && <span>✈️</span>}
+                      {travel.rental_car && <span>🚗</span>}
+                      {travel.notes && <span>📝</span>}
+                    </div>
                   </div>
                 )}
               </div>
