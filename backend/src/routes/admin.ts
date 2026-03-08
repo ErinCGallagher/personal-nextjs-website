@@ -7,8 +7,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import pool from "../db";
 import { requireAdmin } from "../middleware/admin-auth";
-import { CommentRow, CommentStatus } from "../models";
-import { readTravelCSV } from "../services/csv-reader";
+import { CommentRow, CommentStatus, TravelEntry } from "../models";
 
 const router = Router();
 
@@ -156,16 +155,25 @@ router.patch("/comments/:id", requireAdmin, async (req, res, next) => {
 });
 
 // GET /api/admin/travel
-router.get("/travel", async (req, res) => {
+// Returns all travel itinerary entries from database
+router.get("/travel", requireAdmin, async (req, res, next) => {
   try {
-    const travels = await readTravelCSV();
-    res.json(travels);
-  } catch (error) {
-    console.error("Error reading travel data:", error);
-    res.status(500).json({
-      error:
-        error instanceof Error ? error.message : "Failed to load travel data",
-    });
+    const { rows } = await pool.query<TravelEntry>(
+      `SELECT
+        date,
+        country,
+        city,
+        hotel,
+        flight,
+        rental_car,
+        notes
+      FROM travel_itinerary
+      ORDER BY date ASC`,
+    );
+
+    res.json(rows);
+  } catch (err) {
+    next(err);
   }
 });
 

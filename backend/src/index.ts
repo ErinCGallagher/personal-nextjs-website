@@ -8,7 +8,6 @@ import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
 import adminRouter from "./routes/admin";
-import travelRouter from "./routes/travel";
 import pool from "./db";
 
 const app = express();
