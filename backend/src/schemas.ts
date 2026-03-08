@@ -33,5 +33,7 @@ export const travelEntrySchema = z.object({
   country: z.string().max(100).trim(),
   city: z.string().max(100).trim(),
   hotel: z.string().max(255).trim().nullable(),
+  flight: z.string().max(255).trim().nullable(),
+  rental_car: z.string().max(255).trim().nullable(),
   notes: z.string().trim().nullable(),
 });

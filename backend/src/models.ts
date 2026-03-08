@@ -14,6 +14,8 @@ export interface TravelEntry {
   country: string;
   city: string;
   hotel: string | null;
+  flight: string | null;
+  rental_car: string | null;
   notes: string | null;
 }
 

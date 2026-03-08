@@ -27,9 +27,9 @@ describe("readTravelCSV", () => {
   });
 
   it("successfully parses valid CSV with all required columns", async () => {
-    const csvContent = `date,country,city,hotel,notes
-2026-01-01,USA,New York,Hotel A,Great stay
-2026-01-02,Canada,Toronto,Hotel B,Amazing city`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+2026-01-01,USA,New York,Hotel A,Flight 123,Car A,Great stay
+2026-01-02,Canada,Toronto,Hotel B,Flight 456,Car B,Amazing city`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -41,6 +41,8 @@ describe("readTravelCSV", () => {
       country: "USA",
       city: "New York",
       hotel: "Hotel A",
+      flight: "Flight 123",
+      rental_car: "Car A",
       notes: "Great stay",
     });
     expect(result[1]).toEqual({
@@ -48,14 +50,16 @@ describe("readTravelCSV", () => {
       country: "Canada",
       city: "Toronto",
       hotel: "Hotel B",
+      flight: "Flight 456",
+      rental_car: "Car B",
       notes: "Amazing city",
     });
   });
 
   it("parses human-readable dates to ISO format", async () => {
-    const csvContent = `date,country,city,hotel,notes
-"Thursday, January 1",USA,New York,Hotel A,Great stay
-"Friday, January 2",Canada,Toronto,Hotel B,Amazing city`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+"Thursday, January 1",USA,New York,Hotel A,Flight 123,Car A,Great stay
+"Friday, January 2",Canada,Toronto,Hotel B,Flight 456,Car B,Amazing city`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -67,9 +71,9 @@ describe("readTravelCSV", () => {
   });
 
   it("filters out extra columns and only processes expected headers", async () => {
-    const csvContent = `date,country,city,hotel,notes,extra_col1,extra_col2
-2026-01-01,USA,New York,Hotel A,Great stay,ignore,this
-2026-01-02,Canada,Toronto,Hotel B,Amazing city,also,ignore`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes,extra_col1,extra_col2
+2026-01-01,USA,New York,Hotel A,Flight 123,Car A,Great stay,ignore,this
+2026-01-02,Canada,Toronto,Hotel B,Flight 456,Car B,Amazing city,also,ignore`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -81,6 +85,8 @@ describe("readTravelCSV", () => {
       country: "USA",
       city: "New York",
       hotel: "Hotel A",
+      flight: "Flight 123",
+      rental_car: "Car A",
       notes: "Great stay",
     });
     // Extra columns should not appear in the result
@@ -89,8 +95,8 @@ describe("readTravelCSV", () => {
   });
 
   it("handles case-insensitive header matching", async () => {
-    const csvContent = `Date,Country,CITY,Hotel,NOTES
-2026-01-01,USA,New York,Hotel A,Great stay`;
+    const csvContent = `Date,Country,CITY,Hotel,Flight,Rental_Car,NOTES
+2026-01-01,USA,New York,Hotel A,Flight 123,Car A,Great stay`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -102,16 +108,18 @@ describe("readTravelCSV", () => {
       country: "USA",
       city: "New York",
       hotel: "Hotel A",
+      flight: "Flight 123",
+      rental_car: "Car A",
       notes: "Great stay",
     });
   });
 
   it("skips rows with missing required fields", async () => {
-    const csvContent = `date,country,city,hotel,notes
-2026-01-01,USA,New York,Hotel A,Great stay
-2026-01-02,,Toronto,Hotel B,Amazing city
-2026-01-03,Canada,,Hotel C,Good place
-2026-01-04,France,Paris,Hotel D,Wonderful`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+2026-01-01,USA,New York,Hotel A,Flight 123,Car A,Great stay
+2026-01-02,,Toronto,Hotel B,Flight 456,Car B,Amazing city
+2026-01-03,Canada,,Hotel C,Flight 789,Car C,Good place
+2026-01-04,France,Paris,Hotel D,Flight 101,Car D,Wonderful`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -123,11 +131,11 @@ describe("readTravelCSV", () => {
   });
 
   it("handles nullable hotel and notes fields", async () => {
-    const csvContent = `date,country,city,hotel,notes
-2026-01-01,USA,New York,,Great stay
-2026-01-02,Canada,Toronto,Hotel B,
-2026-01-03,France,Paris,,
-2026-01-04,UK,London,,`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+2026-01-01,USA,New York,,Flight 123,Car A,Great stay
+2026-01-02,Canada,Toronto,Hotel B,Flight 456,,Amazing city
+2026-01-03,France,Paris,,Flight 789,Car C,
+2026-01-04,UK,London,,,Car D,`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -135,18 +143,24 @@ describe("readTravelCSV", () => {
 
     expect(result).toHaveLength(4);
     expect(result[0].hotel).toBeNull();
+    expect(result[0].flight).toBe("Flight 123");
+    expect(result[0].rental_car).toBe("Car A");
     expect(result[0].notes).toBe("Great stay");
     expect(result[1].hotel).toBe("Hotel B");
-    expect(result[1].notes).toBeNull();
+    expect(result[1].flight).toBe("Flight 456");
+    expect(result[1].rental_car).toBeNull();
+    expect(result[1].notes).toBe("Amazing city");
     expect(result[2].hotel).toBeNull();
+    expect(result[2].flight).toBe("Flight 789");
+    expect(result[2].rental_car).toBe("Car C");
     expect(result[2].notes).toBeNull();
   });
 
   it("sorts entries by date ascending", async () => {
-    const csvContent = `date,country,city,hotel,notes
-2026-01-03,France,Paris,Hotel C,Third
-2026-01-01,USA,New York,Hotel A,First
-2026-01-02,Canada,Toronto,Hotel B,Second`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+2026-01-03,France,Paris,Hotel C,Flight 789,Car C,Third
+2026-01-01,USA,New York,Hotel A,Flight 123,Car A,First
+2026-01-02,Canada,Toronto,Hotel B,Flight 456,Car B,Second`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -171,7 +185,7 @@ describe("readTravelCSV", () => {
     mockFs.readFile.mockResolvedValue(csvContent);
 
     await expect(readTravelCSV()).rejects.toThrow(
-      "CSV is missing required headers: city",
+      "CSV is missing required headers: city, flight, rental_car",
     );
   });
 
@@ -186,7 +200,7 @@ describe("readTravelCSV", () => {
   });
 
   it("returns empty array for empty CSV after headers", async () => {
-    const csvContent = `date,country,city,hotel,notes`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -196,8 +210,8 @@ describe("readTravelCSV", () => {
   });
 
   it("handles whitespace trimming in values", async () => {
-    const csvContent = `date,country,city,hotel,notes
-  2026-01-01  ,  USA  ,  New York  ,  Hotel A  ,  Great stay  `;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+  2026-01-01  ,  USA  ,  New York  ,  Hotel A  ,  Flight 123  ,  Car A  ,  Great stay  `;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 
@@ -209,13 +223,15 @@ describe("readTravelCSV", () => {
       country: "USA",
       city: "New York",
       hotel: "Hotel A",
+      flight: "Flight 123",
+      rental_car: "Car A",
       notes: "Great stay",
     });
   });
 
   it("validates data against Zod schema", async () => {
-    const csvContent = `date,country,city,hotel,notes
-2026-13-45,USA,New York,Hotel A,Great stay`;
+    const csvContent = `date,country,city,hotel,flight,rental_car,notes
+2026-13-45,USA,New York,Hotel A,Flight 123,Car A,Great stay`;
 
     mockFs.readFile.mockResolvedValue(csvContent);
 

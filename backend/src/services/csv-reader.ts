@@ -8,7 +8,15 @@ import Papa from "papaparse";
 import { TravelEntry } from "../models";
 import { travelEntrySchema } from "../schemas";
 
-const EXPECTED_HEADERS = ["date", "country", "city", "hotel", "notes"];
+const EXPECTED_HEADERS = [
+  "date",
+  "country",
+  "city",
+  "hotel",
+  "flight",
+  "rental_car",
+  "notes",
+];
 
 export async function readTravelCSV(): Promise<TravelEntry[]> {
   const csvPath = path.join(__dirname, "../../data/travel-itinerary.csv");
@@ -102,6 +110,8 @@ export async function readTravelCSV(): Promise<TravelEntry[]> {
       country: normalizedRow.country || "",
       city: normalizedRow.city || "",
       hotel: normalizedRow.hotel || null,
+      flight: normalizedRow.flight || null,
+      rental_car: normalizedRow.rental_car || null,
       notes: normalizedRow.notes || null,
     };
 
