@@ -10,9 +10,6 @@ importers:
 
   backend:
     dependencies:
-      '@types/papaparse':
-        specifier: ^5.5.2
-        version: 5.5.2
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -68,6 +65,9 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.19.25
+      '@types/papaparse':
+        specifier: ^5.5.2
+        version: 5.5.2
       '@types/pg':
         specifier: ^8.16.0
         version: 8.16.0

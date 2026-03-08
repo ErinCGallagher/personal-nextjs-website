@@ -48,7 +48,7 @@ app.use(
       sameSite: "lax",
       path: "/",
     },
-  })
+  }),
 );
 
 // GET /health
@@ -70,9 +70,6 @@ app.use("/api/posts", postsRouter);
 
 // Admin routes: authentication and comment moderation
 app.use("/api/admin", adminRouter);
-
-// Travel routes: public travel visualization data
-app.use("/api/travel", travelRouter);
 
 app.use(errorHandler);
 

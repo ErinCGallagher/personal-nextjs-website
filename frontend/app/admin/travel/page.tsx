@@ -16,7 +16,7 @@ export default async function TravelPage() {
   let error: string | null = null;
 
   try {
-    const response = await fetch(api.travel(), {
+    const response = await fetch(api.admin.travel(), {
       cache: "no-store", // Always get fresh data
     });
 
