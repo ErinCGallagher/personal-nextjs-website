@@ -1,9 +1,11 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+/**
+ * Admin travel itinerary page.
+ * Displays sabbatical travel schedule.
+ */
+import { cookies } from "next/headers";
+import { requireAdmin } from "@/app/lib/auth";
 import { api } from "@/app/lib/api";
-import CalendarView from "@/app/components/travel/calendar-view";
+import TravelClient from "./client";
 
 interface TravelEntry {
   date: string;
@@ -15,71 +17,33 @@ interface TravelEntry {
   notes: string | null;
 }
 
-export default function TravelPage() {
-  const [travels, setTravels] = useState<TravelEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+async function getTravelData(): Promise<TravelEntry[]> {
+  // Get session cookie to pass to backend
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("sessionId");
 
-  useEffect(() => {
-    fetchTravelData();
-  }, []);
+  // Call backend to get travel data
+  const response = await fetch(api.admin.travel(), {
+    headers: {
+      Cookie: sessionCookie ? `sessionId=${sessionCookie.value}` : "",
+    },
+    cache: "no-store", // Ensure fresh data
+  });
 
-  async function fetchTravelData() {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(api.admin.travel(), {
-        credentials: "include",
-      });
-
-      if (response.status === 401) {
-        router.push("/admin");
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch travel data");
-      }
-
-      const data = await response.json();
-      setTravels(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      console.error("Error fetching travel data:", err);
-    } finally {
-      setLoading(false);
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch travel data");
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="px-4 sm:px-6 py-16">
-        <div className="w-full mx-auto px-6 md:px-12 py-12 bg-white text-foreground rounded-lg">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-10">
-            Sabbatical Travel Itinerary
-          </h1>
+  return response.json();
+}
 
-          {loading && (
-            <p className="text-foreground/60">Loading travel data...</p>
-          )}
+export default async function TravelPage() {
+  // Verify auth server-side - throws if not authenticated
+  await requireAdmin();
 
-          {error && (
-            <div className="text-red-600 mb-4">
-              Error loading travel data: {error}
-            </div>
-          )}
+  // Fetch travel data server-side
+  const travels = await getTravelData();
 
-          {!loading && !error && travels.length === 0 && (
-            <p className="text-foreground/60">No travel entries found.</p>
-          )}
-
-          {!loading && !error && travels.length > 0 && (
-            <CalendarView travels={travels} />
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  // Render Client Component with data
+  return <TravelClient initialTravels={travels} />;
 }

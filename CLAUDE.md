@@ -101,3 +101,9 @@ Find the root cause — never patch a symptom. One hypothesis at a time; smalles
 - Semantic commits (`fix:`, `feat:`, `chore:`), first line ≤ 80 chars
 - Never add AI as coauthor; create a WIP branch if none exists
 - Double quotes `"` not single `'`
+
+## Planning
+
+- Never create `todo.md` files — use the TodoWrite tool for progress tracking instead
+- Store plan documents in `.claude/claude-plan/` with descriptive names (e.g., `auth-plan.md`, not `plan.md`)
+- Plans should include implementation steps, prompts for LLMs, and context for future reference

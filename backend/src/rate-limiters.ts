@@ -35,3 +35,15 @@ export const readLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Login rate limiter to prevent brute force attacks.
+// Skipped in tests to avoid interference with other test cases.
+// TODO: Create isolated test for rate limiting behaviour.
+export const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 5, // 5 requests in 15 min
+  message: "Too many login attempts. Please try again later.",
+  skip: () => isTest,
+  standardHeaders: true,
+  legacyHeaders: true,
+});
