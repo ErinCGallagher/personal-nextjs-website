@@ -9,6 +9,14 @@ export enum CommentStatus {
   Rejected = "Rejected",
 }
 
+export interface TravelEntry {
+  date: string;
+  country: string;
+  city: string;
+  hotel: string | null;
+  notes: string | null;
+}
+
 export interface CommentRow {
   id: string;
   post_slug: string;
