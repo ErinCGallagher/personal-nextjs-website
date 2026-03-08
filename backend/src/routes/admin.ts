@@ -160,7 +160,7 @@ router.get("/travel", requireAdmin, async (req, res, next) => {
   try {
     const { rows } = await pool.query<TravelEntry>(
       `SELECT
-        date,
+        TO_CHAR(date, 'YYYY-MM-DD') as date,
         country,
         city,
         hotel,
