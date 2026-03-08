@@ -3,7 +3,7 @@
  * they can be updated in one place.
  */
 
-const baseUrl = "";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
 export const api = {
   posts: {
@@ -21,5 +21,6 @@ export const api = {
         ? `${baseUrl}/api/admin/comments?status=${status}`
         : `${baseUrl}/api/admin/comments`,
     updateComment: (id: string) => `${baseUrl}/api/admin/comments/${id}`,
+    travel: () => `${baseUrl}/api/admin/travel`,
   },
 };

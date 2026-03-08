@@ -47,7 +47,7 @@ app.use(
       sameSite: "lax",
       path: "/",
     },
-  })
+  }),
 );
 
 // GET /health

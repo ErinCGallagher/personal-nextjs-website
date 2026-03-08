@@ -7,7 +7,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import pool from "../db";
 import { requireAdmin } from "../middleware/admin-auth";
-import { CommentRow, CommentStatus } from "../models";
+import { CommentRow, CommentStatus, TravelEntry } from "../models";
 
 const router = Router();
 
@@ -149,6 +149,29 @@ router.patch("/comments/:id", requireAdmin, async (req, res, next) => {
     }
 
     res.json(rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/admin/travel
+// Returns all travel itinerary entries from database
+router.get("/travel", requireAdmin, async (req, res, next) => {
+  try {
+    const { rows } = await pool.query<TravelEntry>(
+      `SELECT
+        TO_CHAR(date, 'YYYY-MM-DD') as date,
+        country,
+        city,
+        hotel,
+        flight,
+        rental_car,
+        notes
+      FROM travel_itinerary
+      ORDER BY date ASC`,
+    );
+
+    res.json(rows);
   } catch (err) {
     next(err);
   }
