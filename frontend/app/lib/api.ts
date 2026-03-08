@@ -3,7 +3,7 @@
  * they can be updated in one place.
  */
 
-const baseUrl = "";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
 export const api = {
   posts: {

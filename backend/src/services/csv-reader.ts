@@ -41,9 +41,13 @@ export async function readTravelCSV(): Promise<TravelEntry[]> {
   const csvHeaders = Object.keys(data[0]).map((h) => h.toLowerCase().trim());
   const expectedLower = EXPECTED_HEADERS.map((h) => h.toLowerCase());
 
-  if (!expectedLower.every((header) => csvHeaders.includes(header))) {
+  // Check that all required headers exist
+  const missingHeaders = expectedLower.filter(
+    (header) => !csvHeaders.includes(header),
+  );
+  if (missingHeaders.length > 0) {
     throw new Error(
-      `CSV headers do not match expected format. Expected: ${EXPECTED_HEADERS.join(", ")}, Got: ${csvHeaders.join(", ")}`,
+      `CSV is missing required headers: ${missingHeaders.join(", ")}. Expected: ${EXPECTED_HEADERS.join(", ")}`,
     );
   }
 
@@ -52,16 +56,49 @@ export async function readTravelCSV(): Promise<TravelEntry[]> {
   for (let i = 0; i < data.length; i++) {
     const row = data[i];
 
-    // Normalize keys to lowercase for case-insensitive matching
+    // Normalize keys to lowercase and filter to only expected headers
     const normalizedRow: Record<string, string | null> = {};
-    for (const [key, value] of Object.entries(row)) {
-      const lowerKey = key.toLowerCase().trim();
-      normalizedRow[lowerKey] = value && value.trim() ? value.trim() : null;
+    for (const expectedHeader of EXPECTED_HEADERS) {
+      const lowerExpected = expectedHeader.toLowerCase();
+      // Find the matching key in the row (case-insensitive)
+      const matchingKey = Object.keys(row).find(
+        (key) => key.toLowerCase().trim() === lowerExpected,
+      );
+      if (matchingKey !== undefined) {
+        const value = row[matchingKey];
+        normalizedRow[lowerExpected] =
+          value && value.trim() ? value.trim() : null;
+      } else {
+        normalizedRow[lowerExpected] = null;
+      }
     }
 
-    // Extract and validate fields
+    // Skip rows that don't have required fields (date, country, city)
+    if (!normalizedRow.date || !normalizedRow.country || !normalizedRow.city) {
+      console.log(`Skipping row ${i + 2}: missing required fields`);
+      continue;
+    }
+
+    // Parse human-readable dates like "Thursday, December 18" to ISO format
+    let dateValue = normalizedRow.date;
+
+    // Parse human-readable dates like "Thursday, December 18" to ISO format
+    if (dateValue && !dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      try {
+        // Assume dates are in current year (2026) if not specified
+        const currentYear = 2026;
+        const parsedDate = new Date(`${dateValue}, ${currentYear}`);
+        if (!isNaN(parsedDate.getTime())) {
+          dateValue = parsedDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+        }
+      } catch (error) {
+        // If parsing fails, keep original value and let validation handle it
+        console.warn(`Could not parse date "${dateValue}", using as-is`);
+      }
+    }
+
     const entry = {
-      date: normalizedRow.date || "",
+      date: dateValue,
       country: normalizedRow.country || "",
       city: normalizedRow.city || "",
       hotel: normalizedRow.hotel || null,
