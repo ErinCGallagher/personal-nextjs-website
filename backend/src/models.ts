@@ -38,6 +38,7 @@ export interface AICommentReview {
   api_response_time_ms: number | null;
   created_at: Date;
 }
+
 export interface CommentRow {
   id: string;
   post_slug: string;
