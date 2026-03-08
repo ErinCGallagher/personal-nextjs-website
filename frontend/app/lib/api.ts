@@ -13,6 +13,7 @@ export const api = {
     comments: (slug: string) => `${baseUrl}/api/posts/${slug}/comments`,
     comment: (slug: string) => `${baseUrl}/api/posts/${slug}/comment`,
   },
+  travel: () => `${baseUrl}/api/travel`,
   admin: {
     login: () => `${baseUrl}/api/admin/login`,
     logout: () => `${baseUrl}/api/admin/logout`,
