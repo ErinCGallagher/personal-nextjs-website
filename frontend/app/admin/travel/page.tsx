@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "@/app/lib/api";
 import CalendarView from "@/app/components/travel/calendar-view";
 
@@ -11,23 +15,42 @@ interface TravelEntry {
   notes: string | null;
 }
 
-export default async function TravelPage() {
-  let travels: TravelEntry[] = [];
-  let error: string | null = null;
+export default function TravelPage() {
+  const [travels, setTravels] = useState<TravelEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  try {
-    const response = await fetch(api.admin.travel(), {
-      cache: "no-store", // Always get fresh data
-    });
+  useEffect(() => {
+    fetchTravelData();
+  }, []);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch travel data");
+  async function fetchTravelData() {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(api.admin.travel(), {
+        credentials: "include",
+      });
+
+      if (response.status === 401) {
+        router.push("/admin");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch travel data");
+      }
+
+      const data = await response.json();
+      setTravels(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error fetching travel data:", err);
+    } finally {
+      setLoading(false);
     }
-
-    travels = await response.json();
-  } catch (err) {
-    error = err instanceof Error ? err.message : "An error occurred";
-    console.error("Error fetching travel data:", err);
   }
 
   return (
@@ -38,17 +61,23 @@ export default async function TravelPage() {
             Sabbatical Travel Itinerary
           </h1>
 
+          {loading && (
+            <p className="text-foreground/60">Loading travel data...</p>
+          )}
+
           {error && (
             <div className="text-red-600 mb-4">
               Error loading travel data: {error}
             </div>
           )}
 
-          {!error && travels.length === 0 && (
+          {!loading && !error && travels.length === 0 && (
             <p className="text-foreground/60">No travel entries found.</p>
           )}
 
-          {!error && travels.length > 0 && <CalendarView travels={travels} />}
+          {!loading && !error && travels.length > 0 && (
+            <CalendarView travels={travels} />
+          )}
         </div>
       </div>
     </div>
