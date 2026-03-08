@@ -6,7 +6,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getCountryColor, getCountryBorderColor } from "@/app/lib/color-utils";
+import {
+  getCountryColor,
+  getCountryBorderColor,
+  getCountryFlag,
+} from "@/app/lib/color-utils";
+import { FaTimes, FaHotel } from "react-icons/fa";
 
 interface TravelEntry {
   date: string;
@@ -36,6 +41,20 @@ export default function CalendarView({ travels }: CalendarViewProps) {
     null,
   );
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedTravel) {
+        setSelectedTravel(null);
+      }
+    };
+
+    if (selectedTravel) {
+      document.addEventListener("keydown", handleEsc);
+      return () => document.removeEventListener("keydown", handleEsc);
+    }
+  }, [selectedTravel]);
 
   // Group travels by month
   const travelsByMonth = travels.reduce(
@@ -123,6 +142,36 @@ export default function CalendarView({ travels }: CalendarViewProps) {
     return travels.find((t) => t.date === dateStr) || null;
   }
 
+  // Helper function to detect stay position for multi-day styling
+  function getStayPosition(
+    date: Date,
+    travels: TravelEntry[],
+  ): "single" | "start" | "middle" | "end" {
+    const currentTravel = getTravelForDate(date, travels);
+    if (!currentTravel) return "single";
+
+    // Check previous day
+    const prevDate = new Date(date);
+    prevDate.setDate(prevDate.getDate() - 1);
+    const prevTravel = getTravelForDate(prevDate, travels);
+    const hasPrev =
+      prevTravel?.country === currentTravel.country &&
+      prevTravel?.city === currentTravel.city;
+
+    // Check next day
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1);
+    const nextTravel = getTravelForDate(nextDate, travels);
+    const hasNext =
+      nextTravel?.country === currentTravel.country &&
+      nextTravel?.city === currentTravel.city;
+
+    if (!hasPrev && !hasNext) return "single";
+    if (!hasPrev && hasNext) return "start";
+    if (hasPrev && hasNext) return "middle";
+    return "end";
+  }
+
   const monthData = getCurrentMonthData();
 
   const navigateMonth = (direction: "prev" | "next") => {
@@ -173,11 +222,11 @@ export default function CalendarView({ travels }: CalendarViewProps) {
       <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-4">
         <button
           onClick={() => navigateMonth("prev")}
-          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-3 hover:bg-gray-100 rounded-full transition-colors"
           aria-label="Previous month"
         >
           <svg
-            className="w-5 h-5"
+            className="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -192,10 +241,10 @@ export default function CalendarView({ travels }: CalendarViewProps) {
         </button>
 
         <div className="flex items-center space-x-4">
-          <h3 className="text-lg sm:text-xl font-semibold">
+          <h3 className="text-xl sm:text-2xl font-bold">
             {monthData.monthName}
           </h3>
-          <span className="text-xs sm:text-sm text-foreground/60">
+          <span className="text-sm sm:text-base text-foreground/60 font-medium">
             {monthData.entries.length} travel{" "}
             {monthData.entries.length === 1 ? "day" : "days"}
           </span>
@@ -203,11 +252,11 @@ export default function CalendarView({ travels }: CalendarViewProps) {
 
         <button
           onClick={() => navigateMonth("next")}
-          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-3 hover:bg-gray-100 rounded-full transition-colors"
           aria-label="Next month"
         >
           <svg
-            className="w-5 h-5"
+            className="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -232,7 +281,7 @@ export default function CalendarView({ travels }: CalendarViewProps) {
             <button
               key={index}
               onClick={() => goToMonth(month)}
-              className={`px-3 py-1 text-sm rounded-full transition-colors ${
+              className={`px-4 py-2 text-sm sm:text-base font-medium rounded-full transition-colors ${
                 isSelected
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -260,7 +309,7 @@ export default function CalendarView({ travels }: CalendarViewProps) {
           ].map((day) => (
             <div
               key={day}
-              className="text-center font-medium text-gray-700 py-2 text-sm"
+              className="text-center font-semibold text-gray-700 py-3 text-sm sm:text-base"
             >
               {day}
             </div>
@@ -285,42 +334,82 @@ export default function CalendarView({ travels }: CalendarViewProps) {
               dayNumber,
             );
             const travel = getTravelForDate(dayDate, monthData.entries);
+            const stayPos = getStayPosition(dayDate, monthData.entries);
+            const borderColor = travel
+              ? getCountryBorderColor(travel.country)
+              : undefined;
             const today = new Date();
             const isToday =
               dayDate.getDate() === today.getDate() &&
               dayDate.getMonth() === today.getMonth() &&
               dayDate.getFullYear() === today.getFullYear();
 
+            // Build className based on stay position
+            let cellClassName = `min-h-[120px] sm:min-h-[140px] p-2 sm:p-3 relative transition-opacity ${
+              travel ? "cursor-pointer hover:opacity-90" : ""
+            }`;
+
+            if (travel) {
+              if (stayPos === "single") {
+                cellClassName += " border-2 rounded";
+              } else if (stayPos === "start") {
+                cellClassName += " border-l-4 border-t-2 border-b-2 rounded-l";
+              } else if (stayPos === "middle") {
+                cellClassName += " border-l-4 border-t-2 border-b-2";
+              } else if (stayPos === "end") {
+                cellClassName += " border-l-4 border-t-2 border-b-2 border-r-2 rounded-r";
+              }
+            } else {
+              cellClassName += " border border-gray-200 rounded";
+            }
+
+            if (isToday && !travel) {
+              cellClassName += " border-blue-500 ring-2 ring-blue-200";
+            }
+
             return (
               <div
                 key={dayNumber}
-                className={`min-h-[80px] sm:min-h-[100px] border rounded p-1 sm:p-2 relative cursor-pointer hover:opacity-90 transition-opacity ${
-                  travel ? "bg-blue-50 border-blue-200" : "bg-white"
-                } ${isToday ? "border-blue-500 ring-2 ring-blue-200" : "border-gray-200"}`}
+                className={cellClassName}
                 style={{
                   backgroundColor: travel
                     ? getCountryColor(travel.country)
                     : undefined,
+                  borderColor: travel ? borderColor : undefined,
+                  borderLeftColor: travel && stayPos !== "single" ? borderColor : undefined,
+                  borderTopColor: travel && stayPos !== "single" ? borderColor : undefined,
+                  borderBottomColor: travel && stayPos !== "single" ? borderColor : undefined,
+                  borderRightColor: travel && stayPos === "end" ? borderColor : undefined,
                 }}
                 onClick={() => travel && setSelectedTravel(travel)}
               >
-                <div className="font-medium text-xs sm:text-sm mb-1">
-                  {dayNumber}
-                  <span className="sm:hidden text-gray-600 ml-1">
-                    ({dayDate.toLocaleDateString("en-US", { weekday: "short" })}
-                    )
-                  </span>
-                </div>
-
-                {travel && (
-                  <div className="text-xs sm:text-xs text-gray-900">
-                    <div className="font-medium text-xs">{travel.country}</div>
-                    <div className="text-gray-800 text-xs">{travel.city}</div>
-                    <div className="text-gray-700 mt-0.5 text-xs flex gap-1">
+                {travel ? (
+                  <div className="text-gray-900 space-y-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
+                      <div className="font-semibold text-sm sm:text-base text-gray-600">
+                        {dayNumber}
+                        <span className="sm:hidden text-gray-500 ml-1 font-normal text-xs">
+                          ({dayDate.toLocaleDateString("en-US", { weekday: "short" })})
+                        </span>
+                      </div>
+                      <div className="font-bold text-sm sm:text-base flex items-center gap-1.5">
+                        <span className="text-lg sm:text-xl">{getCountryFlag(travel.country)}</span>
+                        <span>{travel.country}</span>
+                      </div>
+                    </div>
+                    <div className="text-gray-800 text-xs sm:text-sm font-medium">{travel.city}</div>
+                    <div className="text-gray-700 mt-1 text-base sm:text-lg flex gap-1.5">
                       {travel.flight && <span>✈️</span>}
                       {travel.rental_car && <span>🚗</span>}
                       {travel.notes && <span>📝</span>}
                     </div>
+                  </div>
+                ) : (
+                  <div className="font-semibold text-sm sm:text-base mb-2 text-gray-600">
+                    {dayNumber}
+                    <span className="sm:hidden text-gray-500 ml-1 font-normal text-xs">
+                      ({dayDate.toLocaleDateString("en-US", { weekday: "short" })})
+                    </span>
                   </div>
                 )}
               </div>
@@ -329,58 +418,83 @@ export default function CalendarView({ travels }: CalendarViewProps) {
         </div>
       </div>
 
-      {/* Travel Notes Modal */}
+      {/* Day Detail Modal */}
       {selectedTravel && (
         <div
-          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedTravel(null)}
         >
           <div
-            className="bg-white rounded-lg shadow-xl max-w-sm w-full max-h-[60vh] overflow-y-auto"
+            className="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 p-8 sm:p-10 relative max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold">
-                  {new Date(selectedTravel.date).toLocaleDateString("en-CA", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </h3>
-                <button
-                  onClick={() => setSelectedTravel(null)}
-                  className="text-gray-400 hover:text-gray-600 text-xl"
-                >
-                  ×
-                </button>
-              </div>
+            <button
+              onClick={() => setSelectedTravel(null)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition"
+              aria-label="Close modal"
+            >
+              <FaTimes className="text-xl" />
+            </button>
 
-              <div className="space-y-3">
-                <div>
-                  <div className="text-sm text-gray-500 mb-1">Location</div>
-                  <div className="font-medium">
-                    {selectedTravel.city}, {selectedTravel.country}
+            <div className="text-base sm:text-lg text-grey-blue mb-3">
+              {new Date(selectedTravel.date).toLocaleDateString("en-CA", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
+              <span className="text-4xl sm:text-5xl">{getCountryFlag(selectedTravel.country)}</span>
+              <span>{selectedTravel.country}</span>
+            </h2>
+            <h3 className="text-2xl sm:text-3xl text-grey-blue mb-6 font-semibold">
+              {selectedTravel.city}
+            </h3>
+
+            <div className="space-y-5">
+              {selectedTravel.hotel && (
+                <div className="flex items-start gap-3">
+                  <FaHotel className="text-grey-blue text-xl mt-1" />
+                  <div>
+                    <div className="text-sm font-semibold text-grey-blue mb-1">Hotel</div>
+                    <div className="text-xl font-medium">{selectedTravel.hotel}</div>
                   </div>
                 </div>
+              )}
 
-                {selectedTravel.hotel && (
+              {selectedTravel.flight && (
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">✈️</span>
                   <div>
-                    <div className="text-sm text-gray-500 mb-1">Hotel</div>
-                    <div className="font-medium">{selectedTravel.hotel}</div>
+                    <div className="text-sm font-semibold text-grey-blue mb-1">Flight</div>
+                    <div className="text-lg">{selectedTravel.flight}</div>
                   </div>
-                )}
+                </div>
+              )}
 
-                {selectedTravel.notes && (
+              {selectedTravel.rental_car && (
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🚗</span>
                   <div>
-                    <div className="text-sm text-gray-500 mb-1">Notes</div>
-                    <div className="text-gray-700 whitespace-pre-wrap">
+                    <div className="text-sm font-semibold text-grey-blue mb-1">Rental Car</div>
+                    <div className="text-lg">{selectedTravel.rental_car}</div>
+                  </div>
+                </div>
+              )}
+
+              {selectedTravel.notes && (
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">📝</span>
+                  <div>
+                    <div className="text-sm font-semibold text-grey-blue mb-1">Notes</div>
+                    <div className="text-base leading-relaxed whitespace-pre-wrap">
                       {selectedTravel.notes}
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

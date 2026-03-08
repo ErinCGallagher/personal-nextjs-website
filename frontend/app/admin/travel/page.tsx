@@ -34,7 +34,7 @@ export default async function TravelPage() {
     <div className="min-h-screen bg-background">
       <div className="px-4 sm:px-6 py-16">
         <div className="w-full mx-auto px-6 md:px-12 py-12 bg-white text-foreground rounded-lg">
-          <h1 className="text-3xl font-bold mb-8">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-10">
             Sabbatical Travel Itinerary
           </h1>
 
