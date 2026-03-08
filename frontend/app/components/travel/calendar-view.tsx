@@ -445,11 +445,11 @@ export default function CalendarView({ travels }: CalendarViewProps) {
               })}
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
-              <span className="text-4xl sm:text-5xl">{getCountryFlag(selectedTravel.country)}</span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
+              <span className="text-3xl sm:text-4xl">{getCountryFlag(selectedTravel.country)}</span>
               <span>{selectedTravel.country}</span>
             </h2>
-            <h3 className="text-2xl sm:text-3xl text-grey-blue mb-6 font-semibold">
+            <h3 className="text-xl sm:text-2xl text-grey-blue mb-6 font-semibold">
               {selectedTravel.city}
             </h3>
 
