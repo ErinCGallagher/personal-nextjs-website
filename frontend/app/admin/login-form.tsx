@@ -38,12 +38,18 @@ export default function LoginForm() {
       console.log("Login response status:", response.status);
 
       if (response.ok) {
-        console.log("Login successful, redirecting...");
-        setLoading(false); // Reset loading state before navigation
-        // Use replace to avoid adding to history stack
-        router.replace("/admin/comments");
-        // Force refresh router
-        router.refresh();
+        const data = await response.json();
+        console.log("Login successful, session ID received");
+
+        // Store session ID in localStorage for header-based auth
+        if (data.sessionId) {
+          localStorage.setItem("sessionId", data.sessionId);
+          console.log("Session ID stored in localStorage");
+        }
+
+        // Navigate to comments page
+        router.push("/admin/comments");
+        setLoading(false);
       } else {
         let errorMessage = "Login failed";
         try {

@@ -45,7 +45,8 @@ router.post("/login", loginLimiter, async (req, res, next) => {
           if (err) {
             return res.status(500).json({ error: "Failed to save session" });
           }
-          res.json({ success: true });
+          // Return session ID for header-based authentication
+          res.json({ success: true, sessionId: req.sessionID });
         });
       });
     } else {

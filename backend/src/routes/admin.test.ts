@@ -16,7 +16,7 @@ describe("POST /api/admin/login", () => {
       .send({ password: ADMIN_PASSWORD });
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ success: true });
+    expect(res.body).toEqual({ success: true, sessionId: expect.any(String) });
     expect(res.headers["set-cookie"]).toBeDefined();
   });
 
@@ -48,6 +48,26 @@ describe("POST /api/admin/login", () => {
 
     // Verify route is accessible (rate limiter skipped in tests)
     expect(res.status).toBe(401);
+  });
+
+  it("allows authentication via X-Session-ID header", async () => {
+    // Login to get session ID
+    const loginRes = await request(app)
+      .post("/api/admin/login")
+      .send({ password: ADMIN_PASSWORD });
+
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.sessionId).toBeDefined();
+
+    const sessionId = loginRes.body.sessionId;
+
+    // Use session ID in header to access protected route
+    const res = await request(app)
+      .get("/api/admin/comments")
+      .set("X-Session-ID", sessionId);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
   });
 });
 

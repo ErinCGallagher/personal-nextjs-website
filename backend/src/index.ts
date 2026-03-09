@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
+import signature from "cookie-signature";
 import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
@@ -30,6 +31,19 @@ const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(
 );
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
+
+// Middleware to extract session ID from header if present
+app.use((req, res, next) => {
+  const sessionIdHeader = req.headers["x-session-id"];
+  if (sessionIdHeader && typeof sessionIdHeader === "string") {
+    // Sign the session ID using the same secret as express-session
+    const secret = process.env.SESSION_SECRET || "dev-secret-change-in-production";
+    const signedSessionId = signature.sign(sessionIdHeader, secret);
+    // Override cookie with signed value for session lookup
+    req.headers.cookie = `sessionId=s:${signedSessionId}`;
+  }
+  next();
+});
 
 // Session configuration for admin authentication
 app.use(

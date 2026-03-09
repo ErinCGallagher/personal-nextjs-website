@@ -58,7 +58,14 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
       console.log("Fetching comments from:", commentsUrl);
 
+      // Get session ID from localStorage
+      const sessionId = localStorage.getItem("sessionId");
+      const headers: HeadersInit = sessionId
+        ? { "X-Session-ID": sessionId }
+        : {};
+
       const response = await fetch(commentsUrl, {
+        headers,
         credentials: "include",
       });
 
@@ -89,9 +96,16 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
         ? `${backendUrl}/api/admin/comments/${id}`
         : api.admin.updateComment(id);
 
+      // Get session ID from localStorage
+      const sessionId = localStorage.getItem("sessionId");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        ...(sessionId && { "X-Session-ID": sessionId }),
+      };
+
       const response = await fetch(updateUrl, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers,
         credentials: "include",
         body: JSON.stringify({ status }),
       });
@@ -117,12 +131,22 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
       const logoutUrl = backendUrl ? `${backendUrl}/api/admin/logout` : api.admin.logout();
 
+      const sessionId = localStorage.getItem("sessionId");
+      const headers: HeadersInit = sessionId
+        ? { "X-Session-ID": sessionId }
+        : {};
+
       await fetch(logoutUrl, {
         method: "POST",
+        headers,
         credentials: "include",
       });
+
+      // Clear session from localStorage
+      localStorage.removeItem("sessionId");
       router.push("/admin");
     } catch (err) {
+      localStorage.removeItem("sessionId");
       router.push("/admin");
     }
   }
