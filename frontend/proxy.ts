@@ -10,12 +10,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function proxy(request: NextRequest) {
-  const sessionCookie = request.cookies.get("sessionId");
+  // const sessionCookie = request.cookies.get("sessionId");
 
-  // Redirect to login if no session cookie
-  if (!sessionCookie && request.nextUrl.pathname !== "/admin") {
-    return NextResponse.redirect(new URL("/admin", request.url));
-  }
+  // // Redirect to login if no session cookie
+  // if (!sessionCookie && request.nextUrl.pathname !== "/admin") {
+  //   return NextResponse.redirect(new URL("/admin", request.url));
+  // }
 
   return NextResponse.next();
 }
