@@ -42,11 +42,13 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
   }
 
   useEffect(() => {
-    console.log("CommentsClient mounted, fetching comments...");
+    console.log("[CommentsClient] Mounted, filter:", filter);
+    console.log("[CommentsClient] Current cookies:", document.cookie);
     fetchComments();
   }, [filter]);
 
   async function fetchComments() {
+    console.log("[CommentsClient] fetchComments called");
     setLoading(true);
     setError("");
 
@@ -56,22 +58,33 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
         ? `${backendUrl}/api/admin/comments${filter ? `?status=${filter}` : ""}`
         : api.admin.comments(filter || undefined);
 
+      console.log("[CommentsClient] Fetching from:", commentsUrl);
+      console.log("[CommentsClient] Using backendUrl:", backendUrl);
+      console.log("[CommentsClient] Cookies before fetch:", document.cookie);
+
       const response = await fetch(commentsUrl, {
         credentials: "include",
       });
 
+      console.log("[CommentsClient] Response status:", response.status);
+      console.log("[CommentsClient] Response headers:", Object.fromEntries(response.headers.entries()));
+
       if (response.status === 401) {
+        console.log("[CommentsClient] Unauthorized, redirecting to /admin");
         router.push("/admin");
         return;
       }
 
       if (!response.ok) {
+        console.error("[CommentsClient] Response not OK:", response.status, response.statusText);
         throw new Error("Failed to fetch comments");
       }
 
       const data = await response.json();
+      console.log("[CommentsClient] Successfully fetched comments:", data.length, "items");
       setComments(data);
     } catch (err) {
+      console.error("[CommentsClient] Error fetching comments:", err);
       setError("Failed to load comments");
     } finally {
       setLoading(false);

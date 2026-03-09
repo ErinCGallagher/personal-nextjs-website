@@ -22,27 +22,41 @@ export default function LoginForm() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
+    console.log("[LoginForm] Starting login attempt for:", email);
+
     try {
+      console.log("[LoginForm] Calling authClient.signIn.email");
       const { data, error: authError } = await authClient.signIn.email({
         email,
         password,
       });
 
+      console.log("[LoginForm] SignIn response:", {
+        hasData: !!data,
+        hasError: !!authError,
+        user: data?.user,
+        error: authError
+      });
+
       if (authError) {
+        console.error("[LoginForm] Auth error:", authError);
         setError(authError.message || "Login failed");
         setLoading(false);
         return;
       }
 
       if (data?.user && data.user.role === "admin") {
+        console.log("[LoginForm] Login successful, navigating to /admin/comments");
+        console.log("[LoginForm] Cookies after login:", document.cookie);
         // Navigate to comments page
         router.push("/admin/comments");
       } else {
+        console.error("[LoginForm] User is not admin:", data?.user);
         setError("Unauthorized: Admin access required");
         setLoading(false);
       }
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("[LoginForm] Exception during login:", err);
       setError("Network error. Please check your connection.");
       setLoading(false);
     }
