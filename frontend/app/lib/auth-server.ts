@@ -1,9 +1,11 @@
 /**
  * Server-side authentication utilities for Next.js Server Components.
  * Used to check authentication status before rendering protected pages.
+ * Uses the backend URL directly from server-side with forwarded cookies.
  */
 import { cookies } from "next/headers";
 
+// Use backend URL for server-side requests (Next.js rewrites don't apply to server-side fetches)
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export async function getServerSession() {
