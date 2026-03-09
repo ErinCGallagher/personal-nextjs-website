@@ -6,7 +6,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/app/lib/api";
 import { authClient } from "@/app/lib/auth-client";
 
 interface Comment {
@@ -53,13 +52,9 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
     setError("");
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const commentsUrl = backendUrl
-        ? `${backendUrl}/api/admin/comments${filter ? `?status=${filter}` : ""}`
-        : api.admin.comments(filter || undefined);
+      const commentsUrl = `/api/admin/comments${filter ? `?status=${filter}` : ""}`;
 
       console.log("[CommentsClient] Fetching from:", commentsUrl);
-      console.log("[CommentsClient] Using backendUrl:", backendUrl);
       console.log("[CommentsClient] Cookies before fetch:", document.cookie);
 
       const response = await fetch(commentsUrl, {
@@ -93,10 +88,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   async function updateStatus(id: string, status: "Approved" | "Rejected") {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const updateUrl = backendUrl
-        ? `${backendUrl}/api/admin/comments/${id}`
-        : api.admin.updateComment(id);
+      const updateUrl = `/api/admin/comments/${id}`;
 
       const response = await fetch(updateUrl, {
         method: "PATCH",
