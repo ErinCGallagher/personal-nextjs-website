@@ -35,8 +35,15 @@ export default function LoginForm() {
     if (response.ok) {
       router.push("/admin/comments");
     } else {
-      const data = await response.json();
-      setError(data.error || "Login failed");
+      let errorMessage = "Login failed";
+      try {
+        const data = await response.json();
+        errorMessage = data.error || data.message || errorMessage;
+      } catch (e) {
+        // If response isn't JSON (like rate limit message), use status text
+        errorMessage = response.statusText || errorMessage;
+      }
+      setError(errorMessage);
       setLoading(false);
     }
   }
