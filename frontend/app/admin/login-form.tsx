@@ -5,13 +5,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,6 +27,7 @@ export default function LoginForm() {
       const { data, error: authError } = await authClient.signIn.email({
         email,
         password,
+        callbackURL: "/admin/comments",
       });
 
       console.log("[LoginForm] SignIn response:", {
@@ -45,18 +44,15 @@ export default function LoginForm() {
         return;
       }
 
-      if (data?.user && data.user.role === "admin") {
-        console.log("[LoginForm] Login successful, navigating to /admin/comments");
-        console.log("[LoginForm] Cookies after login:", document.cookie);
-        console.log("[LoginForm] Using window.location.href for navigation");
-
-        // Use window.location instead of router.push to avoid Next.js prefetch issues
-        window.location.href = "/admin/comments";
-      } else {
+      if (data?.user && data.user.role !== "admin") {
         console.error("[LoginForm] User is not admin:", data?.user);
         setError("Unauthorized: Admin access required");
         setLoading(false);
+        return;
       }
+
+      // Better Auth handles navigation via callbackURL
+      console.log("[LoginForm] Login successful, Better Auth will handle redirect");
     } catch (err) {
       console.error("[LoginForm] Exception during login:", err);
       setError("Network error. Please check your connection.");
