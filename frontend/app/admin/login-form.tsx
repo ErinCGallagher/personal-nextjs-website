@@ -20,10 +20,15 @@ export default function LoginForm() {
 
     const formData = new FormData(e.currentTarget);
 
-    const response = await fetch(api.admin.login(), {
+    // In production, bypass the Next.js rewrite and call Railway directly
+    // This ensures the Set-Cookie header has the correct domain
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const loginUrl = backendUrl ? `${backendUrl}/api/admin/login` : api.admin.login();
+
+    const response = await fetch(loginUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // browser → Express directly, so this works
+      credentials: "include", // Essential for cross-origin cookies
       body: JSON.stringify({ password: formData.get("password") }),
     });
 

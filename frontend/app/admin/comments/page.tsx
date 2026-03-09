@@ -2,44 +2,10 @@
  * Admin comments page.
  * Displays comments with approve/reject functionality.
  */
-import { cookies } from "next/headers";
-import { handleAuthResponse } from "@/app/lib/handle-auth-error";
-import { api } from "@/app/lib/api";
 import CommentsClient from "./client";
 
-interface Comment {
-  id: string;
-  post_slug: string;
-  user_id: string;
-  user_name?: string;
-  email?: string;
-  body: string;
-  status: "Pending" | "Approved" | "Rejected";
-  created_at: string;
-}
-
-async function getComments(): Promise<Comment[]> {
-  // Get session cookie to pass to backend
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("sessionId");
-
-  // Call backend to get all comments
-  const response = await fetch(api.admin.comments(), {
-    headers: {
-      Cookie: sessionCookie ? `sessionId=${sessionCookie.value}` : "",
-    },
-    cache: "no-store", // Ensure fresh data
-  });
-
-  handleAuthResponse(response);
-
-  return response.json();
-}
-
-export default async function AdminCommentsPage() {
-  // Fetch comments server-side
-  const comments = await getComments();
-
-  // Render Client Component with data
-  return <CommentsClient initialComments={comments} />;
+export default function AdminCommentsPage() {
+  // Client component will fetch data with cookies via credentials: "include"
+  // Server-side fetch doesn't work with cross-domain cookies
+  return <CommentsClient initialComments={[]} />;
 }

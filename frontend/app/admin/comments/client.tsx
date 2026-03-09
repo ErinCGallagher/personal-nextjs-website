@@ -49,7 +49,13 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
     setError("");
 
     try {
-      const response = await fetch(api.admin.comments(filter || undefined), {
+      // In production, bypass the Next.js rewrite and call Railway directly
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const commentsUrl = backendUrl
+        ? `${backendUrl}/api/admin/comments${filter ? `?status=${filter}` : ""}`
+        : api.admin.comments(filter || undefined);
+
+      const response = await fetch(commentsUrl, {
         credentials: "include",
       });
 
@@ -73,7 +79,12 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   async function updateStatus(id: string, status: "Approved" | "Rejected") {
     try {
-      const response = await fetch(api.admin.updateComment(id), {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const updateUrl = backendUrl
+        ? `${backendUrl}/api/admin/comments/${id}`
+        : api.admin.updateComment(id);
+
+      const response = await fetch(updateUrl, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -98,7 +109,10 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   async function handleLogout() {
     try {
-      await fetch(api.admin.logout(), {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const logoutUrl = backendUrl ? `${backendUrl}/api/admin/logout` : api.admin.logout();
+
+      await fetch(logoutUrl, {
         method: "POST",
         credentials: "include",
       });
