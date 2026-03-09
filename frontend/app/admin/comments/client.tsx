@@ -7,6 +7,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/app/lib/api";
+import { authClient } from "@/app/lib/auth-client";
 
 interface Comment {
   id: string;
@@ -50,26 +51,14 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
     setError("");
 
     try {
-      // In production, bypass the Next.js rewrite and call Railway directly
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
       const commentsUrl = backendUrl
         ? `${backendUrl}/api/admin/comments${filter ? `?status=${filter}` : ""}`
         : api.admin.comments(filter || undefined);
 
-      console.log("Fetching comments from:", commentsUrl);
-
-      // Get session ID from localStorage
-      const sessionId = localStorage.getItem("sessionId");
-      const headers: HeadersInit = sessionId
-        ? { "X-Session-ID": sessionId }
-        : {};
-
       const response = await fetch(commentsUrl, {
-        headers,
         credentials: "include",
       });
-
-      console.log("Comments response status:", response.status);
 
       if (response.status === 401) {
         router.push("/admin");
@@ -96,16 +85,11 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
         ? `${backendUrl}/api/admin/comments/${id}`
         : api.admin.updateComment(id);
 
-      // Get session ID from localStorage
-      const sessionId = localStorage.getItem("sessionId");
-      const headers: HeadersInit = {
-        "Content-Type": "application/json",
-        ...(sessionId && { "X-Session-ID": sessionId }),
-      };
-
       const response = await fetch(updateUrl, {
         method: "PATCH",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
         body: JSON.stringify({ status }),
       });
@@ -128,25 +112,9 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   async function handleLogout() {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const logoutUrl = backendUrl ? `${backendUrl}/api/admin/logout` : api.admin.logout();
-
-      const sessionId = localStorage.getItem("sessionId");
-      const headers: HeadersInit = sessionId
-        ? { "X-Session-ID": sessionId }
-        : {};
-
-      await fetch(logoutUrl, {
-        method: "POST",
-        headers,
-        credentials: "include",
-      });
-
-      // Clear session from localStorage
-      localStorage.removeItem("sessionId");
+      await authClient.signOut();
       router.push("/admin");
     } catch (err) {
-      localStorage.removeItem("sessionId");
       router.push("/admin");
     }
   }

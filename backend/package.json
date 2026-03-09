@@ -8,11 +8,13 @@
     "start": "tsx src/migrate.ts && node dist/index.js",
     "lint": "eslint",
     "migrate": "tsx src/migrate.ts",
+    "create-admin": "tsx src/create-admin.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "better-auth": "^1.5.4",
     "connect-pg-simple": "^10.0.0",
     "cookie-signature": "^1.2.2",
     "cors": "^2.8.6",

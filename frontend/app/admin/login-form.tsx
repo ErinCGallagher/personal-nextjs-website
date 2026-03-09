@@ -1,12 +1,12 @@
 /**
  * Client Component for admin login form.
- * Handles form state and calls loginAction Server Action.
+ * Uses BetterAuth for authentication.
  */
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/app/lib/api";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
@@ -19,48 +19,26 @@ export default function LoginForm() {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-
-    // In production, bypass the Next.js rewrite and call Railway directly
-    // This ensures the Set-Cookie header has the correct domain
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-    const loginUrl = backendUrl ? `${backendUrl}/api/admin/login` : api.admin.login();
-
-    console.log("Logging in to:", loginUrl);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     try {
-      const response = await fetch(loginUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // Essential for cross-origin cookies
-        body: JSON.stringify({ password: formData.get("password") }),
+      const { data, error: authError } = await authClient.signIn.email({
+        email,
+        password,
       });
 
-      console.log("Login response status:", response.status);
+      if (authError) {
+        setError(authError.message || "Login failed");
+        setLoading(false);
+        return;
+      }
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login successful, session ID received");
-
-        // Store session ID in localStorage for header-based auth
-        if (data.sessionId) {
-          localStorage.setItem("sessionId", data.sessionId);
-          console.log("Session ID stored in localStorage");
-        }
-
+      if (data?.user && data.user.role === "admin") {
         // Navigate to comments page
         router.push("/admin/comments");
-        setLoading(false);
       } else {
-        let errorMessage = "Login failed";
-        try {
-          const data = await response.json();
-          errorMessage = data.error || data.message || errorMessage;
-        } catch (e) {
-          // If response isn't JSON (like rate limit message), use status text
-          errorMessage = response.statusText || errorMessage;
-        }
-        console.log("Login failed:", errorMessage);
-        setError(errorMessage);
+        setError("Unauthorized: Admin access required");
         setLoading(false);
       }
     } catch (err) {
@@ -72,6 +50,29 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          disabled={loading}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          style={
+            {
+              "--tw-ring-color": "var(--grey-blue)",
+            } as React.CSSProperties
+          }
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
       <div>
         <label
           htmlFor="password"
@@ -90,7 +91,7 @@ export default function LoginForm() {
               "--tw-ring-color": "var(--grey-blue)",
             } as React.CSSProperties
           }
-          placeholder="Enter admin password"
+          placeholder="Enter your password"
           required
         />
       </div>

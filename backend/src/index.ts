@@ -2,9 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import session from "express-session";
-import connectPgSimple from "connect-pg-simple";
-import signature from "cookie-signature";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth";
 import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
@@ -15,14 +14,6 @@ const app = express();
 const port = process.env.PORT || 3001;
 app.set("trust proxy", 1); // provide ip for rate limiting
 
-const PgSession = connectPgSimple(session);
-const sessionStore = new PgSession({
-  pool: pool,
-  tableName: "session",
-  createTableIfMissing: true,
-  pruneSessionInterval: 60 * 15, // Prune expired sessions every 15 minutes
-});
-
 app.use(helmet());
 app.use(globalLimiter);
 // Supports a comma-separated list of origins for multi-domain deployments
@@ -30,41 +21,13 @@ const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(
   ",",
 );
 app.use(cors({ origin: corsOrigins, credentials: true }));
+
+// Mount BetterAuth handler BEFORE express.json()
+// This is critical or the client API will get stuck on 'pending'
+app.all("/api/auth/*", toNodeHandler(auth));
+
+// Apply express.json() after auth handler
 app.use(express.json());
-
-// Middleware to extract session ID from header if present
-app.use((req, res, next) => {
-  const sessionIdHeader = req.headers["x-session-id"];
-  if (sessionIdHeader && typeof sessionIdHeader === "string") {
-    // Sign the session ID using the same secret as express-session
-    const secret = process.env.SESSION_SECRET || "dev-secret-change-in-production";
-    const signedSessionId = signature.sign(sessionIdHeader, secret);
-    // Override cookie with signed value for session lookup
-    req.headers.cookie = `sessionId=s:${signedSessionId}`;
-  }
-  next();
-});
-
-// Session configuration for admin authentication
-app.use(
-  session({
-    store: sessionStore,
-    secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
-    name: "sessionId",
-    resave: false,
-    saveUninitialized: false,
-    proxy: true,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      path: "/",
-      // Allow cookie to be set from any origin when using proxy/rewrites
-      domain: process.env.COOKIE_DOMAIN || undefined,
-    },
-  }),
-);
 
 // GET /health
 // app.get("/health", (_req, res) => {

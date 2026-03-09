@@ -1,0 +1,26 @@
+/**
+ * BetterAuth configuration for admin authentication.
+ * Handles session management and email/password authentication.
+ */
+import { betterAuth } from "better-auth";
+import { admin } from "better-auth/plugins";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  database: new Pool({
+    connectionString: process.env.DATABASE_URL,
+  }),
+  emailAndPassword: {
+    enabled: true,
+  },
+  plugins: [
+    admin({
+      adminUserIds: [], // Will be populated after creating admin user
+    }),
+  ],
+  trustedOrigins: (process.env.CORS_ORIGIN || "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim()),
+  secret: process.env.BETTER_AUTH_SECRET || process.env.SESSION_SECRET || "dev-secret-change-in-production",
+  baseURL: process.env.BETTER_AUTH_URL || process.env.BASE_URL || "http://localhost:3001",
+});

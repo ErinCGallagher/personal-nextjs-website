@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CalendarView from "@/app/components/travel/calendar-view";
 import { api } from "@/app/lib/api";
+import { authClient } from "@/app/lib/auth-client";
 
 interface TravelEntry {
   date: string;
@@ -37,14 +38,7 @@ export default function TravelClient() {
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
       const travelUrl = backendUrl ? `${backendUrl}/api/admin/travel` : api.admin.travel();
 
-      // Get session ID from localStorage
-      const sessionId = localStorage.getItem("sessionId");
-      const headers: HeadersInit = sessionId
-        ? { "X-Session-ID": sessionId }
-        : {};
-
       const response = await fetch(travelUrl, {
-        headers,
         credentials: "include",
       });
 
@@ -68,25 +62,9 @@ export default function TravelClient() {
 
   async function handleLogout() {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const logoutUrl = backendUrl ? `${backendUrl}/api/admin/logout` : api.admin.logout();
-
-      const sessionId = localStorage.getItem("sessionId");
-      const headers: HeadersInit = sessionId
-        ? { "X-Session-ID": sessionId }
-        : {};
-
-      await fetch(logoutUrl, {
-        method: "POST",
-        headers,
-        credentials: "include",
-      });
-
-      // Clear session from localStorage
-      localStorage.removeItem("sessionId");
+      await authClient.signOut();
       router.push("/admin");
     } catch (err) {
-      localStorage.removeItem("sessionId");
       router.push("/admin");
     }
   }
