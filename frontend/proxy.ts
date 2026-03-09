@@ -10,12 +10,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function proxy(request: NextRequest) {
-  // const sessionCookie = request.cookies.get("sessionId");
+  // Check for BetterAuth session cookie (name varies by environment)
+  const sessionCookie =
+    request.cookies.get("__Secure-better-auth.session_token") ||
+    request.cookies.get("better-auth.session_token");
 
-  // // Redirect to login if no session cookie
-  // if (!sessionCookie && request.nextUrl.pathname !== "/admin") {
-  //   return NextResponse.redirect(new URL("/admin", request.url));
-  // }
+  // Redirect to login if no session cookie
+  if (!sessionCookie && request.nextUrl.pathname !== "/admin") {
+    return NextResponse.redirect(new URL("/admin", request.url));
+  }
 
   return NextResponse.next();
 }

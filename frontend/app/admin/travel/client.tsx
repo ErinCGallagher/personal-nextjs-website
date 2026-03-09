@@ -35,10 +35,7 @@ export default function TravelClient() {
     setError("");
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const travelUrl = backendUrl ? `${backendUrl}/api/admin/travel` : api.admin.travel();
-
-      const response = await fetch(travelUrl, {
+      const response = await fetch("/api/admin/travel", {
         credentials: "include",
       });
 
