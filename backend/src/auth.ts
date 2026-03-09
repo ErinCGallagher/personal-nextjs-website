@@ -23,4 +23,8 @@ export const auth = betterAuth({
     .map((origin) => origin.trim()),
   secret: process.env.BETTER_AUTH_SECRET || process.env.SESSION_SECRET || "dev-secret-change-in-production",
   baseURL: process.env.BETTER_AUTH_URL || process.env.BASE_URL || "http://localhost:3001",
+  advanced: {
+    // Disable secure cookies in test environment
+    useSecureCookies: process.env.NODE_ENV === "production",
+  },
 });

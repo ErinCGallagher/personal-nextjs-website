@@ -1,86 +1,110 @@
 /**
  * Unit tests for admin routes.
- * Tests authentication and comment moderation functionality.
+ * Tests BetterAuth authentication and comment moderation functionality.
  */
 import request from "supertest";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from "vitest";
 import app from "../index";
 import pool from "../db";
+import { auth } from "../auth";
 
-const ADMIN_PASSWORD = "test_password";
+const TEST_ADMIN_EMAIL = "test-admin@example.com";
+const TEST_ADMIN_PASSWORD = "test_password_123";
+const TEST_ADMIN_NAME = "Test Admin";
 
-describe("POST /api/admin/login", () => {
-  it("authenticates with correct password", async () => {
+let testAdminId: string;
+
+// Helper to create authenticated agent using BetterAuth
+async function createAuthenticatedAgent() {
+  const agent = request.agent(app);
+  const email = (global as any).TEST_ADMIN_EMAIL_RUNTIME || TEST_ADMIN_EMAIL;
+
+  // Sign in using BetterAuth
+  const res = await agent
+    .post("/api/auth/sign-in/email")
+    .send({ email, password: TEST_ADMIN_PASSWORD });
+
+  if (res.status !== 200) {
+    throw new Error(`Failed to authenticate: ${res.status} ${JSON.stringify(res.body)}`);
+  }
+
+  // Verify cookies were set
+  if (!res.headers["set-cookie"]) {
+    throw new Error("No session cookie set after authentication");
+  }
+
+  return agent;
+}
+
+beforeAll(async () => {
+  // Use a timestamp-based unique email to avoid conflicts
+  const timestamp = Date.now();
+  const uniqueEmail = `test-admin-${timestamp}@example.com`;
+
+  // Clean up any existing test admin users (older than 1 minute to avoid interfering with parallel tests)
+  await pool.query(
+    'DELETE FROM "user" WHERE email LIKE $1 AND "createdAt" < NOW() - INTERVAL \'1 minute\'',
+    ["test-admin-%@example.com"]
+  );
+
+  // Create test admin user with unique email
+  const signUpRes = await auth.api.signUpEmail({
+    body: {
+      email: uniqueEmail,
+      password: TEST_ADMIN_PASSWORD,
+      name: TEST_ADMIN_NAME,
+    },
+  });
+
+  if (!signUpRes || !signUpRes.user) {
+    throw new Error("Failed to create test admin user");
+  }
+
+  testAdminId = signUpRes.user.id;
+
+  // Set user role to admin
+  await pool.query('UPDATE "user" SET role = $1 WHERE id = $2', [
+    "admin",
+    testAdminId,
+  ]);
+
+  // Update TEST_ADMIN_EMAIL for use in tests
+  (global as any).TEST_ADMIN_EMAIL_RUNTIME = uniqueEmail;
+});
+
+afterAll(async () => {
+  // Clean up test admin user
+  await pool.query('DELETE FROM "user" WHERE id = $1', [testAdminId]);
+});
+
+describe("BetterAuth integration", () => {
+  it("authenticates admin user via BetterAuth", async () => {
+    const email = (global as any).TEST_ADMIN_EMAIL_RUNTIME || TEST_ADMIN_EMAIL;
     const res = await request(app)
-      .post("/api/admin/login")
-      .send({ password: ADMIN_PASSWORD });
+      .post("/api/auth/sign-in/email")
+      .send({ email, password: TEST_ADMIN_PASSWORD });
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ success: true, sessionId: expect.any(String) });
-    expect(res.headers["set-cookie"]).toBeDefined();
+    expect(res.body.user).toBeDefined();
+    expect(res.body.user.email).toBe(email);
+    expect(res.body.user.role).toBe("admin");
   });
 
-  it("rejects invalid password", async () => {
+  it("rejects invalid credentials", async () => {
+    const email = (global as any).TEST_ADMIN_EMAIL_RUNTIME || TEST_ADMIN_EMAIL;
     const res = await request(app)
-      .post("/api/admin/login")
-      .send({ password: "wrong_password" });
-
-    expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: "Invalid password" });
-  });
-
-  it("returns 400 when password is missing", async () => {
-    const res = await request(app).post("/api/admin/login").send({});
+      .post("/api/auth/sign-in/email")
+      .send({ email, password: "wrong_password" });
 
     expect(res.status).toBe(400);
   });
 
-  it("applies login rate limiter middleware", async () => {
-    // Verify that loginLimiter is applied to the route
-    // The actual rate limiting is tested manually since it would interfere
-    // with other tests (rate limit persists for 15 minutes).
-    // In production, after 5 failed attempts within 15 minutes, subsequent
-    // attempts return 429 with message "Too many login attempts. Please try again later."
+  it("signs out successfully", async () => {
+    const agent = await createAuthenticatedAgent();
 
-    const res = await request(app)
-      .post("/api/admin/login")
-      .send({ password: "wrong_password" });
-
-    // Verify route is accessible (rate limiter skipped in tests)
-    expect(res.status).toBe(401);
-  });
-
-  it("allows authentication via X-Session-ID header", async () => {
-    // Login to get session ID
-    const loginRes = await request(app)
-      .post("/api/admin/login")
-      .send({ password: ADMIN_PASSWORD });
-
-    expect(loginRes.status).toBe(200);
-    expect(loginRes.body.sessionId).toBeDefined();
-
-    const sessionId = loginRes.body.sessionId;
-
-    // Use session ID in header to access protected route
-    const res = await request(app)
-      .get("/api/admin/comments")
-      .set("X-Session-ID", sessionId);
+    const res = await agent.post("/api/auth/sign-out");
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-  });
-});
-
-describe("POST /api/admin/logout", () => {
-  it("destroys session successfully", async () => {
-    const agent = request.agent(app);
-
-    await agent.post("/api/admin/login").send({ password: ADMIN_PASSWORD });
-
-    const res = await agent.post("/api/admin/logout");
-
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({ success: true });
   });
 });
 
@@ -89,8 +113,7 @@ describe("GET /api/admin/comments", () => {
   let agent: request.SuperAgentTest;
 
   beforeEach(async () => {
-    agent = request.agent(app);
-    await agent.post("/api/admin/login").send({ password: ADMIN_PASSWORD });
+    agent = await createAuthenticatedAgent();
 
     await pool.query(
       "INSERT INTO users (anonymous_id, name, email) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
@@ -239,8 +262,7 @@ describe("PATCH /api/admin/comments/:id", () => {
   let commentId: string;
 
   beforeEach(async () => {
-    agent = request.agent(app);
-    await agent.post("/api/admin/login").send({ password: ADMIN_PASSWORD });
+    agent = await createAuthenticatedAgent();
 
     await pool.query(
       "INSERT INTO users (anonymous_id, name, email) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
