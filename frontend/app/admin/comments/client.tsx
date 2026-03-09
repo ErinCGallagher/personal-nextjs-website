@@ -41,6 +41,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
   }
 
   useEffect(() => {
+    console.log("CommentsClient mounted, fetching comments...");
     fetchComments();
   }, [filter]);
 
@@ -55,9 +56,13 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
         ? `${backendUrl}/api/admin/comments${filter ? `?status=${filter}` : ""}`
         : api.admin.comments(filter || undefined);
 
+      console.log("Fetching comments from:", commentsUrl);
+
       const response = await fetch(commentsUrl, {
         credentials: "include",
       });
+
+      console.log("Comments response status:", response.status);
 
       if (response.status === 401) {
         router.push("/admin");
