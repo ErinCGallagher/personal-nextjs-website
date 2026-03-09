@@ -33,9 +33,7 @@ export default function LoginForm() {
     });
 
     if (response.ok) {
-      // Use full page reload instead of client-side navigation
-      // This ensures the cookie is available to server components
-      window.location.href = "/admin/comments";
+      router.push("/admin/comments");
     } else {
       const data = await response.json();
       setError(data.error || "Login failed");
