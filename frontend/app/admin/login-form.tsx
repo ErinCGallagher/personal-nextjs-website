@@ -5,9 +5,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,11 +26,23 @@ export default function LoginForm() {
 
     try {
       console.log("[LoginForm] Calling authClient.signIn.email");
-      const { data, error: authError } = await authClient.signIn.email({
-        email,
-        password,
-        callbackURL: "/admin/comments",
-      });
+      const { data, error: authError } = await authClient.signIn.email(
+        {
+          email,
+          password,
+        },
+        {
+          onSuccess: () => {
+            console.log("[LoginForm] Login successful, redirecting to /admin/comments");
+            router.push("/admin/comments");
+          },
+          onError: (ctx) => {
+            console.error("[LoginForm] Auth error:", ctx.error);
+            setError(ctx.error.message || "Login failed");
+            setLoading(false);
+          },
+        }
+      );
 
       console.log("[LoginForm] SignIn response:", {
         hasData: !!data,
@@ -50,9 +64,6 @@ export default function LoginForm() {
         setLoading(false);
         return;
       }
-
-      // Better Auth handles navigation via callbackURL
-      console.log("[LoginForm] Login successful, Better Auth will handle redirect");
     } catch (err) {
       console.error("[LoginForm] Exception during login:", err);
       setError("Network error. Please check your connection.");
