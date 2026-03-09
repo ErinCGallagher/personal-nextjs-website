@@ -138,12 +138,20 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
             Comment Moderation
           </h1>
-          <button
-            onClick={handleLogout}
-            className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            Logout
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push("/admin/travel")}
+              className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Travel
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Status filter buttons */}
