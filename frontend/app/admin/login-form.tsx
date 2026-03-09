@@ -48,8 +48,19 @@ export default function LoginForm() {
       if (data?.user && data.user.role === "admin") {
         console.log("[LoginForm] Login successful, navigating to /admin/comments");
         console.log("[LoginForm] Cookies after login:", document.cookie);
-        // Navigate to comments page
+        // Navigate to comments page - use replace to avoid back button issues
+        console.log("[LoginForm] Calling router.push");
         router.push("/admin/comments");
+        console.log("[LoginForm] router.push called, waiting for navigation...");
+
+        // Also try window.location as fallback after a brief delay
+        setTimeout(() => {
+          console.log("[LoginForm] Timeout reached, checking if still on /admin");
+          if (window.location.pathname === "/admin") {
+            console.log("[LoginForm] Still on /admin, using window.location.href as fallback");
+            window.location.href = "/admin/comments";
+          }
+        }, 1000);
       } else {
         console.error("[LoginForm] User is not admin:", data?.user);
         setError("Unauthorized: Admin access required");
