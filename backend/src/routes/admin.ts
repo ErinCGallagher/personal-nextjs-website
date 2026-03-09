@@ -56,6 +56,18 @@ router.post("/login", loginLimiter, async (req, res, next) => {
   }
 });
 
+// GET /api/admin/session-debug
+// Debug endpoint to check session state (remove in production)
+router.get("/session-debug", (req, res) => {
+  res.json({
+    hasSession: !!req.session,
+    sessionId: req.sessionID,
+    isAdmin: req.session?.isAdmin || false,
+    cookies: req.headers.cookie || "none",
+    nodeEnv: process.env.NODE_ENV,
+  });
+});
+
 // POST /api/admin/logout
 // Destroys admin session
 router.post("/logout", (req, res) => {
