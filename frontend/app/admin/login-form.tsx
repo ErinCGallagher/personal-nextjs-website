@@ -39,6 +39,7 @@ export default function LoginForm() {
 
       if (response.ok) {
         console.log("Login successful, redirecting...");
+        setLoading(false); // Reset loading state before navigation
         router.push("/admin/comments");
       } else {
         let errorMessage = "Login failed";
