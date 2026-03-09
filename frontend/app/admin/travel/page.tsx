@@ -3,7 +3,7 @@
  * Displays sabbatical travel schedule.
  */
 import { cookies } from "next/headers";
-import { requireAdmin } from "@/app/lib/auth";
+import { handleAuthResponse } from "@/app/lib/handle-auth-error";
 import { api } from "@/app/lib/api";
 import TravelClient from "./client";
 
@@ -30,17 +30,12 @@ async function getTravelData(): Promise<TravelEntry[]> {
     cache: "no-store", // Ensure fresh data
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch travel data");
-  }
+  handleAuthResponse(response);
 
   return response.json();
 }
 
 export default async function TravelPage() {
-  // Verify auth server-side - throws if not authenticated
-  await requireAdmin();
-
   // Fetch travel data server-side
   const travels = await getTravelData();
 
