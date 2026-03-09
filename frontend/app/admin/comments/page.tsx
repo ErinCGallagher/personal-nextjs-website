@@ -3,7 +3,7 @@
  * Displays comments with approve/reject functionality.
  */
 import { cookies } from "next/headers";
-import { requireAdmin } from "@/app/lib/auth";
+import { handleAuthResponse } from "@/app/lib/handle-auth-error";
 import { api } from "@/app/lib/api";
 import CommentsClient from "./client";
 
@@ -31,17 +31,12 @@ async function getComments(): Promise<Comment[]> {
     cache: "no-store", // Ensure fresh data
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch comments");
-  }
+  handleAuthResponse(response);
 
   return response.json();
 }
 
 export default async function AdminCommentsPage() {
-  // Verify auth server-side - throws if not authenticated
-  await requireAdmin();
-
   // Fetch comments server-side
   const comments = await getComments();
 
