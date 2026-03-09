@@ -16,7 +16,9 @@ Frontend:
 
 Backend:
 
+- Express.js
 - PostgreSQL
+- BetterAuth (session management)
 - Resend for email management
 - Railway hosting
 
@@ -61,6 +63,15 @@ frontend commands:
 ### Decisions & learnings:
 
 <!-- Append dated bullets when something bites us. Prevents recurring mistakes. -->
+
+**2026-03-09: BetterAuth configuration with separate frontend/backend**
+
+- `BETTER_AUTH_URL` must be set to the **frontend domain** (`https://www.egallagher.com`), not the backend domain
+- Why: BetterAuth uses this URL to set session cookies; cookies must be on the frontend domain to work with Next.js rewrites
+- Frontend client components must use relative paths (`/api/admin/comments`) not direct backend URLs (`${NEXT_PUBLIC_API_URL}/api/admin/comments`)
+- Why: Direct backend requests bypass the Next.js proxy, causing cross-domain cookie issues with `SameSite: lax`
+- `CORS_ORIGIN` supports comma-separated multiple domains: `https://www.egallagher.com,https://egallagher.com`
+- Cookie names vary by environment: `better-auth.session_token` (dev) vs `__Secure-better-auth.session_token` (production)
 
 ---
 

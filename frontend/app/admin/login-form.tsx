@@ -22,10 +22,7 @@ export default function LoginForm() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    console.log("[LoginForm] Starting login attempt for:", email);
-
     try {
-      console.log("[LoginForm] Calling authClient.signIn.email");
       const { data, error: authError } = await authClient.signIn.email(
         {
           email,
@@ -33,7 +30,6 @@ export default function LoginForm() {
         },
         {
           onSuccess: () => {
-            console.log("[LoginForm] Login successful, redirecting to /admin/comments");
             router.push("/admin/comments");
           },
           onError: (ctx) => {
@@ -43,13 +39,6 @@ export default function LoginForm() {
           },
         }
       );
-
-      console.log("[LoginForm] SignIn response:", {
-        hasData: !!data,
-        hasError: !!authError,
-        user: data?.user,
-        error: authError
-      });
 
       if (authError) {
         console.error("[LoginForm] Auth error:", authError);

@@ -41,31 +41,21 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
   }
 
   useEffect(() => {
-    console.log("[CommentsClient] Mounted, filter:", filter);
-    console.log("[CommentsClient] Current cookies:", document.cookie);
     fetchComments();
   }, [filter]);
 
   async function fetchComments() {
-    console.log("[CommentsClient] fetchComments called");
     setLoading(true);
     setError("");
 
     try {
       const commentsUrl = `/api/admin/comments${filter ? `?status=${filter}` : ""}`;
 
-      console.log("[CommentsClient] Fetching from:", commentsUrl);
-      console.log("[CommentsClient] Cookies before fetch:", document.cookie);
-
       const response = await fetch(commentsUrl, {
         credentials: "include",
       });
 
-      console.log("[CommentsClient] Response status:", response.status);
-      console.log("[CommentsClient] Response headers:", Object.fromEntries(response.headers.entries()));
-
       if (response.status === 401) {
-        console.log("[CommentsClient] Unauthorized, redirecting to /admin");
         router.push("/admin");
         return;
       }
@@ -76,7 +66,6 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
       }
 
       const data = await response.json();
-      console.log("[CommentsClient] Successfully fetched comments:", data.length, "items");
       setComments(data);
     } catch (err) {
       console.error("[CommentsClient] Error fetching comments:", err);
