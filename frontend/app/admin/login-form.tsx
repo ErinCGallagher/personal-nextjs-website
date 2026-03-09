@@ -25,25 +25,37 @@ export default function LoginForm() {
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
     const loginUrl = backendUrl ? `${backendUrl}/api/admin/login` : api.admin.login();
 
-    const response = await fetch(loginUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include", // Essential for cross-origin cookies
-      body: JSON.stringify({ password: formData.get("password") }),
-    });
+    console.log("Logging in to:", loginUrl);
 
-    if (response.ok) {
-      router.push("/admin/comments");
-    } else {
-      let errorMessage = "Login failed";
-      try {
-        const data = await response.json();
-        errorMessage = data.error || data.message || errorMessage;
-      } catch (e) {
-        // If response isn't JSON (like rate limit message), use status text
-        errorMessage = response.statusText || errorMessage;
+    try {
+      const response = await fetch(loginUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Essential for cross-origin cookies
+        body: JSON.stringify({ password: formData.get("password") }),
+      });
+
+      console.log("Login response status:", response.status);
+
+      if (response.ok) {
+        console.log("Login successful, redirecting...");
+        router.push("/admin/comments");
+      } else {
+        let errorMessage = "Login failed";
+        try {
+          const data = await response.json();
+          errorMessage = data.error || data.message || errorMessage;
+        } catch (e) {
+          // If response isn't JSON (like rate limit message), use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        console.log("Login failed:", errorMessage);
+        setError(errorMessage);
+        setLoading(false);
       }
-      setError(errorMessage);
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Network error. Please check your connection.");
       setLoading(false);
     }
   }
