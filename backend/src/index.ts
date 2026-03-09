@@ -46,6 +46,8 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
+      // Allow cookie to be set from any origin when using proxy/rewrites
+      domain: process.env.COOKIE_DOMAIN || undefined,
     },
   }),
 );
