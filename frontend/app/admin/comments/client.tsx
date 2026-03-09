@@ -32,6 +32,14 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const router = useRouter();
 
+  function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   useEffect(() => {
     fetchComments();
   }, [filter]);
@@ -333,7 +341,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(comment.created_at).toLocaleDateString()}
+                        {formatDate(comment.created_at)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         {comment.status !== "Approved" && (
@@ -411,7 +419,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                     </div>
 
                     <div className="text-xs text-gray-500">
-                      {new Date(comment.created_at).toLocaleDateString()}
+                      {formatDate(comment.created_at)}
                     </div>
 
                     <div className="flex gap-2 pt-2">
