@@ -1,5 +1,8 @@
 -- BetterAuth tables for authentication
 -- Creates user, session, account, and verification tables
+-- Drops old express-session table if it exists
+
+DROP TABLE IF EXISTS "session" CASCADE;
 
 CREATE TABLE IF NOT EXISTS "user" (
   id TEXT PRIMARY KEY,
