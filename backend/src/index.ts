@@ -20,7 +20,13 @@ app.use(globalLimiter);
 const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(
   ",",
 );
-app.use(cors({ origin: corsOrigins, credentials: true }));
+app.use(cors({
+  origin: corsOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "User-Agent"], // User-Agent required for better-auth 1.4+
+}));
+app.options("*", cors());
 
 // Mount BetterAuth handler BEFORE express.json()
 // This is critical or the client API will get stuck on 'pending'
