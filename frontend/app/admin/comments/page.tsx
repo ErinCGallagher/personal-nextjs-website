@@ -1,17 +1,10 @@
 /**
  * Admin comments page.
  * Displays comments with approve/reject functionality.
+ * Auth check happens client-side in CommentsClient component.
  */
-import { redirect } from "next/navigation";
-import { requireAdmin } from "@/app/lib/auth-server";
 import CommentsClient from "./client";
 
-export default async function AdminCommentsPage() {
-  const { authorized } = await requireAdmin();
-
-  if (!authorized) {
-    redirect("/admin");
-  }
-
+export default function AdminCommentsPage() {
   return <CommentsClient initialComments={[]} />;
 }
