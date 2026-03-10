@@ -34,9 +34,18 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   useEffect(() => {
     async function checkAuth() {
-      const session = await authClient.getSession();
-      if (session?.user?.role === "family") {
-        router.push("/admin/travel");
+      try {
+        const response = await fetch("/api/auth/get-session", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const session = await response.json();
+          if (session?.user?.role === "family") {
+            router.push("/admin/travel");
+          }
+        }
+      } catch (err) {
+        console.error("[CommentsClient] Error checking auth:", err);
       }
     }
     checkAuth();

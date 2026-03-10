@@ -29,13 +29,22 @@ export default function TravelClient() {
 
   useEffect(() => {
     fetchTravelData();
-    checkUserRole();
+    fetchUserRole();
   }, []);
 
-  async function checkUserRole() {
-    const session = await authClient.getSession();
-    if (session?.user?.role) {
-      setUserRole(session.user.role);
+  async function fetchUserRole() {
+    try {
+      const response = await fetch("/api/auth/get-session", {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const session = await response.json();
+        if (session?.user?.role) {
+          setUserRole(session.user.role);
+        }
+      }
+    } catch (err) {
+      console.error("[TravelClient] Error fetching user role:", err);
     }
   }
 
