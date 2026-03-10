@@ -1,6 +1,9 @@
 /**
  * Script to populate the travel_itinerary table from CSV file.
- * Run with: pnpm tsx src/seed-travel-data.ts
+ * Run local: pnpm tsx src/scripts/seed-travel-data.ts
+ * Run Prod: 
+ *  - railway link
+ * - DATABASE_URL="DB_URL" pnpm tsx src/scripts/seed-travel-data.ts
  */
 import "dotenv/config";
 import pool from "../db";

@@ -29,8 +29,13 @@ export default function LoginForm() {
           password,
         },
         {
-          onSuccess: () => {
-            router.push("/admin/comments");
+          onSuccess: (ctx) => {
+            const userRole = ctx.data.user.role;
+            if (userRole === "admin") {
+              router.push("/admin/comments");
+            } else if (userRole === "family") {
+              router.push("/admin/travel");
+            }
           },
           onError: (ctx) => {
             console.error("[LoginForm] Auth error:", ctx.error);
@@ -47,9 +52,9 @@ export default function LoginForm() {
         return;
       }
 
-      if (data?.user && data.user.role !== "admin") {
-        console.error("[LoginForm] User is not admin:", data?.user);
-        setError("Unauthorized: Admin access required");
+      if (data?.user && data.user.role !== "admin" && data.user.role !== "family") {
+        console.error("[LoginForm] User is not authorised:", data?.user);
+        setError("Unauthorised: Admin or family access required");
         setLoading(false);
         return;
       }

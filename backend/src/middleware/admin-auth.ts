@@ -26,3 +26,24 @@ export async function requireAdmin(
     res.status(401).json({ error: "Unauthorized" });
   }
 }
+
+export async function requireAdminOrFamily(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    });
+
+    if (session?.user && (session.user.role === "admin" || session.user.role === "family")) {
+      next();
+    } else {
+      res.status(401).json({ error: "Unauthorized" });
+    }
+  } catch (error) {
+    console.error("[requireAdminOrFamily] Error during auth check:", error);
+    res.status(401).json({ error: "Unauthorized" });
+  }
+}

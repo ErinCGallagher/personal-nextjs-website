@@ -93,12 +93,16 @@ export async function readTravelCSV(): Promise<TravelEntry[]> {
     // Parse human-readable dates like "Thursday, December 18" to ISO format
     let dateValue = normalizedRow.date;
 
-    // Parse human-readable dates like "Thursday, December 18" to ISO format
+    // Parse human-readable dates like "Thursday, December 18" or "Friday, March 20, 2026" to ISO format
     if (dateValue && !dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
       try {
-        // Assume dates are in current year (2026) if not specified
+        // Check if year is already included in the date string (ends with 4 digits)
+        const hasYear = /\d{4}$/.test(dateValue.trim());
         const currentYear = 2026;
-        const parsedDate = new Date(`${dateValue}, ${currentYear}`);
+
+        const dateString = hasYear ? dateValue : `${dateValue}, ${currentYear}`;
+        const parsedDate = new Date(dateString);
+
         if (!isNaN(parsedDate.getTime())) {
           dateValue = parsedDate.toISOString().split("T")[0]; // YYYY-MM-DD format
         }

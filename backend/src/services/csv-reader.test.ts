@@ -70,6 +70,20 @@ describe("readTravelCSV", () => {
     expect(result[1].date).toBe("2026-01-02");
   });
 
+  it("parses human-readable dates with year included", async () => {
+    const csvContent = `date,country,city,hotel,flight,rental car,notes
+"Friday, March 20, 2026",USA,Los Angeles,Hotel A,Flight 123,Car A,Great stay
+"Saturday, March 21, 2026",Canada,Vancouver,Hotel B,Flight 456,Car B,Amazing city`;
+
+    mockFs.readFile.mockResolvedValue(csvContent);
+
+    const result = await readTravelCSV();
+
+    expect(result).toHaveLength(2);
+    expect(result[0].date).toBe("2026-03-20");
+    expect(result[1].date).toBe("2026-03-21");
+  });
+
   it("filters out extra columns and only processes expected headers", async () => {
     const csvContent = `date,country,city,hotel,flight,rental car,notes,extra_col1,extra_col2
   2026-01-01,USA,New York,Hotel A,Flight 123,Car A,Great stay,ignore,this

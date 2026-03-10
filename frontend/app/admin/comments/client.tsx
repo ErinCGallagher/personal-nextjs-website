@@ -32,6 +32,16 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const router = useRouter();
 
+  useEffect(() => {
+    async function checkAuth() {
+      const session = await authClient.getSession();
+      if (session?.user?.role === "family") {
+        router.push("/admin/travel");
+      }
+    }
+    checkAuth();
+  }, [router]);
+
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const year = date.getFullYear();

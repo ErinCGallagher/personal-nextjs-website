@@ -5,7 +5,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import pool from "../db";
-import { requireAdmin } from "../middleware/admin-auth";
+import { requireAdmin, requireAdminOrFamily } from "../middleware/admin-auth";
 import { CommentRow, CommentStatus, TravelEntry } from "../models";
 
 const router = Router();
@@ -104,7 +104,7 @@ router.patch("/comments/:id", requireAdmin, async (req, res, next) => {
 
 // GET /api/admin/travel
 // Returns all travel itinerary entries from database
-router.get("/travel", requireAdmin, async (req, res, next) => {
+router.get("/travel", requireAdminOrFamily, async (req, res, next) => {
   try {
     const { rows } = await pool.query<TravelEntry>(
       `SELECT

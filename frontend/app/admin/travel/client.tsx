@@ -24,11 +24,20 @@ export default function TravelClient() {
   const [travels, setTravels] = useState<TravelEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [userRole, setUserRole] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     fetchTravelData();
+    checkUserRole();
   }, []);
+
+  async function checkUserRole() {
+    const session = await authClient.getSession();
+    if (session?.user?.role) {
+      setUserRole(session.user.role);
+    }
+  }
 
   async function fetchTravelData() {
     setLoading(true);
@@ -74,12 +83,22 @@ export default function TravelClient() {
             <h1 className="text-4xl sm:text-5xl font-bold">
               Sabbatical Travel Itinerary
             </h1>
-            <button
-              onClick={handleLogout}
-              className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              Logout
-            </button>
+            <div className="flex gap-2">
+              {userRole === "admin" && (
+                <button
+                  onClick={() => router.push("/admin/comments")}
+                  className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  Comments
+                </button>
+              )}
+              <button
+                onClick={handleLogout}
+                className="px-3 md:px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           {error && (
