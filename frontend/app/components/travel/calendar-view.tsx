@@ -8,7 +8,6 @@
 import { useState, useEffect } from "react";
 import {
   getCountryColor,
-  getCountryBorderColor,
   getCountryFlag,
 } from "@/app/lib/color-utils";
 import { FaTimes, FaHotel } from "react-icons/fa";
@@ -335,9 +334,6 @@ export default function CalendarView({ travels }: CalendarViewProps) {
             );
             const travel = getTravelForDate(dayDate, monthData.entries);
             const stayPos = getStayPosition(dayDate, monthData.entries);
-            const borderColor = travel
-              ? getCountryBorderColor(travel.country)
-              : undefined;
             const today = new Date();
             const isToday =
               dayDate.getDate() === today.getDate() &&
@@ -345,22 +341,20 @@ export default function CalendarView({ travels }: CalendarViewProps) {
               dayDate.getFullYear() === today.getFullYear();
 
             // Build className based on stay position
-            let cellClassName = `min-h-[120px] sm:min-h-[140px] p-2 sm:p-3 relative transition-opacity ${
-              travel ? "cursor-pointer hover:opacity-90" : ""
+            let cellClassName = `min-h-[120px] sm:min-h-[140px] p-2 sm:p-3 relative transition-all duration-200 border border-gray-300 ${
+              travel ? "cursor-pointer hover:scale-105 hover:shadow-lg hover:z-10" : ""
             }`;
 
             if (travel) {
               if (stayPos === "single") {
-                cellClassName += " border-2 rounded";
+                cellClassName += " rounded";
               } else if (stayPos === "start") {
-                cellClassName += " border-l-4 border-t-2 border-b-2 rounded-l";
-              } else if (stayPos === "middle") {
-                cellClassName += " border-l-4 border-t-2 border-b-2";
+                cellClassName += " rounded-l";
               } else if (stayPos === "end") {
-                cellClassName += " border-l-4 border-t-2 border-b-2 border-r-2 rounded-r";
+                cellClassName += " rounded-r";
               }
             } else {
-              cellClassName += " border border-gray-200 rounded";
+              cellClassName += " rounded";
             }
 
             if (isToday && !travel) {
@@ -375,11 +369,6 @@ export default function CalendarView({ travels }: CalendarViewProps) {
                   backgroundColor: travel
                     ? getCountryColor(travel.country)
                     : undefined,
-                  borderColor: travel ? borderColor : undefined,
-                  borderLeftColor: travel && stayPos !== "single" ? borderColor : undefined,
-                  borderTopColor: travel && stayPos !== "single" ? borderColor : undefined,
-                  borderBottomColor: travel && stayPos !== "single" ? borderColor : undefined,
-                  borderRightColor: travel && stayPos === "end" ? borderColor : undefined,
                 }}
                 onClick={() => travel && setSelectedTravel(travel)}
               >
@@ -398,10 +387,10 @@ export default function CalendarView({ travels }: CalendarViewProps) {
                       </div>
                     </div>
                     <div className="text-gray-800 text-xs sm:text-sm font-medium">{travel.city}</div>
-                    <div className="text-gray-700 mt-1 text-base sm:text-lg flex gap-1.5">
-                      {travel.flight && <span>✈️</span>}
-                      {travel.rental_car && <span>🚗</span>}
-                      {travel.notes && <span>📝</span>}
+                    <div className="text-gray-700 mt-1 flex gap-1.5">
+                      {travel.flight && <span className="text-2xl sm:text-3xl">✈️</span>}
+                      {travel.rental_car && <span className="text-2xl sm:text-3xl">🚗</span>}
+                      {travel.notes && <span className="text-2xl sm:text-3xl">📝</span>}
                     </div>
                   </div>
                 ) : (
