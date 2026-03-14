@@ -1,5 +1,7 @@
-// Express router for blog post endpoints.
-// Handles retrieving like counts and toggling likes per post, identified by slug.
+/**
+ * Express router for blog post endpoints.
+ * Handles retrieving like counts and toggling likes per post, identified by slug.
+ */
 import { Router } from "express";
 import { createHash } from "crypto";
 import {
@@ -10,9 +12,23 @@ import {
 } from "../schemas";
 import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rate-limiters";
 import { z } from "zod";
-import pool from "../db";
-import { CommentRow, CommentStatus } from "../models";
 import { sendNewCommentNotification } from "../email";
+import { config } from "../config";
+import { processCommentReview } from "../services/ai-review";
+import {
+  getLikeStats,
+  ensurePostExists,
+  hasUserLikedPost,
+  addLike,
+  removeLike,
+  getLikeCount,
+} from "../db/likes";
+import {
+  getApprovedCommentCount,
+  getApprovedComments,
+  upsertUser,
+  createComment,
+} from "../db/comments";
 
 const router = Router();
 
@@ -31,26 +47,13 @@ router.get("/:slug/likes", readLimiter, async (req, res, next) => {
 
     const { slug, anonymous_id } = result.data;
 
-    const { rows } = await pool.query<{ count: string; liked: boolean }>(
-      `SELECT
-        COUNT(*) AS count,
-        (COUNT(*) FILTER (WHERE anonymous_id = $2)) > 0 AS liked
-      FROM post_likes
-      WHERE post_slug = $1`,
-      [slug, anonymous_id ?? null],
-    );
-
-    const commentCountResult = await pool.query<{ count: string }>(
-      `SELECT COUNT(*) AS count
-       FROM comments
-       WHERE post_slug = $1 AND status = $2`,
-      [slug, CommentStatus.Approved],
-    );
+    const likeStats = await getLikeStats(slug, anonymous_id);
+    const commentCount = await getApprovedCommentCount(slug);
 
     res.json({
-      likeCount: parseInt(rows[0].count, 10),
-      liked: rows[0].liked,
-      commentCount: parseInt(commentCountResult.rows[0].count, 10),
+      likeCount: likeStats.count,
+      liked: likeStats.liked,
+      commentCount: commentCount,
     });
   } catch (err) {
     next(err);
@@ -77,40 +80,21 @@ router.post(
 
       const { slug, anonymous_id } = result.data;
 
-      // Ensure the post record exists before inserting a like
-      await pool.query(
-        "INSERT INTO posts (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING",
-        [slug],
-      );
+      await ensurePostExists(slug);
 
-      const existing = await pool.query(
-        "SELECT 1 FROM post_likes WHERE anonymous_id = $1 AND post_slug = $2",
-        [anonymous_id, slug],
-      );
+      const alreadyLiked = await hasUserLikedPost(anonymous_id, slug);
 
-      if (existing.rows.length > 0) {
-        // Dislike
-        await pool.query(
-          "DELETE FROM post_likes WHERE anonymous_id = $1 AND post_slug = $2",
-          [anonymous_id, slug],
-        );
+      if (alreadyLiked) {
+        await removeLike(anonymous_id, slug);
       } else {
-        await pool.query(
-          // Like
-          "INSERT INTO post_likes (anonymous_id, post_slug) VALUES ($1, $2)",
-          [anonymous_id, slug],
-        );
+        await addLike(anonymous_id, slug);
       }
 
-      // get incremented or decremented like count
-      const { rows } = await pool.query<{ count: string }>(
-        "SELECT COUNT(*) AS count FROM post_likes WHERE post_slug = $1",
-        [slug],
-      );
+      const count = await getLikeCount(slug);
 
       res.json({
-        liked: existing.rows.length === 0,
-        count: parseInt(rows[0].count, 10),
+        liked: !alreadyLiked,
+        count: count,
       });
     } catch (err) {
       next(err);
@@ -132,24 +116,17 @@ router.get("/:slug/comments", readLimiter, async (req, res, next) => {
 
     const { slug } = result.data;
 
-    const { rows } = await pool.query<CommentRow>(
-      `SELECT c.id, c.post_slug, c.parent_id, c.user_id, c.body, c.status, c.created_at, c.status_updated_at, c.status_updated_by, u.name as user_name
-       FROM comments c
-       JOIN users u ON c.user_id = u.anonymous_id
-       WHERE c.post_slug = $1 AND c.status = $2
-       ORDER BY c.created_at ASC`,
-      [slug, CommentStatus.Approved],
-    );
+    const comments = await getApprovedComments(slug);
 
     // Hash user_id with post_slug for privacy (prevents cross-post tracking)
-    const hashedRows = rows.map((row) => ({
-      ...row,
+    const hashedComments = comments.map((comment) => ({
+      ...comment,
       user_id: createHash("sha256")
-        .update(row.user_id + row.post_slug)
+        .update(comment.user_id + comment.post_slug)
         .digest("hex"),
     }));
 
-    res.json(hashedRows);
+    res.json(hashedComments);
   } catch (err) {
     next(err);
   }
@@ -173,42 +150,49 @@ router.post("/:slug/comment", readLimiter, async (req, res, next) => {
 
     const { slug, anonymous_id, name, email, body } = result.data;
 
-    // Ensure the post exists, adds if not
-    await pool.query(
-      "INSERT INTO posts (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING",
-      [slug],
-    );
+    await ensurePostExists(slug);
+    await upsertUser(anonymous_id, name, email);
 
-    // Create or update user
-    await pool.query(
-      `INSERT INTO users (anonymous_id, name, email)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (anonymous_id)
-       DO UPDATE SET
-         name = EXCLUDED.name,
-         email = EXCLUDED.email`,
-      [anonymous_id, name, email],
-    );
+    const comment = await createComment(slug, anonymous_id, body);
 
-    // Insert comment and return it
-    const { rows } = await pool.query<CommentRow>(
-      `INSERT INTO comments (post_slug, user_id, body, status)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, post_slug, parent_id, user_id, body, status, created_at, status_updated_at, status_updated_by`,
-      [slug, anonymous_id, body, CommentStatus.Pending],
-    );
+    // Determine notification email
+    const notificationEmail = process.env.NOTIFICATION_EMAIL;
 
-    // Send email notification asynchronously
-    sendNewCommentNotification({
-      postSlug: slug,
-      commentBody: body,
-      userName: name,
-      userEmail: email,
-    }).catch((error) => {
-      console.error("Failed to send comment notification email:", error);
-    });
+    if (config.AI_REVIEW_ENABLED && notificationEmail) {
+      // Trigger AI review asynchronously (fire-and-forget)
+      // The review process will auto-approve if confidence is high and send appropriate email
+      Promise.resolve()
+        .then(async () => {
+          await processCommentReview(
+            comment.id,
+            body,
+            slug,
+            notificationEmail,
+            name,
+            email
+          );
+        })
+        .catch((error) => {
+          console.error(
+            "AI review process failed for comment",
+            comment.id,
+            ":",
+            error
+          );
+        });
+    } else {
+      // Fallback to immediate email notification if AI review is disabled
+      sendNewCommentNotification({
+        postSlug: slug,
+        commentBody: body,
+        userName: name,
+        userEmail: email,
+      }).catch((error) => {
+        console.error("Failed to send comment notification email:", error);
+      });
+    }
 
-    res.status(201).json(rows[0]);
+    res.status(201).json(comment);
   } catch (err) {
     next(err);
   }

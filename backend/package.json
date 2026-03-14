@@ -10,9 +10,12 @@
     "migrate": "tsx src/migrate.ts",
     "create-admin": "tsx src/create-admin.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:ai": "tsx src/test-ai-review.ts"
   },
   "dependencies": {
+    "@google/genai": "^1.43.0",
+    "@types/papaparse": "^5.5.2",
     "bcrypt": "^6.0.0",
     "better-auth": "^1.5.4",
     "connect-pg-simple": "^10.0.0",

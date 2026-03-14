@@ -5,8 +5,9 @@
 import { Router } from "express";
 import { z } from "zod";
 import pool from "../db";
+import { getAllComments, updateCommentStatus } from "../db/comments";
 import { requireAdmin, requireAdminOrFamily } from "../middleware/admin-auth";
-import { CommentRow, CommentStatus, TravelEntry } from "../models";
+import { CommentStatus, TravelEntry } from "../models";
 
 const router = Router();
 
@@ -17,6 +18,7 @@ const router = Router();
 
 // GET /api/admin/comments?status=Pending
 // Lists comments filtered by status (default: all)
+// Includes AI review data (confidence score, flags, reasoning) via LEFT JOIN
 router.get("/comments", requireAdmin, async (req, res, next) => {
   try {
     const schema = z.object({
@@ -35,28 +37,10 @@ router.get("/comments", requireAdmin, async (req, res, next) => {
 
     const { status } = result.data;
 
-    let query = `
-      SELECT c.id, c.post_slug, c.parent_id, c.user_id, c.body, c.status,
-             c.created_at, c.status_updated_at, c.status_updated_by,
-             u.name as user_name, u.email
-      FROM comments c
-      JOIN users u ON c.user_id = u.anonymous_id
-    `;
+    const comments = await getAllComments(status as CommentStatus | undefined);
 
-    const params: string[] = [];
-
-    if (status) {
-      query += " WHERE c.status = $1";
-      params.push(status);
-    }
-
-    query += " ORDER BY c.created_at DESC";
-
-    const { rows } = await pool.query<
-      CommentRow & { email: string }
-    >(query, params);
-
-    res.json(rows);
+    // Comments include latestAIReview field with AI review data (or null if no review)
+    res.json(comments);
   } catch (err) {
     next(err);
   }
@@ -82,21 +66,17 @@ router.patch("/comments/:id", requireAdmin, async (req, res, next) => {
 
     const { id, status } = result.data;
 
-    const { rows } = await pool.query<CommentRow>(
-      `UPDATE comments
-       SET status = $1,
-           status_updated_at = now(),
-           status_updated_by = 'admin'
-       WHERE id = $2
-       RETURNING id, post_slug, parent_id, user_id, body, status, created_at, status_updated_at, status_updated_by`,
-      [status, id]
+    const updatedComment = await updateCommentStatus(
+      id,
+      status as CommentStatus,
+      "admin"
     );
 
-    if (rows.length === 0) {
+    if (!updatedComment) {
       return res.status(404).json({ error: "Comment not found" });
     }
 
-    res.json(rows[0]);
+    res.json(updatedComment);
   } catch (err) {
     next(err);
   }
