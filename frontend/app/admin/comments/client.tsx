@@ -17,6 +17,17 @@ interface Comment {
   body: string;
   status: "Pending" | "Approved" | "Rejected";
   created_at: string;
+  latestAIReview?: {
+    id: string;
+    provider: string;
+    confidence_score: number | null;
+    flags: string[] | null;
+    reasoning: string | null;
+    status: string;
+    error_message: string | null;
+    reviewed_at: string | null;
+    api_response_time_ms: number | null;
+  } | null;
 }
 
 interface CommentsClientProps {
@@ -316,6 +327,9 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                       Comment
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      AI Review
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -358,6 +372,52 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                             </button>
                           )}
                         </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {comment.latestAIReview ? (
+                          <div
+                            className={`text-sm space-y-1 p-2 rounded ${
+                              comment.latestAIReview.confidence_score !== null &&
+                              comment.latestAIReview.confidence_score >= 0.9
+                                ? "bg-green-50"
+                                : comment.latestAIReview.confidence_score !== null
+                                ? "bg-red-50"
+                                : ""
+                            }`}
+                          >
+                            {comment.latestAIReview.confidence_score !== null && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">Confidence:</span>
+                                <span className="font-semibold text-gray-900">
+                                  {(comment.latestAIReview.confidence_score * 100).toFixed(0)}%
+                                </span>
+                              </div>
+                            )}
+                            {comment.latestAIReview.flags && comment.latestAIReview.flags.length > 0 && (
+                              <div>
+                                <span className="text-gray-600 font-medium">Flags: </span>
+                                <span className="text-xs text-red-700">
+                                  {comment.latestAIReview.flags.join(", ")}
+                                </span>
+                              </div>
+                            )}
+                            {comment.latestAIReview.reasoning && (
+                              <div className="max-w-xs">
+                                <span className="text-gray-600 font-medium">Reasoning: </span>
+                                <span className="text-xs text-gray-700">
+                                  {comment.latestAIReview.reasoning}
+                                </span>
+                              </div>
+                            )}
+                            {comment.latestAIReview.error_message && (
+                              <div className="text-xs text-red-600">
+                                Error: {comment.latestAIReview.error_message}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">No review</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -449,6 +509,52 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                         </button>
                       )}
                     </div>
+
+                    {comment.latestAIReview && (
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">AI Review</div>
+                        <div
+                          className={`text-sm space-y-1 p-2 rounded ${
+                            comment.latestAIReview.confidence_score !== null &&
+                            comment.latestAIReview.confidence_score >= 0.9
+                              ? "bg-green-50"
+                              : comment.latestAIReview.confidence_score !== null
+                              ? "bg-red-50"
+                              : ""
+                          }`}
+                        >
+                          {comment.latestAIReview.confidence_score !== null && (
+                            <div>
+                              <span className="text-gray-600 font-medium">Confidence: </span>
+                              <span className="font-semibold text-gray-900">
+                                {(comment.latestAIReview.confidence_score * 100).toFixed(0)}%
+                              </span>
+                            </div>
+                          )}
+                          {comment.latestAIReview.flags && comment.latestAIReview.flags.length > 0 && (
+                            <div>
+                              <span className="text-gray-600 font-medium">Flags: </span>
+                              <span className="text-xs text-red-700">
+                                {comment.latestAIReview.flags.join(", ")}
+                              </span>
+                            </div>
+                          )}
+                          {comment.latestAIReview.reasoning && (
+                            <div>
+                              <span className="text-gray-600 font-medium">Reasoning: </span>
+                              <span className="text-xs text-gray-700">
+                                {comment.latestAIReview.reasoning}
+                              </span>
+                            </div>
+                          )}
+                          {comment.latestAIReview.error_message && (
+                            <div className="text-xs text-red-600">
+                              Error: {comment.latestAIReview.error_message}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="text-xs text-gray-500">
                       {formatDate(comment.created_at)}
