@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import CalendarView from "@/app/components/travel/calendar-view";
 import { api } from "@/app/lib/api";
 import { authClient } from "@/app/lib/auth-client";
+import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
 
 interface TravelEntry {
   date: string;
@@ -24,29 +25,12 @@ export default function TravelClient() {
   const [travels, setTravels] = useState<TravelEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [userRole, setUserRole] = useState<string | null>(null);
   const router = useRouter();
+  const { role: userRole } = useAdminAuth();
 
   useEffect(() => {
     fetchTravelData();
-    fetchUserRole();
   }, []);
-
-  async function fetchUserRole() {
-    try {
-      const response = await fetch("/api/auth/get-session", {
-        credentials: "include",
-      });
-      if (response.ok) {
-        const session = await response.json();
-        if (session?.user?.role) {
-          setUserRole(session.user.role);
-        }
-      }
-    } catch (err) {
-      console.error("[TravelClient] Error fetching user role:", err);
-    }
-  }
 
   async function fetchTravelData() {
     setLoading(true);

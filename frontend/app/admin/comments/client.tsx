@@ -7,6 +7,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
+import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
 
 interface Comment {
   id: string;
@@ -42,25 +43,13 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
   const [error, setError] = useState("");
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const router = useRouter();
+  const { role } = useAdminAuth();
 
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        const response = await fetch("/api/auth/get-session", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const session = await response.json();
-          if (session?.user?.role === "family") {
-            router.push("/admin/travel");
-          }
-        }
-      } catch (err) {
-        console.error("[CommentsClient] Error checking auth:", err);
-      }
+    if (role === "family") {
+      router.push("/admin/travel");
     }
-    checkAuth();
-  }, [router]);
+  }, [role, router]);
 
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
