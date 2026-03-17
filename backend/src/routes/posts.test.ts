@@ -11,13 +11,15 @@ vi.mock("../email", () => ({
   sendAutoApprovedCommentNotification: vi.fn().mockResolvedValue(undefined),
 }));
 
-// Mock the Gemini client to prevent real API calls during AI review
+// Mock the Gemini client to prevent real API calls during AI review.
+// Low confidence score (below 0.9 threshold) keeps comments in Pending status,
+// which is what most tests expect.
 vi.mock("../services/gemini-client", () => ({
   getGeminiClient: vi.fn(() => ({
     models: {
       generateContent: vi.fn().mockResolvedValue({
         text: JSON.stringify({
-          confidenceScore: 0.95,
+          confidenceScore: 0.5,
           flags: [],
           reasoning: "Test response",
         }),

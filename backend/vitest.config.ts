@@ -15,5 +15,8 @@ export default defineConfig({
     },
     setupFiles: ['./src/test-setup.ts'],
     exclude: ['dist/**', 'node_modules/**'],
+    // Serial execution required: all test files share a single test database,
+    // and afterEach teardown deletes all rows — parallel runs would corrupt each other's data
+    maxWorkers: 1,
   },
 });
