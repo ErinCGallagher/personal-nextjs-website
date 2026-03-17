@@ -75,7 +75,7 @@ export default function TravelClient() {
         <div className="w-full mx-auto px-6 md:px-12 py-12 bg-white text-foreground rounded-lg">
           <div className="flex justify-between items-center mb-10">
             <h1 className="text-4xl sm:text-5xl font-bold">
-              2026 Travel Itinerary
+              Sabbatical Travel
             </h1>
             <div className="flex gap-2">
               {userRole === "admin" && (
