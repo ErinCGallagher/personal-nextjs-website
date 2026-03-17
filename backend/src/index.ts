@@ -35,11 +35,6 @@ app.all("/api/auth/*", toNodeHandler(auth));
 // Apply express.json() after auth handler
 app.use(express.json());
 
-// GET /health
-// app.get("/health", (_req, res) => {
-//   res.json({ status: "ok" });
-// });
-
 app.get("/health", async (req, res) => {
   try {
     await pool.query("SELECT 1");
