@@ -96,7 +96,7 @@ describe("BetterAuth integration", () => {
       .post("/api/auth/sign-in/email")
       .send({ email, password: "wrong_password" });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
   });
 
   it("signs out successfully", async () => {

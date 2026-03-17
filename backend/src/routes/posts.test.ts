@@ -11,6 +11,21 @@ vi.mock("../email", () => ({
   sendAutoApprovedCommentNotification: vi.fn().mockResolvedValue(undefined),
 }));
 
+// Mock the Gemini client to prevent real API calls during AI review
+vi.mock("../services/gemini-client", () => ({
+  getGeminiClient: vi.fn(() => ({
+    models: {
+      generateContent: vi.fn().mockResolvedValue({
+        text: JSON.stringify({
+          confidenceScore: 0.95,
+          flags: [],
+          reasoning: "Test response",
+        }),
+      }),
+    },
+  })),
+}));
+
 describe("GET /api/posts/:slug/likes", () => {
   it("returns count 0 and liked false when no likes exist", async () => {
     const res = await request(app).get("/api/posts/cape-town-itinerary/likes");
@@ -399,13 +414,28 @@ describe("POST /api/posts/:slug/comment", () => {
 
   it("calls notification functions when comment is created", async () => {
     const { sendNewCommentNotification, sendPendingCommentNotification, sendAutoApprovedCommentNotification } = await import("../email");
+    const pool = (await import("../db")).default;
 
-    await request(app).post("/api/posts/test-post/comment").send({
+    const res = await request(app).post("/api/posts/test-post/comment").send({
       anonymous_id: ANON_ID,
       name: "John Doe",
       email: "john@example.com",
       body: "This should trigger an email",
     });
+
+    expect(res.status).toBe(201);
+
+    // With AI review enabled, wait for the async review process to complete before
+    // checking notification calls (processCommentReview runs fire-and-forget)
+    for (let i = 0; i < 50; i++) {
+      const result = await pool.query(
+        "SELECT latest_ai_review_id FROM comments WHERE id = $1",
+        [res.body.id]
+      );
+      if (result.rows[0]?.latest_ai_review_id) break;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // With AI review enabled, either sendPendingCommentNotification or sendAutoApprovedCommentNotification will be called
     // Without AI review, sendNewCommentNotification will be called
