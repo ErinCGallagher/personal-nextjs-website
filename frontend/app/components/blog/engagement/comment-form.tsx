@@ -8,6 +8,10 @@ import React, { useState } from "react";
 import { api } from "@/app/lib/api";
 import { getAnonymousId } from "@/app/lib/anonymous-id";
 
+const NAME_MAX_LENGTH = 100;
+const BODY_MAX_LENGTH = 5000;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 interface Props {
   slug: string;
   onCancel: () => void;
@@ -28,25 +32,25 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
   function validateForm(): boolean {
     const newErrors: { name?: string; email?: string; body?: string } = {};
 
-    // Name validation: required, max 100 chars
+    // Name validation: required, max NAME_MAX_LENGTH chars
     if (!name.trim()) {
       newErrors.name = "Name is required";
-    } else if (name.length > 100) {
-      newErrors.name = "Name must be 100 characters or less";
+    } else if (name.length > NAME_MAX_LENGTH) {
+      newErrors.name = `Name must be ${NAME_MAX_LENGTH} characters or less`;
     }
 
     // Email validation: required, valid email format
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    } else if (!EMAIL_REGEX.test(email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Body validation: required, max 5000 chars
+    // Body validation: required, max BODY_MAX_LENGTH chars
     if (!body.trim()) {
       newErrors.body = "Comment cannot be empty";
-    } else if (body.length > 5000) {
-      newErrors.body = "Comment must be 5000 characters or less";
+    } else if (body.length > BODY_MAX_LENGTH) {
+      newErrors.body = `Comment must be ${BODY_MAX_LENGTH} characters or less`;
     }
 
     setErrors(newErrors);
@@ -57,7 +61,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
     setName(value);
     // Clear error if field is now valid
     if (errors.name) {
-      if (value.trim() && value.length <= 100) {
+      if (value.trim() && value.length <= NAME_MAX_LENGTH) {
         setErrors((prev) => ({ ...prev, name: undefined }));
       }
     }
@@ -67,7 +71,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
     setEmail(value);
     // Clear error if field is now valid
     if (errors.email) {
-      if (value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      if (value.trim() && EMAIL_REGEX.test(value)) {
         setErrors((prev) => ({ ...prev, email: undefined }));
       }
     }
@@ -77,7 +81,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
     setBody(value);
     // Clear error if field is now valid
     if (errors.body) {
-      if (value.trim() && value.length <= 5000) {
+      if (value.trim() && value.length <= BODY_MAX_LENGTH) {
         setErrors((prev) => ({ ...prev, body: undefined }));
       }
     }
@@ -126,7 +130,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
             placeholder="Your name"
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
-            maxLength={100}
+            maxLength={NAME_MAX_LENGTH}
             disabled={submitting}
             className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 disabled:bg-gray-100 disabled:cursor-not-allowed ${
               errors.name
@@ -176,7 +180,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
             placeholder="Write a comment..."
             value={body}
             onChange={(e) => handleBodyChange(e.target.value)}
-            maxLength={5000}
+            maxLength={BODY_MAX_LENGTH}
             rows={4}
             disabled={submitting}
             className={`w-full px-4 py-3 border rounded-lg resize-none focus:outline-none focus:ring-2 disabled:bg-gray-100 disabled:cursor-not-allowed ${
@@ -197,7 +201,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
               <p className="text-xs text-red-600">{errors.body}</p>
             )}
             <p className="text-xs text-gray-500 ml-auto">
-              {body.length}/5000
+              {body.length}/{BODY_MAX_LENGTH}
             </p>
           </div>
         </div>

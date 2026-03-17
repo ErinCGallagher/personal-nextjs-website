@@ -4,7 +4,7 @@
  */
 
 import pool from "../db";
-import { AICommentReview, CommentRow } from "../models";
+import { AICommentReview, AIReviewStatus, CommentRow } from "../models";
 import { AIReviewResponse } from "../schemas";
 
 /**
@@ -150,7 +150,7 @@ export async function getCommentById(
     ai_confidence_score: number | null;
     ai_flags: unknown | null;
     ai_reasoning: string | null;
-    ai_status: string | null;
+    ai_status: AIReviewStatus | null;
     ai_error_message: string | null;
     ai_reviewed_at: Date | null;
     ai_api_response_time_ms: number | null;
@@ -186,7 +186,7 @@ export async function getCommentById(
         confidence_score: row.ai_confidence_score,
         flags: row.ai_flags as string[] | null,
         reasoning: row.ai_reasoning,
-        status: row.ai_status as any,
+        status: row.ai_status as AIReviewStatus,
         error_message: row.ai_error_message,
         reviewed_at: row.ai_reviewed_at,
         api_response_time_ms: row.ai_api_response_time_ms,

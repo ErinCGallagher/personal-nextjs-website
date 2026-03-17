@@ -29,15 +29,15 @@ Create a `.env` file in `backend/`:
 DATABASE_URL=postgresql://localhost/blog_dev
 CORS_ORIGIN=http://localhost:3000
 
+# BetterAuth
+BETTER_AUTH_SECRET=your_secret_key
+BETTER_AUTH_URL=https://www.yourdomain.com
+
 # Email notifications (optional)
 RESEND_API_KEY=your_resend_api_key
 NOTIFICATION_EMAIL=your@email.com
 FROM_EMAIL=noreply@yourdomain.com
 ADMIN_URL=http://localhost:3000
-
-# Admin authentication
-ADMIN_PASSWORD_HASH=your_bcrypt_hash
-SESSION_SECRET=your_session_secret
 
 # AI Comment Review (optional)
 GEMINI_API_KEY=your_gemini_api_key
@@ -182,12 +182,18 @@ The [Vitest VS Code extension](https://marketplace.visualstudio.com/items?itemNa
 | GET | `/api/posts/:slug/comments` | Get all approved comments for a post |
 | POST | `/api/posts/:slug/comment` | Create a comment on a post (sends email notification) |
 
+### Auth (BetterAuth)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/auth/sign-in/email` | Authenticate with email and password |
+| POST | `/api/auth/sign-out` | End the current session |
+| GET | `/api/auth/get-session` | Get the current session |
+
 ### Admin
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/api/admin/login` | Authenticate admin with password |
-| POST | `/api/admin/logout` | Destroy admin session |
 | GET | `/api/admin/comments?status=Pending` | List comments filtered by status (Pending/Approved/Rejected) |
 | PATCH | `/api/admin/comments/:id` | Update comment status |
 
@@ -210,10 +216,10 @@ curl -X POST http://localhost:3001/api/posts/cape-town-itinerary/comment \
   -H "Content-Type: application/json" \
   -d '{"anonymous_id": "550e8400-e29b-41d4-a716-446655440001", "name": "Jane Doe", "email": "jane@example.com", "body": "Great post!"}'
 
-# Admin login
-curl -X POST http://localhost:3001/api/admin/login \
+# Sign in
+curl -X POST http://localhost:3001/api/auth/sign-in/email \
   -H "Content-Type: application/json" \
-  -d '{"password": "your-password"}' \
+  -d '{"email": "your@email.com", "password": "your-password"}' \
   -c cookies.txt
 
 # List pending comments

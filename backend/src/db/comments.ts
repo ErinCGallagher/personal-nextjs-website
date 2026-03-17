@@ -4,7 +4,7 @@
  */
 
 import pool from "../db";
-import { CommentRow, CommentStatus } from "../models";
+import { AIReviewStatus, CommentRow, CommentStatus } from "../models";
 
 /**
  * Gets the count of approved comments for a post.
@@ -81,7 +81,7 @@ export interface CommentWithAIReview extends Omit<CommentRow, "latestAIReview"> 
     confidence_score: number | null;
     flags: string[] | null;
     reasoning: string | null;
-    status: string;
+    status: AIReviewStatus;
     error_message: string | null;
     reviewed_at: Date | null;
     api_response_time_ms: number | null;
@@ -127,7 +127,7 @@ export async function getAllComments(
       ai_confidence_score: number | null;
       ai_flags: unknown | null;
       ai_reasoning: string | null;
-      ai_status: string | null;
+      ai_status: AIReviewStatus | null;
       ai_error_message: string | null;
       ai_reviewed_at: Date | null;
       ai_api_response_time_ms: number | null;
@@ -154,7 +154,7 @@ export async function getAllComments(
         confidence_score: row.ai_confidence_score,
         flags: row.ai_flags as string[] | null,
         reasoning: row.ai_reasoning,
-        status: row.ai_status!,
+        status: row.ai_status as AIReviewStatus,
         error_message: row.ai_error_message,
         reviewed_at: row.ai_reviewed_at,
         api_response_time_ms: row.ai_api_response_time_ms,

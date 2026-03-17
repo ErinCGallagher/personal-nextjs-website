@@ -12,10 +12,10 @@ Personal website and travel blog. Built as a pnpm monorepo with a Next.js fronte
 
 | | |
 |---|---|
-| Frontend | Next.js, Tailwind CSS, MDX |
+| Frontend | Next.js, Tailwind CSS, MDX, Better_auth |
 | Backend | Express, PostgreSQL |
 | Package manager | pnpm (monorepo) |
-| Hosting | Vercel (frontend), TBD (backend) |
+| Hosting | Vercel (frontend), Railway (backend) |
 
 ## Getting started
 
@@ -28,13 +28,15 @@ pnpm install
 Run the frontend:
 
 ```bash
+cd frontend
 pnpm dev
 ```
 
 Run the backend:
 
 ```bash
-pnpm dev:backend
+cd backend
+pnpm dev
 ```
 
 See [`frontend/README.md`](./frontend/README.md) and [`backend/README.md`](./backend/README.md) for setup details.

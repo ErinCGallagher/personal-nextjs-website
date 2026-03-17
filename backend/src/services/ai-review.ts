@@ -18,6 +18,9 @@ import {
   sendPendingCommentNotification,
 } from "../email";
 
+const AI_REVIEW_TIMEOUT_MS = 10000;
+const AI_REVIEW_TEMPERATURE = 0.1;
+
 /**
  * Error thrown when AI review times out
  */
@@ -73,9 +76,8 @@ export async function reviewComment(
     const client = getGeminiClient();
     const prompt = buildReviewPrompt(commentText, postSlug);
 
-    // Create timeout promise (10 seconds)
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new AIReviewTimeoutError()), 10000);
+      setTimeout(() => reject(new AIReviewTimeoutError()), AI_REVIEW_TIMEOUT_MS);
     });
 
     // Call Gemini API with timeout
@@ -83,7 +85,7 @@ export async function reviewComment(
       model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
-        temperature: 0.1, // Low temperature for more consistent, predictable responses
+        temperature: AI_REVIEW_TEMPERATURE, // Low temperature for more consistent, predictable responses
         topP: 0.95,
         topK: 40,
         maxOutputTokens: 500,

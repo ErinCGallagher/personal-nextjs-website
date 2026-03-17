@@ -6,6 +6,9 @@
 
 import { useState, useEffect } from "react";
 import { useComments } from "@/app/lib/hooks/useComments";
+
+const COMMENT_PREVIEW_LENGTH = 200;
+const SUCCESS_MESSAGE_TIMEOUT_MS = 15000;
 import { FaTimes } from "react-icons/fa";
 import { CommentForm } from "./comment-form";
 import {
@@ -45,7 +48,7 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
 
   function handleCommentSuccess() {
     setShowSuccessMessage(true);
-    setTimeout(() => setShowSuccessMessage(false), 15000);
+    setTimeout(() => setShowSuccessMessage(false), SUCCESS_MESSAGE_TIMEOUT_MS);
   }
 
   function toggleCommentExpansion(commentId: string) {
@@ -61,8 +64,8 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
   }
 
   function isCommentLong(text: string): boolean {
-    // Consider a comment long if it has more than 200 chars or multiple lines
-    return text.length > 200 || text.split("\n").length > 3;
+    // Consider a comment long if it exceeds the preview length or has multiple lines
+    return text.length > COMMENT_PREVIEW_LENGTH || text.split("\n").length > 3;
   }
 
   return (

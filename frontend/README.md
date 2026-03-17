@@ -28,6 +28,44 @@ Create a `.env.local` file in `frontend/`:
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
+## Authentication
+
+Authentication is handled by [BetterAuth](https://www.better-auth.com/), with the session managed by the backend. The admin panel at `/admin` requires an authenticated session with the `admin` role.
+
+### How it works
+
+All `/api/*` requests are proxied to the backend via a Next.js rewrite in `next.config.mjs`. This means auth requests stay on the same domain, so session cookies are set correctly without cross-domain issues.
+
+**Client components** use `authClient` from `app/lib/auth-client.ts`:
+
+```ts
+import { authClient } from "@/lib/auth-client";
+
+const { data: session } = authClient.useSession();
+await authClient.signIn.email({ email, password });
+await authClient.signOut();
+```
+
+**Server components** use `app/lib/auth-server.ts` to check sessions server-side. Because Next.js rewrites don't apply to server-side fetches, these go directly to the backend URL with forwarded cookies:
+
+```ts
+import { requireAdmin } from "@/lib/auth-server";
+
+const { authorized, session } = await requireAdmin();
+if (!authorized) redirect("/admin");
+```
+
+### Environment variables
+
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Backend URL used for server-side auth requests (e.g. `http://localhost:3001`) |
+
+### Important constraints
+
+- Client components **must** use relative paths (e.g. `/api/admin/comments`), not direct backend URLs. Direct backend requests bypass the Next.js proxy and break cookie handling.
+- The backend's `BETTER_AUTH_URL` must be set to the **frontend domain**, not the backend domain, so session cookies are set on the right domain.
+
 ## MDX blog components
 
 Custom components available inside `.mdx` post files.
