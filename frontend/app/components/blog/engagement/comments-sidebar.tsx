@@ -4,8 +4,8 @@
  */
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { api } from "@/app/lib/api";
+import { useState, useEffect } from "react";
+import { useComments } from "@/app/lib/hooks/useComments";
 import { FaTimes } from "react-icons/fa";
 import { CommentForm } from "./comment-form";
 import {
@@ -14,19 +14,6 @@ import {
   formatCommentDate,
 } from "./comment-helpers";
 
-interface Comment {
-  id: string;
-  post_slug: string;
-  parent_id: string | null;
-  user_id: string;
-  body: string;
-  status: string;
-  created_at: string;
-  status_updated_at: string | null;
-  status_updated_by: string | null;
-  user_name?: string;
-}
-
 interface Props {
   slug: string;
   isOpen: boolean;
@@ -34,34 +21,15 @@ interface Props {
 }
 
 export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { comments, loading, refetch } = useComments(slug);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [expandedComments, setExpandedComments] = useState<Set<string>>(
     new Set()
   );
 
-  const fetchComments = useCallback(() => {
-    setLoading(true);
-    fetch(api.posts.comments(slug))
-      .then((res) => res.json())
-      .then((data) => {
-        const sortedComments = data.sort(
-          (a: Comment, b: Comment) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime()
-        );
-        setComments(sortedComments);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, [slug]);
-
   useEffect(() => {
     if (isOpen) {
-      fetchComments();
+      refetch();
       // Prevent body scroll when sidebar is open
       document.body.style.overflow = "hidden";
     } else {
@@ -73,7 +41,7 @@ export function CommentsSidebar({ slug, isOpen, onClose }: Props) {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen, fetchComments]);
+  }, [isOpen, refetch]);
 
   function handleCommentSuccess() {
     setShowSuccessMessage(true);

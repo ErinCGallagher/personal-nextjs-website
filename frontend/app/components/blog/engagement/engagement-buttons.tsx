@@ -4,55 +4,23 @@
  */
 "use client";
 
-import { useState, useEffect } from "react";
-import { api } from "@/app/lib/api";
+import { useState } from "react";
+import { useEngagement } from "@/app/lib/hooks/useEngagement";
 import { FaHeart, FaRegHeart, FaComment, FaRegComment } from "react-icons/fa";
 import { CommentsSidebar } from "./comments-sidebar";
-import { getAnonymousId } from "@/app/lib/anonymous-id";
 
 interface Props {
   slug: string;
 }
 
 export function EngagementButtons({ slug }: Props) {
-  const [likeCount, setLikeCount] = useState<number | null>(null);
-  const [liked, setLiked] = useState(false);
+  const { likeCount, liked, commentCount, toggleLike } = useEngagement(slug);
   const [pulsing, setPulsing] = useState(false);
-  const [commentCount, setCommentCount] = useState<number>(0);
   const [showComments, setShowComments] = useState(false);
 
-
-  // GET Likes Request (fetches comment count too)
-  useEffect(() => {
-    fetch(api.posts.likes(slug, getAnonymousId()))
-      .then((res) => res.json())
-      .then((data) => {
-        setLikeCount(data.likeCount);
-        setLiked(data.liked);
-        setCommentCount(data.commentCount || 0);
-      })
-      .catch(() => {});
-  }, [slug]);
-
   function handleLike() {
-    const nowLiked = !liked;
-
-    setLiked(nowLiked);
-    setLikeCount((c) => (c ?? 0) + (nowLiked ? 1 : -1));
-    if (nowLiked) setPulsing(true);
-    
-    // POST Like request sent to update like state
-    fetch(api.posts.like(slug), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ anonymous_id: getAnonymousId() }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setLikeCount(data.count);
-        setLiked(data.liked);
-      })
-      .catch(() => {});
+    if (!liked) setPulsing(true);
+    toggleLike();
   }
 
   function handleToggleComments() {
