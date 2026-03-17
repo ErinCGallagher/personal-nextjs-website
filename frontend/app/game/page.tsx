@@ -27,20 +27,17 @@ export default function Page() {
           treasure, if you dare!
         </p>
 
-        <div className="mt-8 mb-16 relative z-10">
+        <div className="mt-8 mb-16 relative z-10 w-full" style={{ aspectRatio: "11 / 6" }}>
           {gameStarted ? (
             <iframe
               ref={iframeRef}
               src="/game/unity.html"
-              width="1100"
-              height="650"
-              style={{ border: "none" }}
+              style={{ border: "none", width: "100%", height: "100%" }}
               allowFullScreen
             />
           ) : (
             <div
-              className="flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black rounded-lg cursor-pointer"
-              style={{ width: "1100px", height: "650px" }}
+              className="flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black rounded-lg cursor-pointer w-full h-full"
               onClick={() => setGameStarted(true)}
             >
               <div className="w-24 h-24 mb-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
