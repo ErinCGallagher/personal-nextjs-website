@@ -21,6 +21,7 @@ export const routes = {
       if (limit !== undefined) params.set("limit", String(limit));
       return `/api/search?${params.toString()}`;
     },
+    suggest: (q: string) => `/api/search/suggest?q=${encodeURIComponent(q)}`,
   },
   admin: {
     comments: (status?: string) =>

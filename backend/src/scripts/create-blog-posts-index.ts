@@ -34,6 +34,7 @@ async function main() {
         featured:    { type: "boolean" },
         readingTime: { type: "integer" },
         image:       { type: "keyword" },
+        suggest:     { type: "completion" },
       },
     },
   });

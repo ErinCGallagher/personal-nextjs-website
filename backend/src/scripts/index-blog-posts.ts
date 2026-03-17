@@ -29,6 +29,7 @@ interface PostDocument {
   readingTime: number;
   image: string;
   country?: string[];
+  suggest: { input: string[] };
 }
 
 function parseFrontmatter(fileContent: string): {
@@ -67,6 +68,16 @@ function parseFrontmatter(fileContent: string): {
     });
 
   return { metadata, content };
+}
+
+/**
+ * Returns all word-starting substrings of a title so the completion suggester
+ * can match any word within the title, not just the first word.
+ * e.g. "Kruger National Park" → ["Kruger National Park", "National Park", "Park"]
+ */
+function titleSuggestInputs(title: string): string[] {
+  const words = title.trim().split(/\s+/);
+  return words.map((_, i) => words.slice(i).join(" "));
 }
 
 /** Strips MDX/JSX components and markdown syntax to produce indexable plain text. */
@@ -111,6 +122,7 @@ async function main() {
       readingTime: (metadata.readingTime as number) ?? 0,
       image: (metadata.image as string) ?? "",
       ...(metadata.country ? { country: metadata.country as string[] } : {}),
+      suggest: { input: [...titleSuggestInputs(metadata.title as string), ...((metadata.tags as string[]) ?? [])] },
     };
   });
 
