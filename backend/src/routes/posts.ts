@@ -12,6 +12,7 @@ import {
 } from "../schemas";
 import { ipLimiter, anonymousIdLimiter, readLimiter } from "../rate-limiters";
 import { z } from "zod";
+import { validateRequest } from "../middleware/validate";
 import { sendNewCommentNotification } from "../email";
 import { config } from "../config";
 import { processCommentReview } from "../services/ai-review";
@@ -34,18 +35,9 @@ const router = Router();
 
 // GET /api/posts/:slug/likes?anonymous_id=xxx
 // Returns the total like count, comment count and whether the given anonymous_id has liked the post
-router.get("/:slug/likes", readLimiter, async (req, res, next) => {
+router.get("/:slug/likes", readLimiter, validateRequest(likesQuerySchema), async (req, res, next) => {
   try {
-    const result = likesQuerySchema.safeParse({
-      slug: req.params.slug,
-      anonymous_id: req.query.anonymous_id,
-    });
-
-    if (!result.success) {
-      return res.status(400).json({ error: z.treeifyError(result.error) });
-    }
-
-    const { slug, anonymous_id } = result.data;
+    const { slug, anonymous_id } = res.locals.validated as z.infer<typeof likesQuerySchema>;
 
     const likeStats = await getLikeStats(slug, anonymous_id);
     const commentCount = await getApprovedCommentCount(slug);
@@ -66,19 +58,10 @@ router.post(
   "/:slug/like",
   ipLimiter,
   anonymousIdLimiter,
+  validateRequest(likeBodySchema),
   async (req, res, next) => {
     try {
-      const result = likeBodySchema.safeParse({
-        slug: req.params.slug,
-        anonymous_id: req.body.anonymous_id,
-      });
-
-      if (!result.success) {
-        res.status(400).json({ error: z.treeifyError(result.error) });
-        return;
-      }
-
-      const { slug, anonymous_id } = result.data;
+      const { slug, anonymous_id } = res.locals.validated as z.infer<typeof likeBodySchema>;
 
       await ensurePostExists(slug);
 
@@ -104,17 +87,9 @@ router.post(
 
 // GET /api/posts/:slug/comments
 // Returns all approved comments for a post
-router.get("/:slug/comments", readLimiter, async (req, res, next) => {
+router.get("/:slug/comments", readLimiter, validateRequest(commentsQuerySchema), async (req, res, next) => {
   try {
-    const result = commentsQuerySchema.safeParse({
-      slug: req.params.slug,
-    });
-
-    if (!result.success) {
-      return res.status(400).json({ error: z.treeifyError(result.error) });
-    }
-
-    const { slug } = result.data;
+    const { slug } = res.locals.validated as z.infer<typeof commentsQuerySchema>;
 
     const comments = await getApprovedComments(slug);
 
@@ -134,21 +109,9 @@ router.get("/:slug/comments", readLimiter, async (req, res, next) => {
 
 // POST /api/posts/:slug/comment
 // Create a comment for a post
-router.post("/:slug/comment", readLimiter, async (req, res, next) => {
+router.post("/:slug/comment", readLimiter, validateRequest(commentBodySchema), async (req, res, next) => {
   try {
-    const result = commentBodySchema.safeParse({
-      slug: req.params.slug,
-      anonymous_id: req.body.anonymous_id,
-      name: req.body.name,
-      email: req.body.email,
-      body: req.body.body,
-    });
-
-    if (!result.success) {
-      return res.status(400).json({ error: z.treeifyError(result.error) });
-    }
-
-    const { slug, anonymous_id, name, email, body } = result.data;
+    const { slug, anonymous_id, name, email, body } = res.locals.validated as z.infer<typeof commentBodySchema>;
 
     await ensurePostExists(slug);
     await upsertUser(anonymous_id, name, email);

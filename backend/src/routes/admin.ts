@@ -7,6 +7,7 @@ import { z } from "zod";
 import pool from "../db";
 import { getAllComments, updateCommentStatus } from "../db/comments";
 import { requireAdmin, requireAdminOrFamily } from "../middleware/admin-auth";
+import { validateRequest } from "../middleware/validate";
 import { CommentStatus, TravelEntry } from "../models";
 
 const router = Router();
@@ -16,26 +17,16 @@ const router = Router();
 // - POST /api/auth/sign-out
 // - GET /api/auth/get-session
 
+const getCommentsSchema = z.object({
+  status: z.enum(["Pending", "Approved", "Rejected"]).optional(),
+});
+
 // GET /api/admin/comments?status=Pending
 // Lists comments filtered by status (default: all)
 // Includes AI review data (confidence score, flags, reasoning) via LEFT JOIN
-router.get("/comments", requireAdmin, async (req, res, next) => {
+router.get("/comments", requireAdmin, validateRequest(getCommentsSchema), async (req, res, next) => {
   try {
-    const schema = z.object({
-      status: z
-        .enum(["Pending", "Approved", "Rejected"])
-        .optional(),
-    });
-
-    const result = schema.safeParse({
-      status: req.query.status,
-    });
-
-    if (!result.success) {
-      return res.status(400).json({ error: z.treeifyError(result.error) });
-    }
-
-    const { status } = result.data;
+    const { status } = res.locals.validated as z.infer<typeof getCommentsSchema>;
 
     const comments = await getAllComments(status as CommentStatus | undefined);
 
@@ -46,25 +37,16 @@ router.get("/comments", requireAdmin, async (req, res, next) => {
   }
 });
 
+const patchCommentSchema = z.object({
+  id: z.string().uuid(),
+  status: z.enum(["Pending", "Approved", "Rejected"]),
+});
+
 // PATCH /api/admin/comments/:id
 // Updates comment status (pending/approved/rejected)
-router.patch("/comments/:id", requireAdmin, async (req, res, next) => {
+router.patch("/comments/:id", requireAdmin, validateRequest(patchCommentSchema), async (req, res, next) => {
   try {
-    const schema = z.object({
-      id: z.string().uuid(),
-      status: z.enum(["Pending", "Approved", "Rejected"]),
-    });
-
-    const result = schema.safeParse({
-      id: req.params.id,
-      status: req.body.status,
-    });
-
-    if (!result.success) {
-      return res.status(400).json({ error: z.treeifyError(result.error) });
-    }
-
-    const { id, status } = result.data;
+    const { id, status } = res.locals.validated as z.infer<typeof patchCommentSchema>;
 
     const updatedComment = await updateCommentStatus(
       id,
