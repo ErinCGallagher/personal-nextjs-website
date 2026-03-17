@@ -7,7 +7,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CalendarView from "@/app/components/travel/calendar-view";
-import { api } from "@/app/lib/api";
+import { routes } from "@/app/lib/api";
 import { authClient } from "@/app/lib/auth-client";
 import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
 
@@ -37,7 +37,7 @@ export default function TravelClient() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/travel", {
+      const response = await fetch(routes.admin.travel(), {
         credentials: "include",
       });
 

@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
+import { routes } from "@/app/lib/api";
 import { Comment } from "@/app/types/comment";
 import CommentFilters, { StatusFilter } from "./comment-filters";
 import CommentRow from "./comment-row";
@@ -42,9 +43,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
     setError("");
 
     try {
-      const commentsUrl = `/api/admin/comments${filter ? `?status=${filter}` : ""}`;
-
-      const response = await fetch(commentsUrl, {
+      const response = await fetch(routes.admin.comments(filter || undefined), {
         credentials: "include",
       });
 
@@ -70,7 +69,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   async function updateStatus(id: string, status: "Approved" | "Rejected") {
     try {
-      const response = await fetch(`/api/admin/comments/${id}`, {
+      const response = await fetch(routes.admin.comment(id), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -98,6 +97,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
       await authClient.signOut();
       router.push("/admin");
     } catch (err) {
+      console.error("[CommentsClient] Error signing out:", err);
       router.push("/admin");
     }
   }

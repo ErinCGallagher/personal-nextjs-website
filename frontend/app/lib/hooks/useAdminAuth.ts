@@ -1,6 +1,7 @@
 /** Hook for fetching the current user's admin session role. */
 
 import { useState, useEffect } from "react";
+import { routes } from "@/app/lib/api";
 
 interface UseAdminAuthResult {
   role: string | null;
@@ -14,7 +15,7 @@ export function useAdminAuth(): UseAdminAuthResult {
   useEffect(() => {
     async function fetchSession() {
       try {
-        const response = await fetch("/api/auth/get-session", {
+        const response = await fetch(routes.auth.session(), {
           credentials: "include",
         });
         if (response.ok) {

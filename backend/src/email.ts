@@ -78,9 +78,6 @@ interface PendingCommentNotificationParams {
  * Sends an email notification for a comment pending manual review.
  * This is called when AI review completes but confidence is below threshold,
  * or when AI review is disabled, or when AI review fails.
- *
- * NOTE: Full implementation will be added in Prompt 10.
- * This is a stub for Prompt 6 integration.
  */
 export async function sendPendingCommentNotification({
   comment,
@@ -164,9 +161,6 @@ interface AutoApprovedCommentNotificationParams {
 /**
  * Sends an email notification for a comment that was automatically approved by AI.
  * This is called when AI review completes with high confidence (above threshold).
- *
- * NOTE: Full implementation will be added in Prompt 10.
- * This is a stub for Prompt 6 integration.
  */
 export async function sendAutoApprovedCommentNotification({
   comment,
