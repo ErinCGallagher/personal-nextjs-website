@@ -30,6 +30,7 @@ export default function Header() {
     { href: "/", label: "Home", mobile: true },
     { href: "/talks", label: "Talks", mobile: true },
     { href: "/blog", label: "Blog", mobile: true },
+    { href: "/search", label: "Search", mobile: true },
     { href: "/game", label: "Game", mobile: false },
   ];
   // Make header transparent and sit over the page on all routes

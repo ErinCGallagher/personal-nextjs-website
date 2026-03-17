@@ -15,6 +15,13 @@ export const routes = {
     comments: (slug: string) => `/api/posts/${slug}/comments`,
     comment: (slug: string) => `/api/posts/${slug}/comment`,
   },
+  search: {
+    posts: (q: string, limit?: number) => {
+      const params = new URLSearchParams({ q });
+      if (limit !== undefined) params.set("limit", String(limit));
+      return `/api/search?${params.toString()}`;
+    },
+  },
   admin: {
     comments: (status?: string) =>
       status ? `/api/admin/comments?status=${status}` : `/api/admin/comments`,
