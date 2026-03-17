@@ -7,7 +7,10 @@
     "dev:backend": "pnpm --filter backend dev",
     "build": "pnpm --filter frontend build",
     "start": "pnpm --filter frontend start",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "elastic:up": "docker compose up -d",
+    "elastic:down": "docker compose down",
+    "elastic:logs": "docker compose logs -f"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

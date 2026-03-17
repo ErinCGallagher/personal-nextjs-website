@@ -11,9 +11,11 @@
     "create-admin": "tsx src/create-admin.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ai": "tsx src/test-ai-review.ts"
+    "test:ai": "tsx src/test-ai-review.ts",
+    "elastic:test": "tsx src/scripts/test-elastic-connection.ts"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^9.3.4",
     "@google/genai": "^1.43.0",
     "@types/papaparse": "^5.5.2",
     "bcrypt": "^6.0.0",

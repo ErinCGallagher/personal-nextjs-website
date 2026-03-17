@@ -1,0 +1,41 @@
+/**
+ * Elasticsearch client for blog post indexing and search.
+ * Provides a singleton client instance and health check functionality.
+ */
+
+import { Client } from "@elastic/elasticsearch";
+
+let client: Client | null = null;
+
+export function getElasticsearchClient(): Client {
+  if (!client) {
+    const url = process.env.ELASTICSEARCH_URL;
+
+    if (!url) {
+      throw new Error(
+        "ELASTICSEARCH_URL environment variable is required but not set. " +
+          "Add it to your .env file (e.g. http://localhost:9200)."
+      );
+    }
+
+    client = new Client({ node: url });
+  }
+
+  return client;
+}
+
+/**
+ * Verifies connectivity to Elasticsearch by fetching cluster health.
+ *
+ * @returns Promise that resolves to true if the cluster is reachable, false otherwise
+ */
+export async function checkConnection(): Promise<boolean> {
+  try {
+    const es = getElasticsearchClient();
+    const health = await es.cluster.health();
+    return health.status !== undefined;
+  } catch (error) {
+    console.error("Elasticsearch health check failed:", error);
+    return false;
+  }
+}
