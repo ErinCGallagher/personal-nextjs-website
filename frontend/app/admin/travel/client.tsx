@@ -7,6 +7,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CalendarView from "@/app/components/travel/calendar-view";
+import TravelStats from "@/app/components/travel/travel-stats";
 import { routes } from "@/app/lib/api";
 import { authClient } from "@/app/lib/auth-client";
 import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
@@ -74,7 +75,7 @@ export default function TravelClient() {
         <div className="w-full mx-auto px-6 md:px-12 py-12 bg-white text-foreground rounded-lg">
           <div className="flex justify-between items-center mb-10">
             <h1 className="text-4xl sm:text-5xl font-bold">
-              Sabbatical Travel Itinerary
+              2026 Travel Itinerary
             </h1>
             <div className="flex gap-2">
               {userRole === "admin" && (
@@ -105,7 +106,10 @@ export default function TravelClient() {
           ) : travels.length === 0 ? (
             <p className="text-foreground/60">No travel entries found.</p>
           ) : (
-            <CalendarView travels={travels} />
+            <>
+              <TravelStats travels={travels} />
+              <CalendarView travels={travels} />
+            </>
           )}
         </div>
       </div>
