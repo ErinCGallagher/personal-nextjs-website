@@ -5,10 +5,31 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | Ruin</title>
     <link rel="stylesheet" href="/game/TemplateData/style.css">
+    <style>
+      #loading-overlay {
+        position: absolute;
+        width: 1100px;
+        height: 600px;
+        background: #231F20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
   </head>
   <body style="margin: 0; padding: 0;">
     <div class="webgl-content">
-      <canvas id="gameContainer" width="1100" height="600" tabindex="-1"></canvas>
+      <div style="position: relative; width: 1100px; height: 600px;">
+        <div id="loading-overlay">
+          <div class="logo Dark"></div>
+          <div class="progress Dark">
+            <div class="empty"></div>
+            <div class="full" id="progress-bar"></div>
+          </div>
+        </div>
+        <canvas id="gameContainer" width="1100" height="600" tabindex="-1" style="width: 1100px; height: 600px;"></canvas>
+      </div>
       <div class="footer">
         <div class="webgl-logo"></div>
         <div class="fullscreen" id="fullscreen-btn"></div>
@@ -17,8 +38,8 @@
     </div>
     <script>
       var canvas = document.querySelector("#gameContainer");
-      canvas.style.width = "1100px";
-      canvas.style.height = "600px";
+      var progressBar = document.getElementById("progress-bar");
+      var loadingOverlay = document.getElementById("loading-overlay");
 
       var script = document.createElement("script");
       script.src = "/game/Build/ruin.loader.js";
@@ -31,7 +52,10 @@
           companyName: "DefaultCompany",
           productName: "Ruin",
           productVersion: "1.0",
+        }, function (progress) {
+          progressBar.style.width = (100 * progress) + "%";
         }).then(function (unityInstance) {
+          loadingOverlay.style.display = "none";
           document.getElementById("fullscreen-btn").onclick = function () {
             unityInstance.SetFullscreen(1);
           };
