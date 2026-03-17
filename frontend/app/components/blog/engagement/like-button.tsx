@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { api } from "@/app/lib/api";
+import { routes, apiFetch } from "@/app/lib/api";
 import { getAnonymousId } from "@/app/lib/anonymous-id";
 
 interface Props {
@@ -22,8 +22,9 @@ export function LikeButton({ slug }: Props) {
   const [pulsing, setPulsing] = useState(false);
 
   useEffect(() => {
-    fetch(api.posts.likes(slug, getAnonymousId()))
-      .then((res) => res.json())
+    apiFetch<{ likeCount: number; liked: boolean }>(
+      routes.posts.likes(slug, getAnonymousId())
+    )
       .then((data) => {
         setCount(data.likeCount);
         setLiked(data.liked);
@@ -41,12 +42,11 @@ export function LikeButton({ slug }: Props) {
     setCount((c) => (c ?? 0) + (nowLiked ? 1 : -1));
     if (nowLiked) setPulsing(true);
 
-    fetch(api.posts.like(slug), {
+    apiFetch<{ count: number; liked: boolean }>(routes.posts.like(slug), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ anonymous_id: getAnonymousId() }),
     })
-      .then((res) => res.json())
       .then((data) => {
         setCount(data.count);
         setLiked(data.liked);

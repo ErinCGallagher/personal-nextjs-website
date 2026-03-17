@@ -4,9 +4,7 @@
  * Uses the backend URL directly from server-side with forwarded cookies.
  */
 import { cookies } from "next/headers";
-
-// Use backend URL for server-side requests (Next.js rewrites don't apply to server-side fetches)
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { routes, serverFetch } from "@/app/lib/api";
 
 export async function getServerSession() {
   try {
@@ -16,19 +14,7 @@ export async function getServerSession() {
       .map((cookie) => `${cookie.name}=${cookie.value}`)
       .join("; ");
 
-    const response = await fetch(`${API_URL}/api/auth/get-session`, {
-      headers: {
-        Cookie: cookieHeader,
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data;
+    return await serverFetch(routes.auth.session(), cookieHeader);
   } catch (error) {
     console.error("Error fetching server session:", error);
     return null;

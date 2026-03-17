@@ -1,7 +1,7 @@
 /** Hook for fetching and managing engagement data (likes, comment count) for a blog post. */
 
 import { useState, useEffect } from "react";
-import { api } from "@/app/lib/api";
+import { routes, apiFetch } from "@/app/lib/api";
 import { getAnonymousId } from "@/app/lib/anonymous-id";
 
 interface UseEngagementResult {
@@ -19,8 +19,9 @@ export function useEngagement(slug: string): UseEngagementResult {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    fetch(api.posts.likes(slug, getAnonymousId()))
-      .then((res) => res.json())
+    apiFetch<{ likeCount: number; liked: boolean; commentCount: number }>(
+      routes.posts.likes(slug, getAnonymousId())
+    )
       .then((data) => {
         setLikeCount(data.likeCount);
         setLiked(data.liked);
@@ -37,12 +38,11 @@ export function useEngagement(slug: string): UseEngagementResult {
     setLiked(nowLiked);
     setLikeCount((c) => (c ?? 0) + (nowLiked ? 1 : -1));
 
-    fetch(api.posts.like(slug), {
+    apiFetch<{ count: number; liked: boolean }>(routes.posts.like(slug), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ anonymous_id: getAnonymousId() }),
     })
-      .then((res) => res.json())
       .then((data) => {
         setLikeCount(data.count);
         setLiked(data.liked);

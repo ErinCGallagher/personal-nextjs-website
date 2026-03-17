@@ -31,7 +31,9 @@ export async function apiFetch<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
-  const response = await fetch(path, options);
+  const response = await (options !== undefined
+    ? fetch(path, options)
+    : fetch(path));
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status}`);
   }
@@ -60,26 +62,3 @@ export async function serverFetch<T>(
   }
   return response.json() as Promise<T>;
 }
-
-/**
- * @deprecated Use `routes` and `apiFetch`/`serverFetch` instead.
- * Kept for backward compatibility while callers are migrated.
- */
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-export const api = {
-  posts: {
-    likes: (slug: string, anonymousId: string) =>
-      `${baseUrl}${routes.posts.likes(slug, anonymousId)}`,
-    like: (slug: string) => `${baseUrl}${routes.posts.like(slug)}`,
-    comments: (slug: string) => `${baseUrl}${routes.posts.comments(slug)}`,
-    comment: (slug: string) => `${baseUrl}${routes.posts.comment(slug)}`,
-  },
-  admin: {
-    login: () => `${baseUrl}/api/admin/login`,
-    logout: () => `${baseUrl}/api/admin/logout`,
-    comments: (status?: string) =>
-      `${baseUrl}${routes.admin.comments(status)}`,
-    updateComment: (id: string) => `${baseUrl}${routes.admin.comment(id)}`,
-    travel: () => `${baseUrl}${routes.admin.travel()}`,
-  },
-};

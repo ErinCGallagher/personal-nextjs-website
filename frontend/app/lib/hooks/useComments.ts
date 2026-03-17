@@ -1,7 +1,7 @@
 /** Hook for fetching approved comments for a blog post. */
 
 import { useState, useCallback } from "react";
-import { api } from "@/app/lib/api";
+import { routes, apiFetch } from "@/app/lib/api";
 import { Comment } from "@/app/types/comment";
 
 interface UseCommentsResult {
@@ -19,9 +19,8 @@ export function useComments(slug: string): UseCommentsResult {
   const refetch = useCallback(() => {
     setLoading(true);
     setError(null);
-    fetch(api.posts.comments(slug))
-      .then((res) => res.json())
-      .then((data: Comment[]) => {
+    apiFetch<Comment[]>(routes.posts.comments(slug))
+      .then((data) => {
         const sorted = [...data].sort(
           (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()

@@ -5,7 +5,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { api } from "@/app/lib/api";
+import { routes, apiFetch } from "@/app/lib/api";
 import { getAnonymousId } from "@/app/lib/anonymous-id";
 
 const NAME_MAX_LENGTH = 100;
@@ -93,7 +93,7 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
     setSubmitting(true);
 
     try {
-      const response = await fetch(api.posts.comment(slug), {
+      await apiFetch(routes.posts.comment(slug), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -103,10 +103,6 @@ export function CommentForm({ slug, onCancel, onSuccess }: Props) {
           body: body.trim(),
         }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit comment");
-      }
 
       // Clear form on success
       setName("");

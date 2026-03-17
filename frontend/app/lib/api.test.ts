@@ -74,8 +74,7 @@ describe("apiFetch", () => {
     await apiFetch("/api/posts/my-post/likes?anonymous_id=anon-123");
 
     expect(fetch).toHaveBeenCalledWith(
-      "/api/posts/my-post/likes?anonymous_id=anon-123",
-      undefined
+      "/api/posts/my-post/likes?anonymous_id=anon-123"
     );
   });
 
