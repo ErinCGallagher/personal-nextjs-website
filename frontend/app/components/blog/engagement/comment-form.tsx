@@ -6,15 +6,7 @@
 
 import React, { useState } from "react";
 import { api } from "@/app/lib/api";
-
-function getAnonymousId(): string {
-  let id = localStorage.getItem("anonymous_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("anonymous_id", id);
-  }
-  return id;
-}
+import { getAnonymousId } from "@/app/lib/anonymous-id";
 
 interface Props {
   slug: string;

@@ -10,17 +10,7 @@
 import { useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { api } from "@/app/lib/api";
-
-// Persisted in localStorage until browser data is cleared. Used for casual
-// deduplication without requiring a login.
-function getAnonymousId(): string {
-  let id = localStorage.getItem("anonymous_id");
-  if (!id) {
-    id = crypto.randomUUID(); // generates a UUID v4
-    localStorage.setItem("anonymous_id", id);
-  }
-  return id;
-}
+import { getAnonymousId } from "@/app/lib/anonymous-id";
 
 interface Props {
   slug: string;

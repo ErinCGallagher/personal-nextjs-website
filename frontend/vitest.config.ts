@@ -6,6 +6,12 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
+    environmentOptions: {
+      jsdom: {
+        // Required for localStorage to be available in tests
+        url: "http://localhost",
+      },
+    },
     globals: true,
   },
   resolve: {
