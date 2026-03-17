@@ -98,6 +98,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
       await authClient.signOut();
       router.push("/admin");
     } catch (err) {
+      console.error("[CommentsClient] Error signing out:", err);
       router.push("/admin");
     }
   }

@@ -28,7 +28,9 @@ export function LikeButton({ slug }: Props) {
         setCount(data.likeCount);
         setLiked(data.liked);
       })
-      .catch(() => {});
+      .catch((err: Error) => {
+        console.error("[LikeButton] Error fetching like state:", err);
+      });
   }, [slug]);
 
   function handleLike() {
@@ -49,7 +51,9 @@ export function LikeButton({ slug }: Props) {
         setCount(data.count);
         setLiked(data.liked);
       })
-      .catch(() => {});
+      .catch((err: Error) => {
+        console.error("[LikeButton] Error toggling like:", err);
+      });
   }
 
   if (count === null) return null;
