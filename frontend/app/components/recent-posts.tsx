@@ -5,14 +5,14 @@ import { getBlogPosts, formatDate, getTagColor } from "@/app/blog/utils";
 export function RecentPosts() {
   const allPosts = getBlogPosts();
 
-  // Sort by date (oldest first) and get last 3
+  // Sort by date (newest first) and get first 3
   const recentPosts = allPosts
     .sort((a, b) => {
       const dateA = new Date(a.metadata.publishedAt).getTime();
       const dateB = new Date(b.metadata.publishedAt).getTime();
       return dateB - dateA;
     })
-    .slice(-3);
+    .slice(0, 3);
 
   return (
     <section className="w-full py-12">
