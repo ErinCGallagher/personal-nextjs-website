@@ -8,28 +8,38 @@
   </head>
   <body style="margin: 0; padding: 0;">
     <div class="webgl-content">
-      <div id="gameContainer" style="width: 1100px; height: 600px"></div>
+      <canvas id="gameContainer" width="1100" height="600" tabindex="-1"></canvas>
       <div class="footer">
         <div class="webgl-logo"></div>
         <div class="fullscreen" id="fullscreen-btn"></div>
         <div class="title">Ruin</div>
       </div>
     </div>
-    <script src="/game/Build/ruin.loader.js"></script>
     <script>
-      createUnityInstance(document.querySelector("#gameContainer"), {
-        dataUrl: "/game/Build/ruin.data.br",
-        frameworkUrl: "/game/Build/ruin.framework.js.br",
-        codeUrl: "/game/Build/ruin.wasm.br",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "Ruin",
-        productVersion: "1.0",
-      }).then(function (unityInstance) {
-        document.getElementById("fullscreen-btn").onclick = function () {
-          unityInstance.SetFullscreen(1);
-        };
-      });
+      var canvas = document.querySelector("#gameContainer");
+      canvas.style.width = "1100px";
+      canvas.style.height = "600px";
+
+      var script = document.createElement("script");
+      script.src = "/game/Build/ruin.loader.js";
+      script.onload = () => {
+        createUnityInstance(canvas, {
+          dataUrl: "/game/Build/ruin.data.br",
+          frameworkUrl: "/game/Build/ruin.framework.js.br",
+          codeUrl: "/game/Build/ruin.wasm.br",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "Ruin",
+          productVersion: "1.0",
+        }).then(function (unityInstance) {
+          document.getElementById("fullscreen-btn").onclick = function () {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch(function (message) {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
     </script>
   </body>
 </html>
