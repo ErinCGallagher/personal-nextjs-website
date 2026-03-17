@@ -8,28 +8,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
-
-interface Comment {
-  id: string;
-  post_slug: string;
-  user_id: string;
-  user_name?: string;
-  email?: string;
-  body: string;
-  status: "Pending" | "Approved" | "Rejected";
-  created_at: string;
-  latestAIReview?: {
-    id: string;
-    provider: string;
-    confidence_score: number | null;
-    flags: string[] | null;
-    reasoning: string | null;
-    status: string;
-    error_message: string | null;
-    reviewed_at: string | null;
-    api_response_time_ms: number | null;
-  } | null;
-}
+import { Comment } from "@/app/types/comment";
+import { formatDateISO } from "@/app/lib/date-utils";
 
 interface CommentsClientProps {
   initialComments: Comment[];
@@ -50,14 +30,6 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
       router.push("/admin/travel");
     }
   }, [role, router]);
-
-  function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
 
   useEffect(() => {
     fetchComments();
@@ -422,7 +394,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(comment.created_at)}
+                        {formatDateISO(comment.created_at)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         {comment.status !== "Approved" && (
@@ -546,7 +518,7 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
                     )}
 
                     <div className="text-xs text-gray-500">
-                      {formatDate(comment.created_at)}
+                      {formatDateISO(comment.created_at)}
                     </div>
 
                     <div className="flex gap-2 pt-2">
