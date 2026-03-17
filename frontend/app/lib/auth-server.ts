@@ -6,7 +6,13 @@
 import { cookies } from "next/headers";
 import { routes, serverFetch } from "@/app/lib/api";
 
-export async function getServerSession() {
+interface Session {
+  user: {
+    role: string;
+  };
+}
+
+export async function getServerSession(): Promise<Session | null> {
   try {
     const cookieStore = await cookies();
     const cookieHeader = cookieStore
@@ -14,7 +20,7 @@ export async function getServerSession() {
       .map((cookie) => `${cookie.name}=${cookie.value}`)
       .join("; ");
 
-    return await serverFetch(routes.auth.session(), cookieHeader);
+    return await serverFetch<Session>(routes.auth.session(), cookieHeader);
   } catch (error) {
     console.error("Error fetching server session:", error);
     return null;
