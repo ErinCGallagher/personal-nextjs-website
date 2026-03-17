@@ -8,6 +8,7 @@ import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
 import adminRouter from "./routes/admin";
+import searchRouter from "./routes/search";
 import pool from "./db";
 
 const app = express();
@@ -49,6 +50,9 @@ app.use("/api/posts", postsRouter);
 
 // Admin routes: authentication and comment moderation
 app.use("/api/admin", adminRouter);
+
+// Search routes: full-text search across blog posts
+app.use("/api/search", searchRouter);
 
 app.use(errorHandler);
 

@@ -12,10 +12,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ai": "tsx src/test-ai-review.ts",
-    "elastic:test": "tsx src/scripts/test-elastic-connection.ts"
+    "elastic:test": "tsx src/scripts/test-elastic-connection.ts",
+    "elastic:create-posts-index": "tsx src/scripts/create-blog-posts-index.ts",
+    "elastic:index-posts": "tsx src/scripts/index-blog-posts.ts"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^9.3.4",
+    "@elastic/elasticsearch": "^8.19.1",
     "@google/genai": "^1.43.0",
     "@types/papaparse": "^5.5.2",
     "bcrypt": "^6.0.0",

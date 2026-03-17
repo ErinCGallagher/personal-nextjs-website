@@ -38,6 +38,11 @@ export const travelEntrySchema = z.object({
   notes: z.string().trim().nullable(),
 });
 
+export const searchQuerySchema = z.object({
+  q: z.string().min(1).max(200),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+});
+
 /**
  * Schema for AI review response from Gemini API.
  * Validates the structure of the AI's comment moderation assessment.
