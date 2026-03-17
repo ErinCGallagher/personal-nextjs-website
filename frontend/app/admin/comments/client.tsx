@@ -9,7 +9,9 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 import { useAdminAuth } from "@/app/lib/hooks/useAdminAuth";
 import { Comment } from "@/app/types/comment";
-import { formatDateISO } from "@/app/lib/date-utils";
+import CommentFilters, { StatusFilter } from "./comment-filters";
+import CommentRow from "./comment-row";
+import CommentCard from "./comment-card";
 
 interface CommentsClientProps {
   initialComments: Comment[];
@@ -17,7 +19,7 @@ interface CommentsClientProps {
 
 export default function CommentsClient({ initialComments }: CommentsClientProps) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
-  const [filter, setFilter] = useState<"" | "Pending" | "Approved" | "Rejected">("");
+  const [filter, setFilter] = useState<StatusFilter>("");
   const [postFilter, setPostFilter] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -68,13 +70,9 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
 
   async function updateStatus(id: string, status: "Approved" | "Rejected") {
     try {
-      const updateUrl = `/api/admin/comments/${id}`;
-
-      const response = await fetch(updateUrl, {
+      const response = await fetch(`/api/admin/comments/${id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ status }),
       });
@@ -121,11 +119,10 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
     new Set(comments.map((comment) => comment.post_slug))
   ).sort();
 
-  // Filter comments based on both status and post filters
-  const filteredComments = comments.filter((comment) => {
-    const matchesPost = !postFilter || comment.post_slug === postFilter;
-    return matchesPost;
-  });
+  // Filter comments based on post filter (status filter is applied server-side via API)
+  const filteredComments = comments.filter(
+    (comment) => !postFilter || comment.post_slug === postFilter
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pt-20 md:pt-24">
@@ -150,121 +147,16 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
           </div>
         </div>
 
-        {/* Status filter buttons */}
-        <div className="mb-4">
-          <h2 className="text-sm font-medium text-gray-700 mb-2">
-            Filter by Status
-          </h2>
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <button
-              onClick={() => setFilter("")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                filter === ""
-                  ? "text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-              style={
-                filter === "" ? { backgroundColor: "var(--grey-blue)" } : undefined
-              }
-            >
-              All
-            </button>
-            <button
-              onClick={() => setFilter("Pending")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                filter === "Pending"
-                  ? "text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-              style={
-                filter === "Pending"
-                  ? { backgroundColor: "var(--grey-blue)" }
-                  : undefined
-              }
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setFilter("Approved")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                filter === "Approved"
-                  ? "text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-              style={
-                filter === "Approved"
-                  ? { backgroundColor: "var(--grey-blue)" }
-                  : undefined
-              }
-            >
-              Approved
-            </button>
-            <button
-              onClick={() => setFilter("Rejected")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                filter === "Rejected"
-                  ? "text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-              style={
-                filter === "Rejected"
-                  ? { backgroundColor: "var(--grey-blue)" }
-                  : undefined
-              }
-            >
-              Rejected
-            </button>
-          </div>
-        </div>
-
-        {/* Post filter buttons */}
-        {uniquePostSlugs.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-sm font-medium text-gray-700 mb-2">
-              Filter by Post
-            </h2>
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              <button
-                onClick={() => setPostFilter("")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                  postFilter === ""
-                    ? "text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-                style={
-                  postFilter === ""
-                    ? { backgroundColor: "var(--grey-blue)" }
-                    : undefined
-                }
-              >
-                All Posts
-              </button>
-              {uniquePostSlugs.map((slug) => (
-                <button
-                  key={slug}
-                  onClick={() => setPostFilter(slug)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                    postFilter === slug
-                      ? "text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                  style={
-                    postFilter === slug
-                      ? { backgroundColor: "var(--grey-blue)" }
-                      : undefined
-                  }
-                >
-                  {slug}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        <CommentFilters
+          filter={filter}
+          postFilter={postFilter}
+          uniquePostSlugs={uniquePostSlugs}
+          onStatusChange={setFilter}
+          onPostChange={setPostFilter}
+        />
 
         {error && (
-          <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">
-            {error}
-          </div>
+          <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">{error}</div>
         )}
 
         {loading ? (
@@ -278,143 +170,27 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Author
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Post
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Comment
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      AI Review
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
+                    {["Author", "Post", "Comment", "AI Review", "Status", "Date", "Actions"].map(
+                      (header) => (
+                        <th
+                          key={header}
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          {header}
+                        </th>
+                      )
+                    )}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredComments.map((comment) => (
-                    <tr key={comment.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {comment.user_name || "Anonymous"}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {comment.email}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {comment.post_slug}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="max-w-md">
-                          <div
-                            className={`text-sm text-gray-900 ${
-                              expandedComments.has(comment.id) ? "" : "line-clamp-3"
-                            }`}
-                          >
-                            {comment.body}
-                          </div>
-                          {comment.body.length > 150 && (
-                            <button
-                              onClick={() => toggleExpanded(comment.id)}
-                              className="text-xs text-blue-600 hover:text-blue-800 mt-1"
-                            >
-                              {expandedComments.has(comment.id) ? "See less" : "See more"}
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {comment.latestAIReview ? (
-                          <div
-                            className={`text-sm space-y-1 p-2 rounded ${
-                              comment.latestAIReview.confidence_score !== null &&
-                              comment.latestAIReview.confidence_score >= 0.9
-                                ? "bg-green-50"
-                                : comment.latestAIReview.confidence_score !== null
-                                ? "bg-red-50"
-                                : ""
-                            }`}
-                          >
-                            {comment.latestAIReview.confidence_score !== null && (
-                              <div className="flex items-center gap-2">
-                                <span className="text-gray-600 font-medium">Confidence:</span>
-                                <span className="font-semibold text-gray-900">
-                                  {(comment.latestAIReview.confidence_score * 100).toFixed(0)}%
-                                </span>
-                              </div>
-                            )}
-                            {comment.latestAIReview.flags && comment.latestAIReview.flags.length > 0 && (
-                              <div>
-                                <span className="text-gray-600 font-medium">Flags: </span>
-                                <span className="text-xs text-red-700">
-                                  {comment.latestAIReview.flags.join(", ")}
-                                </span>
-                              </div>
-                            )}
-                            {comment.latestAIReview.reasoning && (
-                              <div className="max-w-xs">
-                                <span className="text-gray-600 font-medium">Reasoning: </span>
-                                <span className="text-xs text-gray-700">
-                                  {comment.latestAIReview.reasoning}
-                                </span>
-                              </div>
-                            )}
-                            {comment.latestAIReview.error_message && (
-                              <div className="text-xs text-red-600">
-                                Error: {comment.latestAIReview.error_message}
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-400">No review</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            comment.status === "Approved"
-                              ? "bg-green-100 text-green-800"
-                              : comment.status === "Rejected"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {comment.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDateISO(comment.created_at)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        {comment.status !== "Approved" && (
-                          <button
-                            onClick={() => updateStatus(comment.id, "Approved")}
-                            className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-                          >
-                            Approve
-                          </button>
-                        )}
-                        {comment.status !== "Rejected" && (
-                          <button
-                            onClick={() => updateStatus(comment.id, "Rejected")}
-                            className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-                          >
-                            Reject
-                          </button>
-                        )}
-                      </td>
-                    </tr>
+                    <CommentRow
+                      key={comment.id}
+                      comment={comment}
+                      isExpanded={expandedComments.has(comment.id)}
+                      onToggleExpanded={() => toggleExpanded(comment.id)}
+                      onUpdateStatus={(status) => updateStatus(comment.id, status)}
+                    />
                   ))}
                 </tbody>
               </table>
@@ -423,124 +199,13 @@ export default function CommentsClient({ initialComments }: CommentsClientProps)
             {/* Mobile card view */}
             <div className="md:hidden space-y-4">
               {filteredComments.map((comment) => (
-                <div key={comment.id} className="bg-white rounded-lg shadow p-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {comment.user_name || "Anonymous"}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {comment.email}
-                        </div>
-                      </div>
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          comment.status === "Approved"
-                            ? "bg-green-100 text-green-800"
-                            : comment.status === "Rejected"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {comment.status}
-                      </span>
-                    </div>
-
-                    <div>
-                      <div className="text-xs text-gray-500 mb-1">Post</div>
-                      <div className="text-sm text-gray-900">{comment.post_slug}</div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs text-gray-500 mb-1">Comment</div>
-                      <div
-                        className={`text-sm text-gray-900 ${
-                          expandedComments.has(comment.id) ? "" : "line-clamp-3"
-                        }`}
-                      >
-                        {comment.body}
-                      </div>
-                      {comment.body.length > 150 && (
-                        <button
-                          onClick={() => toggleExpanded(comment.id)}
-                          className="text-xs text-blue-600 hover:text-blue-800 mt-1"
-                        >
-                          {expandedComments.has(comment.id) ? "See less" : "See more"}
-                        </button>
-                      )}
-                    </div>
-
-                    {comment.latestAIReview && (
-                      <div>
-                        <div className="text-xs text-gray-500 mb-1">AI Review</div>
-                        <div
-                          className={`text-sm space-y-1 p-2 rounded ${
-                            comment.latestAIReview.confidence_score !== null &&
-                            comment.latestAIReview.confidence_score >= 0.9
-                              ? "bg-green-50"
-                              : comment.latestAIReview.confidence_score !== null
-                              ? "bg-red-50"
-                              : ""
-                          }`}
-                        >
-                          {comment.latestAIReview.confidence_score !== null && (
-                            <div>
-                              <span className="text-gray-600 font-medium">Confidence: </span>
-                              <span className="font-semibold text-gray-900">
-                                {(comment.latestAIReview.confidence_score * 100).toFixed(0)}%
-                              </span>
-                            </div>
-                          )}
-                          {comment.latestAIReview.flags && comment.latestAIReview.flags.length > 0 && (
-                            <div>
-                              <span className="text-gray-600 font-medium">Flags: </span>
-                              <span className="text-xs text-red-700">
-                                {comment.latestAIReview.flags.join(", ")}
-                              </span>
-                            </div>
-                          )}
-                          {comment.latestAIReview.reasoning && (
-                            <div>
-                              <span className="text-gray-600 font-medium">Reasoning: </span>
-                              <span className="text-xs text-gray-700">
-                                {comment.latestAIReview.reasoning}
-                              </span>
-                            </div>
-                          )}
-                          {comment.latestAIReview.error_message && (
-                            <div className="text-xs text-red-600">
-                              Error: {comment.latestAIReview.error_message}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="text-xs text-gray-500">
-                      {formatDateISO(comment.created_at)}
-                    </div>
-
-                    <div className="flex gap-2 pt-2">
-                      {comment.status !== "Approved" && (
-                        <button
-                          onClick={() => updateStatus(comment.id, "Approved")}
-                          className="flex-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {comment.status !== "Rejected" && (
-                        <button
-                          onClick={() => updateStatus(comment.id, "Rejected")}
-                          className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
-                        >
-                          Reject
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <CommentCard
+                  key={comment.id}
+                  comment={comment}
+                  isExpanded={expandedComments.has(comment.id)}
+                  onToggleExpanded={() => toggleExpanded(comment.id)}
+                  onUpdateStatus={(status) => updateStatus(comment.id, status)}
+                />
               ))}
             </div>
           </>
