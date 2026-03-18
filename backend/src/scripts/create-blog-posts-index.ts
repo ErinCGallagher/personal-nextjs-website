@@ -5,11 +5,12 @@
  */
 
 import "dotenv/config";
+import { fileURLToPath } from "url";
 import { getElasticsearchClient } from "../services/elasticsearch.js";
 
 const INDEX_NAME = "blog_posts";
 
-async function main() {
+export async function createBlogPostsIndex() {
   const es = getElasticsearchClient();
 
   const exists = await es.indices.exists({ index: INDEX_NAME });
@@ -42,7 +43,9 @@ async function main() {
   console.log(`Index "${INDEX_NAME}" created successfully.`);
 }
 
-main().catch((err) => {
-  console.error("Failed to create index:", err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  createBlogPostsIndex().catch((err) => {
+    console.error("Failed to create index:", err);
+    process.exit(1);
+  });
+}

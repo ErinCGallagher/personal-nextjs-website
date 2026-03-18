@@ -16,12 +16,17 @@ export const routes = {
     comment: (slug: string) => `/api/posts/${slug}/comment`,
   },
   search: {
-    posts: (q: string, limit?: number) => {
-      const params = new URLSearchParams({ q });
+    posts: (q: string, tags?: string[], limit?: number) => {
+      const params = new URLSearchParams();
+      if (q) params.set("q", q);
       if (limit !== undefined) params.set("limit", String(limit));
+      tags?.forEach((tag) => params.append("tags", tag));
       return `/api/search?${params.toString()}`;
     },
     suggest: (q: string) => `/api/search/suggest?q=${encodeURIComponent(q)}`,
+  },
+  tags: {
+    aggregations: () => `/api/tags/aggregations`,
   },
   admin: {
     comments: (status?: string) =>

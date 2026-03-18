@@ -4,13 +4,14 @@
  */
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FeaturedPost } from "@/app/components/blog/post-card/featured-post";
 import { SmallPost } from "@/app/components/blog/post-card/small-post";
 import { YouTubePromo } from "@/app/components/blog/post-card/youtube-promo";
 import { SearchBar } from "@/app/components/blog/SearchBar";
 import { SearchResults, SearchResult } from "@/app/components/blog/SearchResults";
+import { TagFilterList } from "@/app/components/blog/TagFilterList";
 import { apiFetch, routes } from "@/app/lib/api";
 
 type Post = {
@@ -27,6 +28,7 @@ type Post = {
 
 type SearchResponse = {
   query: string;
+  filters: { tags: string[] };
   total: number;
   results: SearchResult[];
 };
@@ -42,11 +44,22 @@ export function BlogContent({ featuredPosts, smallPosts }: BlogContentProps) {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const handleSearch = useCallback(async (q: string) => {
+  function handleTagToggle(tag: string) {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  }
+
+  function handleSearch(q: string) {
     setQuery(q);
+  }
 
-    if (!q) {
+  const isSearchActive = query.length > 0 || selectedTags.length > 0;
+
+  useEffect(() => {
+    if (!isSearchActive) {
       setResults([]);
       setTotal(0);
       setError(null);
@@ -55,17 +68,17 @@ export function BlogContent({ featuredPosts, smallPosts }: BlogContentProps) {
 
     setLoading(true);
     setError(null);
-    try {
-      const data = await apiFetch<SearchResponse>(routes.search.posts(q));
-      setResults(data.results);
-      setTotal(data.total);
-    } catch {
-      setError("Search failed.");
-      setResults([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    apiFetch<SearchResponse>(routes.search.posts(query, selectedTags))
+      .then((data) => {
+        setResults(data.results);
+        setTotal(data.total);
+      })
+      .catch(() => {
+        setError("Search failed.");
+        setResults([]);
+      })
+      .finally(() => setLoading(false));
+  }, [query, selectedTags, isSearchActive]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,19 +117,21 @@ export function BlogContent({ featuredPosts, smallPosts }: BlogContentProps) {
 
           <div className="mt-6">
             <SearchBar onSearch={handleSearch} isLoading={loading} />
+            <TagFilterList selectedTags={selectedTags} onToggle={handleTagToggle} />
           </div>
 
-          {query ? (
+          {isSearchActive ? (
             <div className="mt-4">
               {!loading && !error && results.length > 0 && (
                 <p className="text-sm text-gray-500 mb-2">
-                  Found {total} {total === 1 ? "result" : "results"} for &ldquo;{query}&rdquo;
+                  Found {total} {total === 1 ? "result" : "results"}
+                  {query && <> for &ldquo;{query}&rdquo;</>}
                 </p>
               )}
               <SearchResults
                 results={results}
                 loading={loading}
-                query={query}
+                query={query || selectedTags.join(", ")}
                 error={error}
               />
             </div>

@@ -14,7 +14,8 @@
     "test:ai": "tsx src/test-ai-review.ts",
     "elastic:test": "tsx src/scripts/test-elastic-connection.ts",
     "elastic:create-posts-index": "tsx src/scripts/create-blog-posts-index.ts",
-    "elastic:index-posts": "tsx src/scripts/index-blog-posts.ts"
+    "elastic:index-posts": "tsx src/scripts/index-blog-posts.ts",
+    "elastic:reindex": "tsx src/scripts/reindex-blog-posts.ts"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.19.1",

@@ -96,7 +96,7 @@ function stripMdx(content: string): string {
     .trim();
 }
 
-async function main() {
+export async function indexBlogPosts() {
   const es = getElasticsearchClient();
 
   const files = fs
@@ -154,7 +154,9 @@ async function main() {
   console.log("Done.");
 }
 
-main().catch((err) => {
-  console.error("Indexing failed:", err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  indexBlogPosts().catch((err) => {
+    console.error("Indexing failed:", err);
+    process.exit(1);
+  });
+}

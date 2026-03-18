@@ -1,5 +1,5 @@
 /**
- * Search input with debounced query emission, autocomplete suggestions,
+ * Search input with Enter-to-search, autocomplete suggestions,
  * loading state, and clear button.
  */
 "use client";
@@ -29,22 +29,8 @@ export function SearchBar({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suggestTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Keep a ref so the debounce effect never re-fires on callback identity changes.
-  const onSearchRef = useRef(onSearch);
-  useEffect(() => { onSearchRef.current = onSearch; });
-
-  // Debounced search callback (300ms)
-  useEffect(() => {
-    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
-    searchTimerRef.current = setTimeout(() => {
-      onSearchRef.current(value.trim());
-    }, 300);
-    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
-  }, [value]);
 
   // Debounced autocomplete fetch (200ms)
   useEffect(() => {
@@ -84,11 +70,10 @@ export function SearchBar({
     setValue(text);
     setShowSuggestions(false);
     setActiveIndex(-1);
-    onSearchRef.current(text);
+    onSearch(text);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!showSuggestions || suggestions.length === 0) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setActiveIndex((prev) => Math.min(prev + 1, suggestions.length - 1));
@@ -98,8 +83,13 @@ export function SearchBar({
     } else if (e.key === "Escape") {
       setShowSuggestions(false);
       setActiveIndex(-1);
-    } else if (e.key === "Enter" && activeIndex >= 0) {
-      selectSuggestion(suggestions[activeIndex].text);
+    } else if (e.key === "Enter") {
+      if (showSuggestions && activeIndex >= 0) {
+        selectSuggestion(suggestions[activeIndex].text);
+      } else {
+        setShowSuggestions(false);
+        onSearch(value.trim());
+      }
     }
   }
 
@@ -107,7 +97,7 @@ export function SearchBar({
     setValue("");
     setSuggestions([]);
     setShowSuggestions(false);
-    onSearchRef.current("");
+    onSearch("");
   }
 
   return (

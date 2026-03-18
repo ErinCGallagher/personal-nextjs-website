@@ -73,6 +73,16 @@ The search query uses `multi_match` with three strategies layered together:
 
 **English analyser** — applied to `title`, `summary`, and `content` at index time and query time. It strips stopwords ("the", "a", "in") and stems terms ("hiking" → "hike", "running" → "run"), so queries and documents match on root forms regardless of inflection.
 
+## Reindexing
+
+To rebuild the `blog_posts` index from scratch (e.g. after changing the mapping or adding new posts):
+
+```bash
+pnpm elastic:reindex -- --force
+```
+
+This deletes the existing index, recreates it with the current mapping, then indexes all MDX posts. The `--force` flag is required to confirm the deletion.
+
 ## Data persistence
 
 Elasticsearch data is stored in the `elasticsearch-data` Docker volume.

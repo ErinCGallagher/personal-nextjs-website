@@ -12,28 +12,42 @@ import { readLimiter } from "../rate-limiters.js";
 
 const router = Router();
 
-// GET /api/search?q=yellowstone&limit=10
-// Returns blog posts matching the query, sorted by relevance score
+// GET /api/search?q=yellowstone&tags=Hiking&tags=Safari&limit=10
+// Supports text-only, tags-only, or combined queries. At least one of q or tags is required.
 router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, res, next) => {
   try {
-    const { q, limit } = res.locals.validated as z.infer<typeof searchQuerySchema>;
+    const { q, limit, tags } = res.locals.validated as z.infer<typeof searchQuerySchema>;
     const es = getElasticsearchClient();
+
+    const textClause = q
+      ? {
+          multi_match: {
+            query: q,
+            // Title matches are most valuable; summary next; country/content fill out results.
+            fields: ["title^3", "summary^2", "content", "country"],
+            // Require 75% of query terms to match — more flexible than operator:"and"
+            // while still preventing single common words from dominating results.
+            minimum_should_match: "75%",
+            // Tolerate one-character typos (two for queries longer than five chars).
+            fuzziness: "AUTO",
+          },
+        }
+      : null;
+
+    const tagClauses = (tags ?? []).map((tag: string) => ({ term: { tags: tag } }));
+
+    // Combine text and tag clauses. When both are present, all must match (AND logic).
+    const esQuery =
+      textClause && tagClauses.length > 0
+        ? { bool: { must: [textClause, ...tagClauses] } }
+        : textClause
+          ? textClause
+          : { bool: { must: tagClauses } };
 
     const response = await es.search({
       index: "blog_posts",
       size: limit,
-      query: {
-        multi_match: {
-          query: q,
-          // Title matches are most valuable; summary next; country/content fill out results.
-          fields: ["title^3", "summary^2", "content", "country"],
-          // Require 75% of query terms to match — more flexible than operator:"and"
-          // while still preventing single common words from dominating results.
-          minimum_should_match: "75%",
-          // Tolerate one-character typos (two for queries longer than five chars).
-          fuzziness: "AUTO",
-        },
-      },
+      query: esQuery,
       _source: ["slug", "title", "summary", "tags", "country", "publishedAt"],
     });
 
@@ -43,7 +57,8 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
     }));
 
     res.json({
-      query: q,
+      query: q ?? "",
+      filters: { tags: tags ?? [] },
       total: typeof response.hits.total === "number"
         ? response.hits.total
         : response.hits.total?.value ?? 0,
