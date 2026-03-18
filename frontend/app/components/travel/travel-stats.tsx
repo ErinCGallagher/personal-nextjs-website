@@ -1,6 +1,5 @@
 /**
  * Travel statistics component showing summary counts for a set of travel entries.
- * Always reflects total (unfiltered) data regardless of active filters.
  */
 
 "use client";
@@ -97,15 +96,18 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaGlobeAmericas className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-baseline md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{uniqueCountries.size}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">Countries</div>
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">Countries</div>
         </div>
       </div>
 
       <div className="bg-white px-4 py-3 rounded-lg border flex items-center gap-3">
         <FaCity className="text-light-blue text-xl shrink-0" />
-        <div className="flex flex-col md:flex-row md:items-baseline md:gap-2">
+        <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{uniqueCities.size}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">Cities</div>
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">
+            Places
+            <span className="block text-xs">(city or town)</span>
+          </div>
         </div>
       </div>
 
@@ -113,7 +115,7 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaCalendar className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-baseline md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{totalDays}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">Days Traveled</div>
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">Days Traveled</div>
         </div>
       </div>
 
@@ -121,7 +123,7 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaGlobeAmericas className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{mostTimeIn.days}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">
             Most Time In
             {mostTimeIn.country && (
               <span className="block text-xs">{mostTimeIn.country}</span>
@@ -134,7 +136,7 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaPlane className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-baseline md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{totalFlights}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">Flights</div>
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">Flights</div>
         </div>
       </div>
 
@@ -142,7 +144,7 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaBed className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{bedsSleptIn}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">
             Beds Slept In
             {bedsSleptIn > 0 && (
               <span className="block text-xs">(avg {(totalDays / bedsSleptIn).toFixed(1)} nights/bed)</span>
@@ -155,7 +157,7 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaCar className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{rentalCarDays}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">Rental Car Days</div>
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">Rental Car Days</div>
         </div>
       </div>
 
@@ -163,7 +165,7 @@ export default function TravelStats({ travels }: TravelStatsProps) {
         <FaHotel className="text-light-blue text-xl shrink-0" />
         <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           <div className="text-2xl font-bold text-foreground leading-none">{longestStay.days}</div>
-          <div className="text-xs text-grey-blue mt-0.5 md:mt-0">
+          <div className="text-sm md:text-base text-grey-blue mt-0.5 md:mt-0">
             Longest Stay
             {longestStay.location && (
               <span className="block text-xs">{longestStay.location}</span>
