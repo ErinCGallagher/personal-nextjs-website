@@ -39,7 +39,35 @@ cd backend
 pnpm dev
 ```
 
-See [`frontend/README.md`](./frontend/README.md) and [`backend/README.md`](./backend/README.md) for setup details.
+### OpenSearch (blog search)
+
+Blog search requires a local OpenSearch instance. Start it with Docker:
+([Download Docker](https://www.docker.com/products/docker-desktop/) if you don't have it)
+
+```bash
+docker compose up -d
+```
+
+This starts OpenSearch on port 9200 and OpenSearch Dashboards on port 5601.
+
+On first run (or after wiping the index), create the index and populate it from the backend:
+
+```bash
+cd backend
+pnpm elastic:create-posts-index
+pnpm elastic:index-posts
+```
+
+To reindex after post changes:
+
+```bash
+cd backend
+pnpm elastic:reindex
+```
+
+## More Details
+
+See [`frontend/README.md`](./frontend/README.md), [`backend/README.md`](./backend/README.md), and [`docs/elasticsearch-setup.md`](./docs/elasticsearch-setup.md) for setup details.
 
 ## Recommended VS Code extensions
 
