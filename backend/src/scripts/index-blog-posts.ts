@@ -6,10 +6,7 @@
 import "dotenv/config";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import { getElasticsearchClient } from "../services/elasticsearch.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const INDEX_NAME = "blog_posts";
 const POSTS_DIR = path.resolve(
@@ -154,7 +151,7 @@ export async function indexBlogPosts() {
   console.log("Done.");
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] === __filename) {
   indexBlogPosts().catch((err) => {
     console.error("Indexing failed:", err);
     process.exit(1);

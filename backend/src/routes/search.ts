@@ -15,8 +15,8 @@ const router = Router();
 // GET /api/search?q=yellowstone&tags=Hiking&tags=Safari&limit=10
 // Supports text-only, tags-only, or combined queries. At least one of q or tags is required.
 router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, res) => {
+  const { q, limit, tags } = res.locals.validated as z.infer<typeof searchQuerySchema>;
   try {
-    const { q, limit, tags } = res.locals.validated as z.infer<typeof searchQuerySchema>;
     const es = getElasticsearchClient();
 
     const textClause = q
@@ -59,8 +59,8 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
       console.log(`[search] query="${q ?? ""}" tags=${JSON.stringify(tags ?? [])} took=${Date.now() - start}ms`);
     }
 
-    const results = response.body.hits.hits.map((hit: { _source: object; _score: number }) => ({
-      ...(hit._source as object),
+    const results = response.body.hits.hits.map((hit) => ({
+      ...(hit._source ?? {}),
       score: hit._score,
     }));
 
@@ -86,8 +86,8 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
 // GET /api/search/suggest?q=yell
 // Returns up to 5 completion suggestions from post titles and tags.
 router.get("/suggest", readLimiter, validateRequest(suggestQuerySchema), async (_req, res, next) => {
+  const { q } = res.locals.validated as z.infer<typeof suggestQuerySchema>;
   try {
-    const { q } = res.locals.validated as z.infer<typeof suggestQuerySchema>;
     const es = getElasticsearchClient();
 
     const response = await es.search({
