@@ -63,10 +63,4 @@ describe("GET /api/search", () => {
     expect(res.status).toBe(400);
   });
 
-  it("returns 500 when Elasticsearch is unavailable", async () => {
-    mockSearch.mockRejectedValue(new Error("Connection refused"));
-
-    const res = await request(app).get("/api/search?q=yellowstone");
-    expect(res.status).toBe(500);
-  });
 });

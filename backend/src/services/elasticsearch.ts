@@ -18,7 +18,8 @@ export function getElasticsearchClient(): Client {
       );
     }
 
-    client = new Client({ node: url });
+    // 5-second timeout applied globally so all requests fail fast when OpenSearch is unavailable.
+    client = new Client({ node: url, requestTimeout: 5000 });
   }
 
   return client;

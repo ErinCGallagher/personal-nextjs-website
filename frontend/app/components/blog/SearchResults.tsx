@@ -21,6 +21,7 @@ type SearchResultsProps = {
   loading: boolean;
   query: string;
   error?: string | null;
+  onRetry?: () => void;
 };
 
 export function SearchResults({
@@ -28,6 +29,7 @@ export function SearchResults({
   loading,
   query,
   error,
+  onRetry,
 }: SearchResultsProps) {
   if (loading) {
     return (
@@ -37,7 +39,17 @@ export function SearchResults({
 
   if (error) {
     return (
-      <p className="text-sm text-red-500 mt-6">Search failed. Please try again.</p>
+      <div className="mt-6 flex items-center gap-3">
+        <p className="text-sm text-red-500">Search is temporarily unavailable.</p>
+        {onRetry && (
+          <button
+            onClick={onRetry}
+            className="text-sm text-[var(--grey-blue)] underline hover:no-underline"
+          >
+            Try again
+          </button>
+        )}
+      </div>
     );
   }
 

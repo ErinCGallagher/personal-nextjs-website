@@ -14,7 +14,7 @@ const router = Router();
 
 // GET /api/search?q=yellowstone&tags=Hiking&tags=Safari&limit=10
 // Supports text-only, tags-only, or combined queries. At least one of q or tags is required.
-router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, res, next) => {
+router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, res) => {
   try {
     const { q, limit, tags } = res.locals.validated as z.infer<typeof searchQuerySchema>;
     const es = getElasticsearchClient();
@@ -36,14 +36,16 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
 
     const tagClauses = (tags ?? []).map((tag: string) => ({ term: { tags: tag } }));
 
-    // Combine text and tag clauses. When both are present, all must match (AND logic).
+    // Tags go in filter context (not must) — they don't affect relevance scoring and
+    // OpenSearch caches filter results, making tag-heavy queries faster.
     const esQuery =
       textClause && tagClauses.length > 0
-        ? { bool: { must: [textClause, ...tagClauses] } }
+        ? { bool: { must: [textClause], filter: tagClauses } }
         : textClause
           ? textClause
-          : { bool: { must: tagClauses } };
+          : { bool: { filter: tagClauses } };
 
+    const start = Date.now();
     const response = await es.search({
       index: "blog_posts",
       body: {
@@ -52,6 +54,10 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
         _source: ["slug", "title", "summary", "tags", "country", "publishedAt"],
       },
     });
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[search] query="${q ?? ""}" tags=${JSON.stringify(tags ?? [])} took=${Date.now() - start}ms`);
+    }
 
     const results = response.body.hits.hits.map((hit: { _source: object; _score: number }) => ({
       ...(hit._source as object),
@@ -67,7 +73,13 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
       results,
     });
   } catch (err) {
-    next(err);
+    console.error("[search] query failed:", {
+      query: q,
+      tags,
+      timestamp: new Date().toISOString(),
+      error: err instanceof Error ? err.message : String(err),
+    });
+    res.status(503).json({ error: "Search is temporarily unavailable" });
   }
 });
 
@@ -100,8 +112,9 @@ router.get("/suggest", readLimiter, validateRequest(suggestQuerySchema), async (
       .map((o) => ({ text: o.text, score: o._score }));
 
     res.json({ query: q, suggestions });
-  } catch (err) {
-    next(err);
+  } catch {
+    // Suggest failures are non-critical — return empty results rather than an error.
+    res.json({ query: q, suggestions: [] });
   }
 });
 

@@ -26,16 +26,21 @@ export async function createBlogPostsIndex() {
       mappings: {
         properties: {
           slug:        { type: "keyword" },
-          title:       { type: "text", analyzer: "english", fields: { keyword: { type: "keyword" } } },
+          // standard analyser preserves capitalisation and avoids over-stemming travel terms
+          // (e.g. "Nile" → "nil" with English analyser). summary/content still use English
+          // for better stemming on prose text.
+          title:       { type: "text", analyzer: "standard", fields: { keyword: { type: "keyword" } } },
           summary:     { type: "text", analyzer: "english" },
           content:     { type: "text", analyzer: "english" },
-          author:      { type: "keyword" },
+          // index: false — never queried directly, stored only for display
+          author:      { type: "keyword", index: false },
           publishedAt: { type: "date" },
           tags:        { type: "keyword" },
           country:     { type: "keyword" },
           featured:    { type: "boolean" },
           readingTime: { type: "integer" },
-          image:       { type: "keyword" },
+          // index: false — never queried directly, stored only for display
+          image:       { type: "keyword", index: false },
           suggest:     { type: "completion" },
         },
       },

@@ -1,6 +1,6 @@
-# Elasticsearch Setup
+# Search Setup
 
-Local development uses Docker Compose to run Elasticsearch 8.x and Kibana.
+Local development uses Docker Compose to run OpenSearch 2.x and OpenSearch Dashboards.
 Security is disabled for local dev — never use this config in production.
 
 ## Starting and stopping
@@ -16,8 +16,8 @@ pnpm elastic:down
 pnpm elastic:logs
 ```
 
-Elasticsearch starts on `http://localhost:9200`.
-Kibana starts on `http://localhost:5601` (may take 30–60 seconds after Elasticsearch is ready).
+OpenSearch starts on `http://localhost:9200`.
+OpenSearch Dashboards starts on `http://localhost:5601` (may take 30–60 seconds after OpenSearch is ready).
 
 ## Health check
 
@@ -35,11 +35,11 @@ Expected response:
 }
 ```
 
-## Kibana Dev Tools
+## OpenSearch Dashboards Dev Tools
 
 1. Open `http://localhost:5601`
 2. Navigate to **Management → Dev Tools**
-3. Use the console to run Elasticsearch queries directly, e.g.:
+3. Use the console to run OpenSearch queries directly, e.g.:
 
 ```
 GET _cluster/health
@@ -83,6 +83,48 @@ pnpm elastic:reindex -- --force
 
 This deletes the existing index, recreates it with the current mapping, then indexes all MDX posts. The `--force` flag is required to confirm the deletion.
 
+## Production setup (Bonsai)
+
+Production uses [Bonsai](https://bonsai.io) managed OpenSearch (hobby free tier).
+
+### Client
+
+The backend uses `@opensearch-project/opensearch` rather than `@elastic/elasticsearch`.
+Bonsai's hobby tier runs OpenSearch, which rejects the Elasticsearch v8 client.
+
+### Environment variable
+
+Set `ELASTICSEARCH_URL` in Railway to your Bonsai cluster URL:
+
+```
+https://user:password@my-cluster.bonsaisearch.net
+```
+
+The URL is available on the **Credentials** tab of your cluster in the Bonsai dashboard.
+
+### Reindexing production
+
+Run the reindex script with your Bonsai URL set locally:
+
+```bash
+ELASTICSEARCH_URL=https://user:password@my-cluster.bonsaisearch.net \
+  pnpm elastic:reindex -- --force
+```
+
+Or temporarily update your local `.env`, run the script, then restore it.
+
+### Verifying the index
+
+Bonsai has no Kibana. Use curl instead:
+
+```bash
+# Document count
+curl https://user:password@my-cluster.bonsaisearch.net/blog_posts/_count
+
+# Sample documents
+curl https://user:password@my-cluster.bonsaisearch.net/blog_posts/_search?size=3
+```
+
 ## Data persistence
 
 Elasticsearch data is stored in the `elasticsearch-data` Docker volume.
@@ -90,6 +132,6 @@ To wipe all data and start fresh:
 
 ```bash
 pnpm elastic:down
-docker volume rm personal-nextjs-website_elasticsearch-data
+docker volume rm personal-nextjs-website_opensearch-data
 pnpm elastic:up
 ```
