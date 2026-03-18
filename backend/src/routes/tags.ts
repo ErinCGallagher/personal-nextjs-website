@@ -17,28 +17,30 @@ router.get("/aggregations", readLimiter, async (_req, res, next) => {
 
     const response = await es.search({
       index: "blog_posts",
-      // size: 0 fetches aggregations only — no document hits needed
-      size: 0,
-      query: { match_all: {} },
-      aggs: {
-        tags: {
-          terms: {
-            field: "tags",
-            size: 20,
-            order: { _count: "desc" },
+      body: {
+        // size: 0 fetches aggregations only — no document hits needed
+        size: 0,
+        query: { match_all: {} },
+        aggs: {
+          tags: {
+            terms: {
+              field: "tags",
+              size: 20,
+              order: { _count: "desc" },
+            },
           },
         },
       },
     });
 
     const total =
-      typeof response.hits.total === "number"
-        ? response.hits.total
-        : response.hits.total?.value ?? 0;
+      typeof response.body.hits.total === "number"
+        ? response.body.hits.total
+        : (response.body.hits.total as { value: number } | undefined)?.value ?? 0;
 
     type Bucket = { key: string; doc_count: number };
     const buckets =
-      (response.aggregations?.tags as { buckets: Bucket[] })?.buckets ?? [];
+      (response.body.aggregations?.tags as { buckets: Bucket[] })?.buckets ?? [];
 
     const tags = buckets.map((b) => ({ name: b.key, count: b.doc_count }));
 

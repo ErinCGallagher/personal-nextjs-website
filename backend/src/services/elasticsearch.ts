@@ -3,7 +3,7 @@
  * Provides a singleton client instance and health check functionality.
  */
 
-import { Client } from "@elastic/elasticsearch";
+import { Client } from "@opensearch-project/opensearch";
 
 let client: Client | null = null;
 
@@ -14,7 +14,7 @@ export function getElasticsearchClient(): Client {
     if (!url) {
       throw new Error(
         "ELASTICSEARCH_URL environment variable is required but not set. " +
-          "Add it to your .env file (e.g. http://localhost:9200)."
+          "Add it to your .env file (local: http://localhost:9200, Bonsai: https://user:pass@cluster.bonsaisearch.net)."
       );
     }
 
@@ -33,7 +33,7 @@ export async function checkConnection(): Promise<boolean> {
   try {
     const es = getElasticsearchClient();
     const health = await es.cluster.health();
-    return health.status !== undefined;
+    return health.body.status !== undefined;
   } catch (error) {
     console.error("Elasticsearch health check failed:", error);
     return false;

@@ -138,11 +138,11 @@ export async function indexBlogPosts() {
       doc,
     ]);
 
-    const result = await es.bulk({ operations });
+    const { body: result } = await es.bulk({ body: operations });
 
     if (result.errors) {
-      const failed = result.items.filter((item) => item.index?.error);
-      failed.forEach((item) =>
+      const failed = result.items.filter((item: { index?: { error?: unknown } }) => item.index?.error);
+      failed.forEach((item: { index?: { _id?: string; error?: unknown } }) =>
         console.error(`Failed to index ${item.index?._id}:`, item.index?.error)
       );
     }

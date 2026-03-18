@@ -26,7 +26,7 @@ const mockHits = {
 
 describe("GET /api/search", () => {
   it("returns results for a text-only query", async () => {
-    mockSearch.mockResolvedValue({ hits: mockHits });
+    mockSearch.mockResolvedValue({ body: { hits: mockHits } });
 
     const res = await request(app).get("/api/search?q=yellowstone");
 
@@ -38,7 +38,7 @@ describe("GET /api/search", () => {
   });
 
   it("returns results for tags-only query", async () => {
-    mockSearch.mockResolvedValue({ hits: mockHits });
+    mockSearch.mockResolvedValue({ body: { hits: mockHits } });
 
     const res = await request(app).get("/api/search?tags=Hiking");
 
@@ -48,7 +48,7 @@ describe("GET /api/search", () => {
   });
 
   it("returns results for combined text and tag query", async () => {
-    mockSearch.mockResolvedValue({ hits: mockHits });
+    mockSearch.mockResolvedValue({ body: { hits: mockHits } });
 
     const res = await request(app).get("/api/search?q=yellowstone&tags=Hiking&tags=Safari");
 

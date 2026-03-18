@@ -5,14 +5,16 @@ import app from "../index";
 vi.mock("../services/elasticsearch", () => ({
   getElasticsearchClient: vi.fn(() => ({
     search: vi.fn().mockResolvedValue({
-      hits: { total: { value: 16 } },
-      aggregations: {
-        tags: {
-          buckets: [
-            { key: "Safari", doc_count: 5 },
-            { key: "Hiking", doc_count: 3 },
-            { key: "Camping", doc_count: 1 },
-          ],
+      body: {
+        hits: { total: { value: 16 } },
+        aggregations: {
+          tags: {
+            buckets: [
+              { key: "Safari", doc_count: 5 },
+              { key: "Hiking", doc_count: 3 },
+              { key: "Camping", doc_count: 1 },
+            ],
+          },
         },
       },
     }),
@@ -37,8 +39,10 @@ describe("GET /api/tags/aggregations", () => {
     const { getElasticsearchClient } = await import("../services/elasticsearch");
     vi.mocked(getElasticsearchClient).mockReturnValueOnce({
       search: vi.fn().mockResolvedValue({
-        hits: { total: { value: 0 } },
-        aggregations: { tags: { buckets: [] } },
+        body: {
+          hits: { total: { value: 0 } },
+          aggregations: { tags: { buckets: [] } },
+        },
       }),
     } as never);
 

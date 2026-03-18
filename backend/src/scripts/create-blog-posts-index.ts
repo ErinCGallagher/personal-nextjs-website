@@ -13,7 +13,7 @@ const INDEX_NAME = "blog_posts";
 export async function createBlogPostsIndex() {
   const es = getElasticsearchClient();
 
-  const exists = await es.indices.exists({ index: INDEX_NAME });
+  const { body: exists } = await es.indices.exists({ index: INDEX_NAME });
 
   if (exists) {
     console.log(`Index "${INDEX_NAME}" already exists — deleting it.`);
@@ -22,20 +22,22 @@ export async function createBlogPostsIndex() {
 
   await es.indices.create({
     index: INDEX_NAME,
-    mappings: {
-      properties: {
-        slug:        { type: "keyword" },
-        title:       { type: "text", analyzer: "english", fields: { keyword: { type: "keyword" } } },
-        summary:     { type: "text", analyzer: "english" },
-        content:     { type: "text", analyzer: "english" },
-        author:      { type: "keyword" },
-        publishedAt: { type: "date" },
-        tags:        { type: "keyword" },
-        country:     { type: "keyword" },
-        featured:    { type: "boolean" },
-        readingTime: { type: "integer" },
-        image:       { type: "keyword" },
-        suggest:     { type: "completion" },
+    body: {
+      mappings: {
+        properties: {
+          slug:        { type: "keyword" },
+          title:       { type: "text", analyzer: "english", fields: { keyword: { type: "keyword" } } },
+          summary:     { type: "text", analyzer: "english" },
+          content:     { type: "text", analyzer: "english" },
+          author:      { type: "keyword" },
+          publishedAt: { type: "date" },
+          tags:        { type: "keyword" },
+          country:     { type: "keyword" },
+          featured:    { type: "boolean" },
+          readingTime: { type: "integer" },
+          image:       { type: "keyword" },
+          suggest:     { type: "completion" },
+        },
       },
     },
   });

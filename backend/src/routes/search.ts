@@ -46,12 +46,14 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
 
     const response = await es.search({
       index: "blog_posts",
-      size: limit,
-      query: esQuery,
-      _source: ["slug", "title", "summary", "tags", "country", "publishedAt"],
+      body: {
+        size: limit,
+        query: esQuery,
+        _source: ["slug", "title", "summary", "tags", "country", "publishedAt"],
+      },
     });
 
-    const results = response.hits.hits.map((hit) => ({
+    const results = response.body.hits.hits.map((hit: { _source: object; _score: number }) => ({
       ...(hit._source as object),
       score: hit._score,
     }));
@@ -59,9 +61,9 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
     res.json({
       query: q ?? "",
       filters: { tags: tags ?? [] },
-      total: typeof response.hits.total === "number"
-        ? response.hits.total
-        : response.hits.total?.value ?? 0,
+      total: typeof response.body.hits.total === "number"
+        ? response.body.hits.total
+        : (response.body.hits.total as { value: number } | undefined)?.value ?? 0,
       results,
     });
   } catch (err) {
@@ -78,17 +80,19 @@ router.get("/suggest", readLimiter, validateRequest(suggestQuerySchema), async (
 
     const response = await es.search({
       index: "blog_posts",
-      suggest: {
-        post_suggest: {
-          prefix: q,
-          completion: { field: "suggest", size: 5, skip_duplicates: true },
+      body: {
+        suggest: {
+          post_suggest: {
+            prefix: q,
+            completion: { field: "suggest", size: 5, skip_duplicates: true },
+          },
         },
+        _source: false,
       },
-      _source: false,
     });
 
     type SuggestOption = { text: string; _score: number };
-    const options = (response.suggest?.post_suggest?.[0]?.options ?? []) as SuggestOption[];
+    const options = (response.body.suggest?.post_suggest?.[0]?.options ?? []) as SuggestOption[];
 
     const seen = new Set<string>();
     const suggestions = options
