@@ -5,24 +5,7 @@
 
 import Link from "next/link";
 
-// These pure helpers are duplicated here to avoid importing from @/app/blog/utils,
-// which pulls in Node.js `fs` and cannot be bundled for the browser.
-function getTagColor(tag: string) {
-  const t = tag.toLowerCase();
-  if (t === "camping") return "#8b7dd8";
-  if (t === "food") return "#e685a0";
-  if (t === "hiking") return "#6ba3f5";
-  if (t === "safari") return "#7bc99d";
-  return "#7b9ae0";
-}
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+import { getTagColor, formatDate } from "@/app/blog/post-format";
 
 export type SearchResult = {
   slug: string;
