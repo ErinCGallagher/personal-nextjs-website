@@ -13,7 +13,7 @@ Personal website and travel blog. Built as a pnpm monorepo with a Next.js fronte
 | | |
 |---|---|
 | Frontend | Next.js, Tailwind CSS, MDX, Better_auth |
-| Backend | Express, PostgreSQL |
+| Backend | Express, PostgreSQL, OpenSearch (via Bonsai) |
 | Package manager | pnpm (monorepo) |
 | Hosting | Vercel (frontend), Railway (backend) |
 
