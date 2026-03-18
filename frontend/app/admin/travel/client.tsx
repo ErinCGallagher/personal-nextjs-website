@@ -26,8 +26,12 @@ export default function TravelClient() {
   const [travels, setTravels] = useState<TravelEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [toDateMode, setToDateMode] = useState(false);
   const router = useRouter();
   const { role: userRole } = useAdminAuth();
+
+  const today = new Date().toISOString().split("T")[0];
+  const statsEntries = toDateMode ? travels.filter((t) => t.date <= today) : travels;
 
   useEffect(() => {
     fetchTravelData();
@@ -107,7 +111,30 @@ export default function TravelClient() {
             <p className="text-foreground/60">No travel entries found.</p>
           ) : (
             <>
-              <TravelStats travels={travels} />
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-sm text-foreground/60">Stats:</span>
+                <button
+                  onClick={() => setToDateMode(false)}
+                  className={`px-3 py-1 text-sm rounded-full border transition-colors ${
+                    !toDateMode
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "border-gray-300 text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  All time
+                </button>
+                <button
+                  onClick={() => setToDateMode(true)}
+                  className={`px-3 py-1 text-sm rounded-full border transition-colors ${
+                    toDateMode
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "border-gray-300 text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  To date
+                </button>
+              </div>
+              <TravelStats travels={statsEntries} />
               <CalendarView travels={travels} />
             </>
           )}
