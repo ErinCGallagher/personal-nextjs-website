@@ -1,5 +1,5 @@
 /**
- * Renders a list of blog post search results with tags, date, and relevance score.
+ * Renders a list of blog post search results with tags and date.
  */
 "use client";
 
@@ -73,14 +73,9 @@ export function SearchResults({
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <time className="text-sm text-gray-500 whitespace-nowrap">
-                    {formatDate(result.publishedAt)}
-                  </time>
-                  <span className="text-xs text-gray-400">
-                    score: {result.score.toFixed(2)}
-                  </span>
-                </div>
+                <time className="text-sm text-gray-500 whitespace-nowrap shrink-0">
+                  {formatDate(result.publishedAt)}
+                </time>
               </div>
               <h3 className="text-base font-semibold text-foreground group-hover:text-blue-grey transition-colors line-clamp-2">
                 {result.title}

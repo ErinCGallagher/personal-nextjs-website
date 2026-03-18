@@ -25,10 +25,13 @@ router.get("/", readLimiter, validateRequest(searchQuerySchema), async (_req, re
       query: {
         multi_match: {
           query: q,
-          fields: ["title", "summary", "content", "country"],
-          // Require all query terms to be present — prevents single common words
-          // (e.g. "south" in "south africa") from matching unrelated posts.
-          operator: "and",
+          // Title matches are most valuable; summary next; country/content fill out results.
+          fields: ["title^3", "summary^2", "content", "country"],
+          // Require 75% of query terms to match — more flexible than operator:"and"
+          // while still preventing single common words from dominating results.
+          minimum_should_match: "75%",
+          // Tolerate one-character typos (two for queries longer than five chars).
+          fuzziness: "AUTO",
         },
       },
       _source: ["slug", "title", "summary", "tags", "country", "publishedAt"],

@@ -6,7 +6,7 @@ Security is disabled for local dev — never use this config in production.
 ## Starting and stopping
 
 ```bash
-# Start Elasticsearch and Kibana (detached)
+# Start Elasticsearch and Kibana (detached) (root repo)
 pnpm elastic:up
 
 # Stop containers
@@ -53,6 +53,25 @@ GET _cat/indices?v
 | `ELASTICSEARCH_URL` | Elasticsearch connection URL     | `http://localhost:9200`    |
 
 Copy `.env.example` to create your local `.env` file.
+
+## Relevance tuning
+
+The search query uses `multi_match` with three strategies layered together:
+
+**Field boosting** — title matches outweigh summary matches, which outweigh content and country matches. This reflects how readers think: a post titled "Yellowstone" is far more relevant to a "yellowstone" query than one that mentions the word once in the body.
+
+| Field     | Boost |
+| --------- | ----- |
+| `title`   | ×3    |
+| `summary` | ×2    |
+| `content` | ×1    |
+| `country` | ×1    |
+
+**`minimum_should_match: "75%"`** — most query terms must be present, but not necessarily all. A two-word query requires both terms; a four-word query can miss one. This prevents a common word like "south" in "south africa" from matching unrelated posts, while still returning results when the user types a slightly longer phrase.
+
+**`fuzziness: "AUTO"`** — Elasticsearch auto-selects edit distance based on term length: exact for 1–2 characters, one edit for 3–5 characters, two edits for six or more. This handles common typos ("hikking" → "hiking") without over-matching on short words.
+
+**English analyser** — applied to `title`, `summary`, and `content` at index time and query time. It strips stopwords ("the", "a", "in") and stems terms ("hiking" → "hike", "running" → "run"), so queries and documents match on root forms regardless of inflection.
 
 ## Data persistence
 

@@ -24,7 +24,7 @@ async function main() {
     mappings: {
       properties: {
         slug:        { type: "keyword" },
-        title:       { type: "text", fields: { keyword: { type: "keyword" } } },
+        title:       { type: "text", analyzer: "english", fields: { keyword: { type: "keyword" } } },
         summary:     { type: "text", analyzer: "english" },
         content:     { type: "text", analyzer: "english" },
         author:      { type: "keyword" },
