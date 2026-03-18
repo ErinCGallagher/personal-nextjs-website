@@ -8,6 +8,9 @@ import { globalLimiter } from "./rate-limiters";
 import { errorHandler } from "./error-handler";
 import postsRouter from "./routes/posts";
 import adminRouter from "./routes/admin";
+import searchRouter from "./routes/search";
+import tagsRouter from "./routes/tags";
+import healthRouter from "./routes/health";
 import pool from "./db";
 
 const app = express();
@@ -49,6 +52,15 @@ app.use("/api/posts", postsRouter);
 
 // Admin routes: authentication and comment moderation
 app.use("/api/admin", adminRouter);
+
+// Search routes: full-text search across blog posts
+app.use("/api/search", searchRouter);
+
+// Tag routes: tag aggregations from OpenSearch
+app.use("/api/tags", tagsRouter);
+
+// Health routes: dependency health checks
+app.use("/api/health", healthRouter);
 
 app.use(errorHandler);
 

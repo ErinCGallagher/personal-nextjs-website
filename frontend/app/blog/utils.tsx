@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+export { getTagColor, formatDate } from "@/app/blog/post-format";
 
 type Metadata = {
   title: string;
@@ -12,16 +13,6 @@ type Metadata = {
   featured?: string;
   readingTime?: number;
 };
-
-export function getTagColor(tag: string) {
-  const tagLower = tag.toLowerCase();
-  if (tagLower === "camping") return "#8b7dd8";
-  if (tagLower === "food") return "#e685a0";
-  if (tagLower === "hiking") return "#6ba3f5";
-  if (tagLower === "safari") return "#7bc99d";
-  if (tagLower === "itinerary") return "#7b9ae0";
-  return "#7b9ae0";
-}
 
 /**
  * Returns all published blog posts from the posts directory.
@@ -61,14 +52,6 @@ export function getBlogPost(slug: string) {
   }
 
   return null;
-}
-
-export function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
 }
 
 function getMDXFiles(dir: string) {

@@ -3,7 +3,7 @@
  */
 import Link from "next/link";
 import Image from "next/image";
-import { getTagColor, formatDate } from "@/app/blog/utils";
+import { getTagColor, formatDate } from "@/app/blog/post-format";
 
 type FeaturedPostProps = {
   slug: string;

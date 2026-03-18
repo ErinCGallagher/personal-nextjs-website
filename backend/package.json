@@ -11,10 +11,15 @@
     "create-admin": "tsx src/create-admin.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ai": "tsx src/test-ai-review.ts"
+    "test:ai": "tsx src/test-ai-review.ts",
+    "elastic:test": "tsx src/scripts/test-elastic-connection.ts",
+    "elastic:create-posts-index": "tsx src/scripts/create-blog-posts-index.ts",
+    "elastic:index-posts": "tsx src/scripts/index-blog-posts.ts",
+    "elastic:reindex": "tsx src/scripts/reindex-blog-posts.ts"
   },
   "dependencies": {
     "@google/genai": "^1.43.0",
+    "@opensearch-project/opensearch": "^3.5.1",
     "@types/papaparse": "^5.5.2",
     "bcrypt": "^6.0.0",
     "better-auth": "^1.5.4",

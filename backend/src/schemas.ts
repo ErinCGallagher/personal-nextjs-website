@@ -38,6 +38,27 @@ export const travelEntrySchema = z.object({
   notes: z.string().trim().nullable(),
 });
 
+export const searchQuerySchema = z
+  .object({
+    q: z.string().min(1).max(200).optional(),
+    limit: z.coerce.number().int().min(1).max(50).default(10),
+    // Express parses duplicate query keys as an array, but a single value as a string.
+    tags: z
+      .union([z.string(), z.array(z.string())])
+      .optional()
+      .transform((val) => {
+        if (!val) return [];
+        return Array.isArray(val) ? val : [val];
+      }),
+  })
+  .refine((data) => data.q || (data.tags && data.tags.length > 0), {
+    message: "At least one of q or tags must be provided",
+  });
+
+export const suggestQuerySchema = z.object({
+  q: z.string().min(1).max(200),
+});
+
 /**
  * Schema for AI review response from Gemini API.
  * Validates the structure of the AI's comment moderation assessment.
