@@ -4,7 +4,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Talks",
-  description: "Conference talks and presentations on tech and engineering leadership.",
+  description:
+    "Conference talks and presentations on tech and engineering leadership.",
   openGraph: {
     images: ["/icons/erin-logo.png"],
   },
@@ -137,6 +138,41 @@ export default function Talks() {
                   title="From Rollout to Resilience: A Case Study in Monitoring and Alerting Grocery Ads at Uber"
                 />
               </div>
+              <p className="mt-6 text-gray-700 leading-relaxed">
+                When launching Grocery Ads in January 2023, our team encountered
+                unexpected monitoring blindspots that allowed a critical issue
+                to go undetected for days. Ads were missing from 40% of
+                carousels for two full days before anyone noticed. This talk
+                walks through three iterations of the alerting strategy we built
+                in response, and the tradeoffs we navigated between detection
+                speed and alert fatigue. After our fixes, we achieved 99.9%
+                availability and 10x reduction in noisy alerts.
+              </p>
+              <h4 className="mt-6 font-semibold text-foreground">
+                Key Takeaways
+              </h4>
+              <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
+                <li>
+                  Monitor ratios between services, not just raw counts.
+                  Click-through rate (CTR) stays meaningful when traffic
+                  fluctuates; raw event counts don&apos;t.
+                </li>
+                <li>
+                  Anchor alerts to historical patterns using week-over-week
+                  comparisons to account for predictable traffic swings without
+                  manual tuning.
+                </li>
+                <li>
+                  Aggregate low-traffic surfaces to reduce statistical noise.
+                  Combining similar low traffic placements produces a more
+                  stable signal and fewer false positives.
+                </li>
+                <li>
+                  There is no clean tradeoff between sensitivity and noise.
+                  Align alert sensitivity with the business impact of each
+                  surface, and expect to keep tuning.
+                </li>
+              </ul>
             </div>
 
             {/* Talk 2 */}
@@ -156,6 +192,41 @@ export default function Talks() {
                   title="Building Scalable Cross Platform Mobile Apps with Uber's RIBs Architecture"
                 />
               </div>
+              <p className="mt-6 text-gray-700 leading-relaxed">
+                Uber&apos;s mobile apps are used by hundreds of millions of
+                people and built by hundreds of engineers across iOS and Android
+                in a single monorepo. Getting to that scale required rethinking
+                mobile architecture from the ground up. This talk covers how
+                Uber made that journey. From MVC to VIPER to the open-source
+                RIBs framework we discuss what makes it work at scale, and how
+                to think about choosing an architecture for your own app.
+              </p>
+              <h4 className="mt-6 font-semibold text-foreground">
+                Key Takeaways
+              </h4>
+              <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
+                <li>
+                  Parity architecture across platforms pays dividends. When iOS
+                  and Android share the same structural patterns, engineers can
+                  collaborate meaningfully across platforms.
+                </li>
+                <li>
+                  Decouple business logic from the view. When app state drives
+                  navigation rather than the view hierarchy, you can test core
+                  logic in isolation and achieve full business logic coverage.
+                </li>
+                <li>
+                  Prototype before committing. Test any architecture against
+                  your real requirements (team size, testability, framework
+                  compatibility) before adopting it at scale.
+                </li>
+                <li>
+                  No architecture is permanent.MVC worked until it didn&apos;t,
+                  and RIBs is showing its limits after seven years. Choosing an
+                  architecture is a bet on current constraints, not a forever
+                  decision.
+                </li>
+              </ul>
             </div>
           </section>
         </div>
