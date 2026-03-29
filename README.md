@@ -1,6 +1,6 @@
 # egallagher.com
 
-Personal website and travel blog. Built as a pnpm monorepo with a Next.js frontend and an Express backend.
+Personal website and travel blog. Built as a pnpm monorepo with a Next.js frontend and an Node.js (Express) backend. Using OpenSearch (elasticsearch) to support article searching.
 
 ## What's on the site
 
@@ -13,7 +13,7 @@ Personal website and travel blog. Built as a pnpm monorepo with a Next.js fronte
 | | |
 |---|---|
 | Frontend | Next.js, Tailwind CSS, MDX, Better_auth |
-| Backend | Express, PostgreSQL, OpenSearch (via Bonsai) |
+| Backend | Node.js (Express), PostgreSQL, OpenSearch (via Bonsai) |
 | Package manager | pnpm (monorepo) |
 | Hosting | Vercel (frontend), Railway (backend) |
 
