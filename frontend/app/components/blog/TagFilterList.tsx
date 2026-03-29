@@ -10,6 +10,14 @@ import { getTagColor } from "@/app/blog/post-format";
 
 type Tag = { name: string; count: number };
 
+const FALLBACK_TAGS: Tag[] = [
+  { name: "Hiking", count: 7 },
+  { name: "Camping", count: 5 },
+  { name: "Itinerary", count: 5 },
+  { name: "Safari", count: 3 },
+  { name: "Food", count: 1 },
+];
+
 type TagFilterListProps = {
   selectedTags: string[];
   onToggle: (tag: string) => void;
@@ -18,21 +26,16 @@ type TagFilterListProps = {
 export function TagFilterList({ selectedTags, onToggle }: TagFilterListProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     apiFetch<{ total: number; tags: Tag[] }>(routes.tags.aggregations())
       .then((data) => setTags(data.tags))
-      .catch(() => setError(true))
+      .catch(() => setTags(FALLBACK_TAGS))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
     return <p className="text-sm text-gray-400 mt-3">Loading tags…</p>;
-  }
-
-  if (error) {
-    return <p className="text-sm text-gray-400 mt-3">Could not load tags.</p>;
   }
 
   if (tags.length === 0) return null;

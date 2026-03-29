@@ -42,14 +42,15 @@ describe("TagFilterList", () => {
     expect(screen.getByText("Loading tags…")).toBeTruthy();
   });
 
-  it("shows error state when fetch fails", async () => {
+  it("renders fallback tags when fetch fails", async () => {
     const { apiFetch } = await import("@/app/lib/api");
     vi.mocked(apiFetch).mockRejectedValue(new Error("Network error"));
 
     render(<TagFilterList selectedTags={[]} onToggle={vi.fn()} />);
 
     await waitFor(() => {
-      expect(screen.getByText(/could not load tags/i)).toBeTruthy();
+      expect(screen.getByText("Hiking")).toBeTruthy();
+      expect(screen.getByText("Camping")).toBeTruthy();
     });
   });
 
