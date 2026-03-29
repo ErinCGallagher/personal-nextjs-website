@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import { HiArrowDownTray } from "react-icons/hi2";
 import SocialLinks from "@/app/components/social-links";
 import { RecentPosts } from "@/app/components/recent-posts";
 import { ScrollArrow } from "@/app/components/scroll-arrow";
@@ -73,6 +74,16 @@ export default function Home() {
                   className="text-white"
                   justify="justify-center"
                 />
+              </div>
+              <div className="mt-6">
+                <a
+                  href="/resume.pdf"
+                  download
+                  className="inline-flex items-center gap-2 px-6 py-2 bg-white text-gray-600 text-sm font-semibold rounded-full hover:bg-white/90 transition-colors"
+                >
+                  <HiArrowDownTray size={16} />
+                  Resume
+                </a>
               </div>
             </div>
           </div>
