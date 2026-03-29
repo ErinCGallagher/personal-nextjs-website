@@ -46,7 +46,7 @@ export function YouTubePromo() {
             </div>
           </Link>
 
-          <div className="flex flex-col items-center md:items-start justify-center md:w-1/2">
+          <div className="flex flex-col items-start justify-center w-full md:w-1/2">
             <div className="flex items-center gap-3 mb-4">
               <Image
                 src="/icons/trail-tales-logo.png"
@@ -55,7 +55,7 @@ export function YouTubePromo() {
                 height={100}
                 className="rounded-lg"
               />
-              <div className="text-center md:text-left">
+              <div className="text-left">
                 <h3 className="text-xl font-semibold text-foreground">
                   Trail Tales Travel
                 </h3>
@@ -65,7 +65,7 @@ export function YouTubePromo() {
               </div>
             </div>
 
-            <p className="text-gray-600 mb-6 text-center md:text-left">
+            <p className="text-gray-600 mb-6 text-left">
               Video guides for hiking trails, road trips, and outdoor adventures
               across Canada and beyond.
             </p>
