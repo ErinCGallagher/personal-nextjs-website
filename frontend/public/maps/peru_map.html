@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    />
+
+    <meta
+      name="viewport"
+      content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <style>
+      #map_peru {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        left: 0%;
+        top: 0%;
+      }
+      .leaflet-container {
+        font-size: 1rem;
+      }
+
+      .numbered-marker {
+        background-color: #dc2626;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <style>
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    </style>
+
+    <script>
+      L_NO_TOUCH = false;
+      L_DISABLE_3D = false;
+    </script>
+  </head>
+  <body>
+    <div class="folium-map" id="map_peru"></div>
+  </body>
+  <script>
+    function createNumberedIcon(number) {
+      return L.divIcon({
+        className: "numbered-marker",
+        html: number.toString(),
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14],
+      });
+    }
+
+    var map_peru = L.map("map_peru", {
+      center: [-14.8, -71.5],
+      crs: L.CRS.EPSG3857,
+      ...{
+        zoom: 7,
+        zoomControl: true,
+        preferCanvas: false,
+      },
+    });
+
+    var tile_layer = L.tileLayer(
+      "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        minZoom: 0,
+        maxZoom: 19,
+        maxNativeZoom: 19,
+        noWrap: false,
+        attribution:
+          '\u0026copy; \u003ca href="https://www.openstreetmap.org/copyright"\u003eOpenStreetMap\u003c/a\u003e contributors',
+        subdomains: "abc",
+        detectRetina: false,
+        tms: false,
+        opacity: 1,
+      },
+    );
+
+    tile_layer.addTo(map_peru);
+
+    // Main route: Cusco → Ollantaytambo → Aguas Calientes → Machu Picchu →
+    //             Cusco (fly) → Arequipa → Cabanaconde → Arequipa → Puno → Arequipa
+    var poly_line = L.polyline(
+      [
+        [-13.532, -71.967],  // Cusco
+        [-13.408, -72.055],  // Chinchero (Sacred Valley day trip)
+        [-13.532, -71.967],  // Back to Cusco
+        [-13.259, -72.263],  // Ollantaytambo
+        [-13.200, -72.380],  // Along train route
+        [-13.153, -72.525],  // Aguas Calientes
+        [-13.163, -72.545],  // Machu Picchu
+        [-13.153, -72.525],  // Back to Aguas Calientes
+        [-13.259, -72.263],  // Back to Ollantaytambo
+        [-13.532, -71.967],  // Back to Cusco
+        [-16.399, -71.535],  // Fly to Arequipa
+        [-15.629, -71.975],  // Drive to Cabanaconde / Colca Canyon
+        [-16.399, -71.535],  // Drive back to Arequipa
+        [-15.840, -70.022],  // Drive to Puno
+        [-16.399, -71.535],  // Drive back to Arequipa (fly home)
+      ],
+      {
+        bubblingMouseEvents: true,
+        color: "#2563eb",
+        dashArray: null,
+        dashOffset: null,
+        fill: false,
+        fillColor: "#2563eb",
+        fillOpacity: 0.2,
+        fillRule: "evenodd",
+        lineCap: "round",
+        lineJoin: "round",
+        noClip: false,
+        opacity: 0.8,
+        smoothFactor: 1.0,
+        stroke: true,
+        weight: 3,
+      },
+    ).addTo(map_peru);
+
+    // Dashed line for the flight Cusco → Arequipa
+    var flight_line = L.polyline(
+      [
+        [-13.532, -71.967],  // Cusco
+        [-16.399, -71.535],  // Arequipa
+      ],
+      {
+        color: "#2563eb",
+        dashArray: "8, 8",
+        opacity: 0.6,
+        weight: 2,
+      },
+    ).addTo(map_peru);
+
+    // Marker 1: Cusco
+    var marker_1 = L.marker([-13.532, -71.967], {
+      icon: createNumberedIcon(1),
+    }).addTo(map_peru);
+
+    var popup_1 = L.popup({ maxWidth: "100%" });
+    var html_1 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Days 1–2 & 4–5: Cusco</b><br>Base for the Sacred Valley</div>`,
+    )[0];
+    popup_1.setContent(html_1);
+    marker_1.bindPopup(popup_1);
+    marker_1.bindTooltip(`<div>Days 1–2 & 4–5: Cusco</div>`, { sticky: true });
+
+    // Marker 2: Maras / Sacred Valley
+    var marker_2 = L.marker([-13.442, -72.157], {
+      icon: createNumberedIcon(2),
+    }).addTo(map_peru);
+
+    var popup_2 = L.popup({ maxWidth: "100%" });
+    var html_2 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 3: Sacred Valley</b><br>Chinchero, Maras Moray & Salt Mines</div>`,
+    )[0];
+    popup_2.setContent(html_2);
+    marker_2.bindPopup(popup_2);
+    marker_2.bindTooltip(`<div>Day 3: Maras & Sacred Valley</div>`, { sticky: true });
+
+    // Marker 3: Ollantaytambo
+    var marker_3 = L.marker([-13.259, -72.263], {
+      icon: createNumberedIcon(3),
+    }).addTo(map_peru);
+
+    var popup_3 = L.popup({ maxWidth: "100%" });
+    var html_3 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 6: Ollantaytambo</b><br>Inca ruins & train to Aguas Calientes</div>`,
+    )[0];
+    popup_3.setContent(html_3);
+    marker_3.bindPopup(popup_3);
+    marker_3.bindTooltip(`<div>Day 6: Ollantaytambo</div>`, { sticky: true });
+
+    // Marker 4: Machu Picchu
+    var marker_4 = L.marker([-13.163, -72.545], {
+      icon: createNumberedIcon(4),
+    }).addTo(map_peru);
+
+    var popup_4 = L.popup({ maxWidth: "100%" });
+    var html_4 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Day 7: Machu Picchu</b><br>Route 2B, 8am entry</div>`,
+    )[0];
+    popup_4.setContent(html_4);
+    marker_4.bindPopup(popup_4);
+    marker_4.bindTooltip(`<div>Day 7: Machu Picchu</div>`, { sticky: true });
+
+    // Marker 5: Arequipa
+    var marker_5 = L.marker([-16.399, -71.535], {
+      icon: createNumberedIcon(5),
+    }).addTo(map_peru);
+
+    var popup_5 = L.popup({ maxWidth: "100%" });
+    var html_5 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Days 8–9: Arequipa</b><br>The White City</div>`,
+    )[0];
+    popup_5.setContent(html_5);
+    marker_5.bindPopup(popup_5);
+    marker_5.bindTooltip(`<div>Days 8–9: Arequipa</div>`, { sticky: true });
+
+    // Marker 6: Cabanaconde / Colca Canyon
+    var marker_6 = L.marker([-15.629, -71.975], {
+      icon: createNumberedIcon(6),
+    }).addTo(map_peru);
+
+    var popup_6 = L.popup({ maxWidth: "100%" });
+    var html_6 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Days 10–13: Cabanaconde</b><br>Colca Canyon hiking</div>`,
+    )[0];
+    popup_6.setContent(html_6);
+    marker_6.bindPopup(popup_6);
+    marker_6.bindTooltip(`<div>Days 10–13: Cabanaconde & Colca Canyon</div>`, {
+      sticky: true,
+    });
+
+    // Marker 7: Puno / Lake Titicaca
+    var marker_7 = L.marker([-15.840, -70.022], {
+      icon: createNumberedIcon(7),
+    }).addTo(map_peru);
+
+    var popup_7 = L.popup({ maxWidth: "100%" });
+    var html_7 = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Days 15–17: Puno</b><br>Lake Titicaca & floating islands</div>`,
+    )[0];
+    popup_7.setContent(html_7);
+    marker_7.bindPopup(popup_7);
+    marker_7.bindTooltip(`<div>Days 15–17: Puno & Lake Titicaca</div>`, {
+      sticky: true,
+    });
+  </script>
+</html>
