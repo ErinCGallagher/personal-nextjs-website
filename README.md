@@ -5,7 +5,7 @@ Personal website and travel blog. Built as a pnpm monorepo with a Next.js fronte
 ## What's on the site
 
 - About me, resume, speaking engagements
-- Travel blog with MDX posts
+- Travel blog with MDX posts and elasticsearch capabilities
 - A Unity game
 
 ## Tech stack
