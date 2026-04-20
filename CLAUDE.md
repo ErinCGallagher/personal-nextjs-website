@@ -63,4 +63,3 @@ Monorepo with pnpm workspaces:
 - Never create `todo.md` files — use the TodoWrite tool for progress tracking instead
 - Store plan documents in `.claude/claude-plan/` with descriptive names (e.g., `auth-plan.md`, not `plan.md`)
 - Plans should include implementation steps, prompts for LLMs, and context for future reference
-
