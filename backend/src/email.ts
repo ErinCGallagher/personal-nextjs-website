@@ -1,6 +1,6 @@
 /**
  * Email notification service using Resend.
- * Sends notifications when comments are pending approval.
+ * Sends notifications in a specified format when comments are pending approval.
  */
 import { Resend } from "resend";
 
