@@ -21,31 +21,26 @@ pg_ctl start -l .postgres/postgres.log
 pg_ctl stop
 ```
 
-## Environment variables
+## Development
 
-Create a `.env` file in `backend/`:
-
+```bash
+pnpm dev
 ```
-DATABASE_URL=postgresql://localhost/blog_dev
-CORS_ORIGIN=http://localhost:3000
 
-# BetterAuth
-BETTER_AUTH_SECRET=your_secret_key
-BETTER_AUTH_URL=https://www.yourdomain.com
+Server runs on [http://localhost:3001](http://localhost:3001) by default.
 
-# Email notifications (optional)
-RESEND_API_KEY=your_resend_api_key
-NOTIFICATION_EMAIL=your@email.com
-FROM_EMAIL=noreply@yourdomain.com
-ADMIN_URL=http://localhost:3000
+## Testing
 
-# AI Comment Review (optional)
-GEMINI_API_KEY=your_gemini_api_key
-AI_REVIEW_ENABLED=true
-AI_REVIEW_PROVIDER=gemini
-AI_AUTO_APPROVE_ENABLED=true
-AI_AUTO_APPROVE_THRESHOLD=0.9
+```bash
+# Run tests once
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
 ```
+
+The [Vitest VS Code extension](https://marketplace.visualstudio.com/items?itemName=vitest.explorer) is recommended for running and debugging individual tests from the editor.
+
 
 ### AI-Powered Comment Review & Auto-Approval
 
@@ -110,60 +105,6 @@ To disable AI review entirely:
 ```
 AI_REVIEW_ENABLED=false
 ```
-
-#### Monitoring
-
-Check AI review performance with these SQL queries:
-
-```sql
--- Review status breakdown
-SELECT status, COUNT(*) FROM ai_comment_reviews GROUP BY status;
-
--- Average confidence score
-SELECT AVG(confidence_score) FROM ai_comment_reviews WHERE status='completed';
-
--- Auto-approval rate
-SELECT
-  COUNT(*) FILTER (WHERE status='Approved' AND status_updated_by='AI-AutoApprove') as auto_approved,
-  COUNT(*) as total_reviewed
-FROM comments WHERE latest_ai_review_id IS NOT NULL;
-
--- Most common flags
-SELECT flag, COUNT(*)
-FROM ai_comment_reviews, jsonb_array_elements_text(flags) AS flag
-WHERE status='completed'
-GROUP BY flag
-ORDER BY COUNT(*) DESC;
-```
-
-#### Cost
-
-Using Google Gemini 1.5 Flash with the free tier:
-- **Free Tier**: 15 requests/minute, 1,500 requests/day, 1M requests/month
-- **Cost**: $0 for typical blog comment volumes
-- **Estimated Usage**: 4 comments/month = well within free tier
-
-For more details, see [docs/ai-review-runbook.md](docs/ai-review-runbook.md).
-
-## Development
-
-```bash
-pnpm dev
-```
-
-Server runs on [http://localhost:3001](http://localhost:3001) by default.
-
-## Testing
-
-```bash
-# Run tests once
-pnpm test
-
-# Run tests in watch mode
-pnpm test:watch
-```
-
-The [Vitest VS Code extension](https://marketplace.visualstudio.com/items?itemName=vitest.explorer) is recommended for running and debugging individual tests from the editor.
 
 ## Endpoints
 

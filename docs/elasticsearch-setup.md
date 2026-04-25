@@ -78,7 +78,7 @@ The search query uses `multi_match` with three strategies layered together:
 To rebuild the `blog_posts` index from scratch (e.g. after changing the mapping or adding new posts):
 
 ```bash
-pnpm elastic:reindex -- --force
+pnpm elastic:reindex --force
 ```
 
 This deletes the existing index, recreates it with the current mapping, then indexes all MDX posts. The `--force` flag is required to confirm the deletion.
@@ -108,7 +108,7 @@ Run the reindex script with your Bonsai URL set locally:
 
 ```bash
 ELASTICSEARCH_URL=https://user:password@my-cluster.bonsaisearch.net \
-  pnpm elastic:reindex -- --force
+  pnpm elastic:reindex --force
 ```
 
 Or temporarily update your local `.env`, run the script, then restore it.

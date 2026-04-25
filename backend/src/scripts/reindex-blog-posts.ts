@@ -3,7 +3,7 @@
  * Deletes the existing index, recreates it with the current mapping,
  * then indexes all posts from MDX files.
  * Requires --force flag to confirm the destructive deletion step.
- * Run with: pnpm elastic:reindex -- --force
+ * Run with: pnpm elastic:reindex --force
  */
 
 import "dotenv/config";
@@ -17,7 +17,7 @@ function timestamp() {
 async function main() {
   if (!process.argv.includes("--force")) {
     console.error("Error: --force flag required. This will delete and rebuild the blog_posts index.");
-    console.error("Usage: pnpm elastic:reindex -- --force");
+    console.error("Usage: pnpm elastic:reindex --force");
     process.exit(1);
   }
 

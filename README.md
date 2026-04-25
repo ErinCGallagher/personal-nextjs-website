@@ -58,11 +58,16 @@ pnpm elastic:create-posts-index
 pnpm elastic:index-posts
 ```
 
-To reindex after post changes:
+To reindex after post changes: (local)
 
 ```bash
+# from root
+pnpm elastic:up 
+# or
+docker start blog-opensearch
+
 cd backend
-pnpm elastic:reindex
+pnpm elastic:reindex --force
 ```
 
 ## More Details
