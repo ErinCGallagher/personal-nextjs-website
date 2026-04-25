@@ -7,8 +7,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FeaturedPost } from "@/app/components/blog/post-card/featured-post";
-import { SmallPost } from "@/app/components/blog/post-card/small-post";
 import { YouTubePromo } from "@/app/components/blog/post-card/youtube-promo";
+import { RecentPosts } from "@/app/components/blog/RecentPosts";
 import { SearchBar } from "@/app/components/blog/SearchBar";
 import { SearchResults, SearchResult } from "@/app/components/blog/SearchResults";
 import { TagFilterList } from "@/app/components/blog/TagFilterList";
@@ -161,27 +161,7 @@ export function BlogContent({ featuredPosts, smallPosts }: BlogContentProps) {
 
               <YouTubePromo />
 
-              {smallPosts.length > 0 && (
-                <div className="mt-8">
-                  <h2 className="text-2xl !font-bold !tracking-normal text-foreground mb-6">
-                    Recent
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {smallPosts.map((post) => (
-                      <SmallPost
-                        key={post.slug}
-                        slug={post.slug}
-                        title={post.metadata.title}
-                        summary={post.metadata.summary}
-                        publishedAt={post.metadata.publishedAt}
-                        image={post.metadata.image}
-                        tags={post.metadata.tags}
-                        readingTime={post.metadata.readingTime}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+              {smallPosts.length > 0 && <RecentPosts posts={smallPosts} />}
             </>
           )}
         </div>
