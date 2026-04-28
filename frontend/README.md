@@ -86,14 +86,24 @@ Interactive map via iframe.
 <MapEmbed src="/maps/namibia_map.html" title="Namibia Road Trip Route" height="400px" />
 ```
 
-### ImageSingle
+### ImageSingleVertical
 
-Single image centred with constrained width (max 24rem).
+Single portrait image centred with constrained width (max 24rem).
 
 ```jsx
-<ImageSingle>
+<ImageSingleVertical>
   <img src="/images/photo.jpg" alt="Description" width={1587} height={2245} />
-</ImageSingle>
+</ImageSingleVertical>
+```
+
+### ImageSingleHorizontal
+
+Single landscape image centred with wider constrained width (max 42rem).
+
+```jsx
+<ImageSingleHorizontal>
+  <img src="/images/photo.jpg" alt="Description" width={2245} height={1587} />
+</ImageSingleHorizontal>
 ```
 
 ### ImageGrid2
