@@ -16,6 +16,8 @@ const FALLBACK_TAGS: Tag[] = [
   { name: "Itinerary", count: 5 },
   { name: "Safari", count: 3 },
   { name: "Food", count: 1 },
+  { name: "City Guide", count: 1 },
+  { name: "Travel Tips", count: 1 },
 ];
 
 type TagFilterListProps = {
