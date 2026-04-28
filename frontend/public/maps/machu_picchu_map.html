@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    />
+
+    <meta
+      name="viewport"
+      content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <style>
+      #map_machu_picchu {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        left: 0%;
+        top: 0%;
+      }
+      .leaflet-container {
+        font-size: 1rem;
+      }
+
+      .numbered-marker {
+        background-color: #dc2626;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <style>
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    </style>
+
+    <script>
+      L_NO_TOUCH = false;
+      L_DISABLE_3D = false;
+    </script>
+  </head>
+  <body>
+    <div class="folium-map" id="map_machu_picchu"></div>
+  </body>
+  <script>
+    function createNumberedIcon(number) {
+      return L.divIcon({
+        className: "numbered-marker",
+        html: number.toString(),
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14],
+      });
+    }
+
+    var map = L.map("map_machu_picchu", {
+      center: [-13.38, -72.18],
+      crs: L.CRS.EPSG3857,
+      zoom: 10,
+      zoomControl: true,
+      preferCanvas: false,
+    });
+
+    var tile_layer = L.tileLayer(
+      "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        minZoom: 0,
+        maxZoom: 19,
+        maxNativeZoom: 19,
+        noWrap: false,
+        attribution:
+          '\u0026copy; \u003ca href="https://www.openstreetmap.org/copyright"\u003eOpenStreetMap\u003c/a\u003e contributors',
+        subdomains: "abc",
+        detectRetina: false,
+        tms: false,
+        opacity: 1,
+      },
+    );
+    tile_layer.addTo(map);
+
+    // Fetches a driving route from OSRM and draws it as a polyline.
+    // waypoints: array of [lat, lon] pairs
+    async function drawRoute(waypoints, color, popupText) {
+      const coords = waypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
+      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const latlngs = data.routes[0].geometry.coordinates.map(([lon, lat]) => [
+        lat,
+        lon,
+      ]);
+      const poly = L.polyline(latlngs, {
+        color,
+        opacity: 0.8,
+        weight: 3,
+        fill: false,
+      }).addTo(map);
+      poly.bindPopup(`<div>${popupText}</div>`);
+    }
+
+    // Draws a straight-line route (used for train segments with no road equivalent).
+    function drawStraightRoute(waypoints, color, popupText) {
+      const poly = L.polyline(waypoints, {
+        color,
+        opacity: 0.8,
+        weight: 3,
+        fill: false,
+        dashArray: "8, 6",
+      }).addTo(map);
+      poly.bindPopup(`<div>${popupText}</div>`);
+    }
+
+    // Days 1–2: Cusco → Ollantaytambo (blue, direct Sacred Valley road)
+    drawRoute(
+      [
+        [-13.5164, -71.9784],
+        [-13.2586, -72.2636],
+      ],
+      "#2563eb",
+      "Days 1–2: Cusco &amp; Sacred Valley",
+    );
+
+    // Day 3: Ollantaytambo → Aguas Calientes (purple, train — dashed, offset north)
+    drawStraightRoute(
+      [
+        [-13.2540, -72.2617],
+        [-13.1487, -72.5249],
+      ],
+      "#9333ea",
+      "Day 3: Train — Ollantaytambo to Aguas Calientes",
+    );
+
+    // Day 4: Aguas Calientes → Machu Picchu → Aguas Calientes (green, bus up & back)
+    drawRoute(
+      [
+        [-13.1533, -72.5268],
+        [-13.1631, -72.545],
+        [-13.1533, -72.5268],
+      ],
+      "#16a34a",
+      "Day 4: Bus to Machu Picchu &amp; back",
+    );
+
+    // Day 4 return: Aguas Calientes → Ollantaytambo (green dashed, train back, offset south)
+    drawStraightRoute(
+      [
+        [-13.1579, -72.5287],
+        [-13.2632, -72.2655],
+      ],
+      "#16a34a",
+      "Day 4: Train back to Ollantaytambo",
+    );
+
+    // Day 5: Ollantaytambo → Maras → Chinchero → Cusco (red, return via high road)
+    drawRoute(
+      [
+        [-13.2586, -72.2636],
+        [-13.3361, -72.1507],
+        [-13.3891, -72.0446],
+        [-13.5164, -71.9784],
+      ],
+      "#dc2626",
+      "Day 5: Return to Cusco via Maras &amp; Chinchero",
+    );
+
+    // Legend
+    var legend = L.control({ position: "topright" });
+    legend.onAdd = function () {
+      var div = L.DomUtil.create("div");
+      div.style.cssText =
+        "background: white; padding: 10px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-size: 13px; line-height: 1.8;";
+      div.innerHTML = `
+        <strong style="display:block; margin-bottom:4px;">Itinerary</strong>
+        <span style="display:inline-block;width:20px;height:3px;background:#2563eb;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Days 1–2: Cusco<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#9333ea;vertical-align:middle;margin-right:6px;border-radius:2px;border-top:2px dashed #9333ea;height:0;"></span>Day 3: Bus & Train to Aguas Calientes<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#16a34a;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 4: Machu Picchu & Ollantaytambo<br>
+        <span style="display:inline-block;width:20px;height:3px;background:#dc2626;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 5: Return to Cusco<br>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+
+    // Marker 1: Cusco (Day 1, offset west)
+    var marker_1 = L.marker([-13.5164, -71.9904], {
+      icon: createNumberedIcon(1),
+    }).addTo(map);
+    marker_1.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Cusco</b><br>Acclimatisation — Plaza de Armas, San Blas</div>`,
+    );
+    marker_1.bindTooltip(`<div>Cusco</div>`, { sticky: true });
+
+    // Marker 2: Ollantaytambo
+    var marker_2 = L.marker([-13.2586, -72.2636], {
+      icon: createNumberedIcon(2),
+    }).addTo(map);
+    marker_2.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Ollantaytambo</b><br>Day 2 & 4: Inca fortress &amp; train departure point</div>`,
+    );
+    marker_2.bindTooltip(`<div>Ollantaytambo</div>`, { sticky: true });
+
+    // Marker 3: Aguas Calientes (Day 3)
+    var marker_3 = L.marker([-13.1533, -72.5268], {
+      icon: createNumberedIcon(3),
+    }).addTo(map);
+    marker_3.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Aguas Calientes</b><br>Gateway town to Machu Picchu</div>`,
+    );
+    marker_3.bindTooltip(`<div>Aguas Calientes</div>`, {
+      sticky: true,
+    });
+
+    // Marker 4: Machu Picchu (Day 4)
+    var marker_4 = L.marker([-13.1631, -72.545], {
+      icon: createNumberedIcon(4),
+    }).addTo(map);
+    marker_4.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Machu Picchu</b><br>The Lost City of the Inca</div>`,
+    );
+    marker_4.bindTooltip(`<div>Machu Picchu</div>`, { sticky: true });
+
+    // Marker 5: Cusco (Day 5 return, offset east)
+    var marker_5 = L.marker([-13.5164, -71.9664], {
+      icon: createNumberedIcon(5),
+    }).addTo(map);
+    marker_5.bindPopup(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Cusco</b><br>Return via Maras &amp; Chinchero</div>`,
+    );
+    marker_5.bindTooltip(`<div>Cusco</div>`, { sticky: true });
+  </script>
+</html>
