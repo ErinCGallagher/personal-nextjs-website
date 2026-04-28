@@ -17,6 +17,7 @@ const FALLBACK_TAGS: Tag[] = [
   { name: "Safari", count: 3 },
   { name: "Food", count: 1 },
   { name: "City Guide", count: 1 },
+  { name: "Country Guide", count: 1 },
   { name: "Travel Tips", count: 1 },
 ];
 

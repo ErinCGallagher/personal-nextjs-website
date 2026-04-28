@@ -12,6 +12,7 @@ export function getTagColor(tag: string) {
   if (tagLower === "safari") return "#7bc99d";
   if (tagLower === "itinerary") return "#7b9ae0";
   if (tagLower === "city guide") return "#7abcca";
+  if (tagLower === "country guide") return "#6bbda0";
   if (tagLower === "travel tips") return "#d4785a";
   return "#7b9ae0";
 }
