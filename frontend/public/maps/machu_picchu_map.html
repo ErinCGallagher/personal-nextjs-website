@@ -202,12 +202,30 @@
       div.style.cssText =
         "background: white; padding: 10px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-size: 13px; line-height: 1.8;";
       div.innerHTML = `
-        <strong style="display:block; margin-bottom:4px;">Itinerary</strong>
-        <span style="display:inline-block;width:20px;height:3px;background:#2563eb;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Days 1–2: Cusco<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#9333ea;vertical-align:middle;margin-right:6px;border-radius:2px;border-top:2px dashed #9333ea;height:0;"></span>Day 3: Bus & Train to Aguas Calientes<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#16a34a;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 4: Machu Picchu & Ollantaytambo<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#dc2626;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 5: Return to Cusco<br>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <strong>Itinerary</strong>
+          <button id="legend-toggle" aria-label="Toggle legend" style="display:none; background:none; border:none; cursor:pointer; font-size:16px; line-height:1; padding:0;">▲</button>
+        </div>
+        <div id="legend-items" style="margin-top:4px;">
+          <span style="display:inline-block;width:20px;height:3px;background:#2563eb;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Days 1–2: Cusco<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#9333ea;vertical-align:middle;margin-right:6px;border-radius:2px;border-top:2px dashed #9333ea;height:0;"></span>Day 3: Bus & Train to Aguas Calientes<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#16a34a;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 4: Machu Picchu & Ollantaytambo<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#dc2626;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 5: Return to Cusco<br>
+        </div>
       `;
+
+      var toggle = div.querySelector("#legend-toggle");
+      var items = div.querySelector("#legend-items");
+      toggle.style.display = "block";
+      toggle.addEventListener("click", function () {
+        var collapsed = items.style.display === "none";
+        items.style.display = collapsed ? "block" : "none";
+        toggle.textContent = collapsed ? "▲" : "▼";
+      });
+
+      // Prevent map interactions from firing through the legend
+      L.DomEvent.disableClickPropagation(div);
+
       return div;
     };
     legend.addTo(map);

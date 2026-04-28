@@ -118,49 +118,91 @@
       map_c512b3e3ac9311d027549b287f6dcc2a,
     );
 
-    var poly_line_341e92da73d430acf868493dda33fec0 = L.polyline(
+    // Fetches a driving route from OSRM and draws it as a polyline.
+    // waypoints: array of [lat, lon] pairs
+    async function drawRoute(waypoints, color, popupText) {
+      const coords = waypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
+      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const latlngs = data.routes[0].geometry.coordinates.map(([lon, lat]) => [
+        lat,
+        lon,
+      ]);
+      const poly = L.polyline(latlngs, {
+        color,
+        opacity: 0.8,
+        weight: 3,
+        fill: false,
+      }).addTo(map_c512b3e3ac9311d027549b287f6dcc2a);
+      poly.bindPopup(`<div>${popupText}</div>`);
+    }
+
+    drawRoute(
       [
         [-26.1367, 28.2411],
         [-24.9319, 30.8731],
-        [-24.0063, 31.4975],
-        [-25.12, 31.92],
+        [-24.5, 31.5],
         [-26.3208, 31.1617],
-        [-26.25, 31.8833],
-        [-27.7889, 30.1281],
         [-29.0667, 29.5],
         [-28.5167, 28.5167],
-        [-29.3167, 27.4833],
         [-29.8333, 28.05],
-        [-31.2833, 28.35],
         [-31.9833, 28.8833],
-        [-33.0153, 27.9116],
         [-33.6833, 26.6833],
         [-34.0261, 23.8889],
         [-34.0364, 23.0471],
         [-33.5958, 22.2008],
         [-34.8333, 20.0],
         [-33.9328, 18.86],
-        [-33.8167, 18.4333],
         [-33.9249, 18.4241],
       ],
-      {
-        bubblingMouseEvents: true,
-        color: "#2563eb",
-        dashArray: null,
-        dashOffset: null,
-        fill: false,
-        fillColor: "#2563eb",
-        fillOpacity: 0.2,
-        fillRule: "evenodd",
-        lineCap: "round",
-        lineJoin: "round",
-        noClip: false,
-        opacity: 0.8,
-        smoothFactor: 1.0,
-        stroke: true,
-        weight: 3,
-      },
-    ).addTo(map_c512b3e3ac9311d027549b287f6dcc2a);
+      "#2563eb",
+      "Southern Africa Road Trip",
+    );
+
+    // Legend
+    var legend = L.control({ position: "topright" });
+    legend.onAdd = function () {
+      var div = L.DomUtil.create("div");
+      div.style.cssText =
+        "background: white; padding: 10px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-size: 13px; line-height: 1.8;";
+      div.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <strong>Itinerary</strong>
+          <button id="legend-toggle" aria-label="Toggle legend" style="background:none; border:none; cursor:pointer; font-size:16px; line-height:1; padding:0;">▼</button>
+        </div>
+        <div id="legend-items" style="margin-top:4px;display:none;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">1</span>Day 1: Johannesburg<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">2</span>Days 2–4: Graskop & Panorama Route<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">3</span>Days 5–7: Kruger National Park<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">4</span>Days 8–11: Eswatini<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">5</span>Days 13–15: Drakensberg<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">6</span>Days 16–17: Golden Gate Highlands<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">7</span>Days 18–20: Semonkong, Lesotho<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">8</span>Days 21–22: Coffee Bay<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">9</span>Days 23–25: Kenton & Addo<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">10</span>Days 26–27: Tsitsikamma<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">11</span>Days 28–34: Knysna & Garden Route<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">12</span>Days 35–36: Oudtshoorn<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">13</span>Day 37: L'Agulhas<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">14</span>Day 38: Stellenbosch<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">15</span>Days 39–46: Cape Town<br>
+        </div>
+      `;
+
+      var toggle = div.querySelector("#legend-toggle");
+      var items = div.querySelector("#legend-items");
+      toggle.addEventListener("click", function () {
+        var collapsed = items.style.display === "none";
+        items.style.display = collapsed ? "block" : "none";
+        toggle.textContent = collapsed ? "▲" : "▼";
+      });
+
+      L.DomEvent.disableClickPropagation(div);
+
+      return div;
+    };
+    legend.addTo(map_c512b3e3ac9311d027549b287f6dcc2a);
 
     // Marker 1: Johannesburg
     var marker_1 = L.marker([-26.1367, 28.2411], {

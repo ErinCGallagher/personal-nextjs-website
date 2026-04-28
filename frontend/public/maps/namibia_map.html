@@ -118,7 +118,27 @@
       map_9813f0291b20092e7e9960d97a953e20,
     );
 
-    var poly_line_5ca3a5690505706d01cd2d4dda7cb5a9 = L.polyline(
+    // Fetches a driving route from OSRM and draws it as a polyline.
+    // waypoints: array of [lat, lon] pairs
+    async function drawRoute(waypoints, color, popupText) {
+      const coords = waypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
+      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const latlngs = data.routes[0].geometry.coordinates.map(([lon, lat]) => [
+        lat,
+        lon,
+      ]);
+      const poly = L.polyline(latlngs, {
+        color,
+        opacity: 0.8,
+        weight: 3,
+        fill: false,
+      }).addTo(map_9813f0291b20092e7e9960d97a953e20);
+      poly.bindPopup(`<div>${popupText}</div>`);
+    }
+
+    drawRoute(
       [
         [-22.5597, 17.0832],
         [-24.4667, 15.8],
@@ -128,24 +148,9 @@
         [-19.1486, 15.9084],
         [-22.5597, 17.0832],
       ],
-      {
-        bubblingMouseEvents: true,
-        color: "#2563eb",
-        dashArray: null,
-        dashOffset: null,
-        fill: false,
-        fillColor: "#2563eb",
-        fillOpacity: 0.2,
-        fillRule: "evenodd",
-        lineCap: "round",
-        lineJoin: "round",
-        noClip: false,
-        opacity: 0.8,
-        smoothFactor: 1.0,
-        stroke: true,
-        weight: 3,
-      },
-    ).addTo(map_9813f0291b20092e7e9960d97a953e20);
+      "#2563eb",
+      "Namibia Road Trip",
+    );
 
     // Marker 1: Windhoek (Start)
     var marker_1 = L.marker([-22.5597, 17.0832], {
@@ -224,6 +229,42 @@
     popup_6.setContent(html_6);
     marker_6.bindPopup(popup_6);
     marker_6.bindTooltip(`<div>Days 6-8: Etosha</div>`, { sticky: true });
+
+    // Legend
+    var legend = L.control({ position: "topright" });
+    legend.onAdd = function () {
+      var div = L.DomUtil.create("div");
+      div.style.cssText =
+        "background: white; padding: 10px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-size: 13px; line-height: 1.8;";
+      div.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <strong>Itinerary</strong>
+          <button id="legend-toggle" aria-label="Toggle legend" style="background:none; border:none; cursor:pointer; font-size:16px; line-height:1; padding:0;">▲</button>
+        </div>
+        <div id="legend-items" style="margin-top:4px;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">1</span>Day 1: Windhoek<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">2</span>Days 1–2: Sesriem<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">3</span>Days 3–4: Swakopmund<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">4</span>Day 5: Cape Cross<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">5</span>Day 5: Madisa Camp<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">6</span>Days 6–8: Etosha<br>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#dc2626;color:white;border-radius:50%;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);margin-right:6px;flex-shrink:0;vertical-align:middle;">7</span>Day 9: Windhoek<br>
+        </div>
+      `;
+
+      var toggle = div.querySelector("#legend-toggle");
+      var items = div.querySelector("#legend-items");
+      toggle.addEventListener("click", function () {
+        var collapsed = items.style.display === "none";
+        items.style.display = collapsed ? "block" : "none";
+        toggle.textContent = collapsed ? "▲" : "▼";
+      });
+
+      L.DomEvent.disableClickPropagation(div);
+
+      return div;
+    };
+    legend.addTo(map_9813f0291b20092e7e9960d97a953e20);
 
     // Marker 7: Windhoek (End) - offset to avoid overlapping with marker 1
     var marker_7 = L.marker([-22.35, 17.35], {

@@ -197,15 +197,31 @@
       div.style.cssText =
         "background: white; padding: 10px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-size: 13px; line-height: 1.8;";
       div.innerHTML = `
-        <strong style="display:block; margin-bottom:4px;">Itinerary</strong>
-        <span style="display:inline-block;width:20px;height:3px;background:#6b7280;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 1: Arrival<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#2563eb;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 2: Cape Peninsula<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#9333ea;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 3: Hermanus<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#16a34a;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 4: Winelands<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#dc2626;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 5: West Coast<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#ea580c;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 6: Cape Town<br>
-        <span style="display:inline-block;width:20px;height:3px;background:#6b7280;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 7: Departure
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <strong>Itinerary</strong>
+          <button id="legend-toggle" aria-label="Toggle legend" style="background:none; border:none; cursor:pointer; font-size:16px; line-height:1; padding:0;">▲</button>
+        </div>
+        <div id="legend-items" style="margin-top:4px;">
+          <span style="display:inline-block;width:20px;height:3px;background:#6b7280;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 1: Arrival<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#2563eb;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 2: Cape Peninsula<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#9333ea;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 3: Hermanus<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#16a34a;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 4: Winelands<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#dc2626;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 5: West Coast<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#ea580c;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 6: Cape Town<br>
+          <span style="display:inline-block;width:20px;height:3px;background:#6b7280;vertical-align:middle;margin-right:6px;border-radius:2px;"></span>Day 7: Departure
+        </div>
       `;
+
+      var toggle = div.querySelector("#legend-toggle");
+      var items = div.querySelector("#legend-items");
+      toggle.addEventListener("click", function () {
+        var collapsed = items.style.display === "none";
+        items.style.display = collapsed ? "block" : "none";
+        toggle.textContent = collapsed ? "▲" : "▼";
+      });
+
+      L.DomEvent.disableClickPropagation(div);
+
       return div;
     };
     legend.addTo(map);
