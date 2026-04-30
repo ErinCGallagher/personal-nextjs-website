@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "tsx src/migrate.ts && tsx src/index.ts",
+    "start": "tsx src/migrate.ts && node dist/index.js",
     "lint": "eslint",
     "migrate": "tsx src/migrate.ts",
     "create-admin": "tsx src/create-admin.ts",
