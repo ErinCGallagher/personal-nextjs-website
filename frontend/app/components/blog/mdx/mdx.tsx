@@ -14,6 +14,7 @@ import { ImageGrid2 } from "./image-grid-2";
 import { ImageGrid2Mixed } from "./image-grid-2-mixed";
 import { ImageSingleVertical, ImageSingleHorizontal } from "./image-single";
 import { VideoLink } from "./video-link";
+import { VideoLinkGrid } from "./video-link-grid";
 import { MapEmbed } from "./map-embed";
 import { RelatedPost, RelatedPosts } from "./related-post";
 
@@ -111,6 +112,7 @@ let components = {
   ImageSingleVertical,
   ImageSingleHorizontal,
   VideoLink,
+  VideoLinkGrid,
   MapEmbed,
   RelatedPost,
   RelatedPosts,

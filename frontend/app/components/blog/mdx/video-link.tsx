@@ -10,7 +10,7 @@ interface VideoLinkProps {
   title?: string;
 }
 
-function extractYouTubeVideoId(url: string): string | null {
+export function extractYouTubeVideoId(url: string): string | null {
   const patterns = [
     /youtu\.be\/([^?&]+)/,
     /youtube\.com\/watch\?v=([^&]+)/,
