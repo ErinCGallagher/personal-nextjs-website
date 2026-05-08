@@ -189,6 +189,26 @@
       },
     ).addTo(map_egypt);
 
+    // Dashed line: flight from Aswan to Cairo, arced west into the desert
+    // Points computed from a quadratic bezier (P0=Aswan, P1=[27.0,28.5], P2=Cairo)
+    var flight_aswan_cairo = L.polyline(
+      [
+        [24.089, 32.900],
+        [25.063, 31.626],
+        [26.012, 30.718],
+        [27.017, 30.259],
+        [27.973, 30.129],
+        [28.986, 30.451],
+        [29.979, 31.134],
+      ],
+      {
+        color: "#2563eb",
+        dashArray: "8, 8",
+        opacity: 0.6,
+        weight: 2,
+      },
+    ).addTo(map_egypt);
+
     async function drawDrivenRoute(waypoints) {
       const coords = waypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
       const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
@@ -207,6 +227,12 @@
     drawDrivenRoute([
       [25.687, 32.640],  // Luxor
       [26.142, 32.669],  // Dendera
+    ]);
+
+    // Optional drive: Luxor to Abydos
+    drawDrivenRoute([
+      [25.687, 32.640],  // Luxor
+      [26.185, 31.919],  // Abydos
     ]);
 
     // Optional drive: Aswan to Abu Simbel
@@ -326,6 +352,19 @@
     popup_dendera.setContent(html_dendera);
     marker_dendera.bindPopup(popup_dendera);
     marker_dendera.bindTooltip(`<div>Optional: Dendera Temple</div>`, { sticky: true });
+
+    // Optional marker: Abydos (Day 3 optional)
+    var marker_abydos = L.marker([26.185, 31.919], {
+      icon: createOptionalIcon("2B"),
+    }).addTo(map_egypt);
+
+    var popup_abydos = L.popup({ minWidth: 180 });
+    var html_abydos = $(
+      `<div style="width: 100.0%; height: 100.0%;"><b>Optional Day 3: Abydos</b><br>Temple of Seti I — one of the best-preserved temples in Egypt</div>`,
+    )[0];
+    popup_abydos.setContent(html_abydos);
+    marker_abydos.bindPopup(popup_abydos);
+    marker_abydos.bindTooltip(`<div>Optional: Abydos Temple</div>`, { sticky: true });
 
     // Optional marker: Abu Simbel (Day 8 optional)
     var marker_abu_simbel = L.marker([22.337, 31.626], {
