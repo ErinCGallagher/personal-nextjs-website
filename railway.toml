@@ -1,5 +1,0 @@
-[build]
-buildCommand = "pnpm install && pnpm --filter backend build"
-
-[deploy]
-startCommand = "pnpm --filter backend start"

@@ -1,0 +1,6 @@
+[build]
+# Assuming Railway's Root Directory for this service is set to /backend
+buildCommand = "pnpm install && pnpm run build"
+
+[deploy]
+startCommand = "pnpm run start"
