@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+      .numbered-marker {
+        background-color: #dc2626;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map = L.map('map').setView([41.3275, 19.8187], 7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      var locations = [
+        { name: "Tirane", coords: [41.3275, 19.8187], id: 1 },
+        { name: "Komani Lake", coords: [42.1097, 19.8272], id: 2 },
+        { name: "Theth", coords: [42.3894, 19.7744], id: 3 },
+        { name: "Saranda", coords: [39.8755, 20.0062], id: 4 },
+        { name: "Ksamil", coords: [39.7825, 19.9984], id: 5 },
+        { name: "Butrint", coords: [39.7436, 20.0195], id: 6 },
+        { name: "Gjirokaster", coords: [40.0758, 20.1388], id: 7 },
+        { name: "Berat", coords: [40.7049, 19.9489], id: 8 }
+      ];
+
+      locations.forEach(function(loc) {
+        var icon = L.divIcon({
+          className: 'custom-div-icon',
+          html: "<div class='numbered-marker'>" + loc.id + "</div>",
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+        L.marker(loc.coords, { icon: icon }).addTo(map).bindPopup("<b>" + loc.id + ". " + loc.name + "</b>");
+      });
+
+      var latlngs = locations.map(loc => loc.coords);
+      var polyline = L.polyline(latlngs, {color: '#dc2626', weight: 3, opacity: 0.7, dashArray: '5, 10'}).addTo(map);
+    </script>
+  </body>
+</html>
