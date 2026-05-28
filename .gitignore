@@ -48,3 +48,6 @@ next-env.d.ts
 .claude
 claude-plan/
 CLAUDE.local.md
+
+# gemini
+.gemini
