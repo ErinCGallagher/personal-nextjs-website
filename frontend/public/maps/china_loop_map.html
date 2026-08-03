@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+      html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+      #map { position: absolute; top: 0; bottom: 0; right: 0; left: 0; }
+      .leaflet-container { font-size: 1rem; }
+
+      .numbered-marker {
+        background-color: #ea580c;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      }
+
+      .suzhou-marker {
+        background-color: #9ca3af;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 10px;
+        line-height: 22px;
+        width: 22px;
+        height: 22px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      }
+
+      .legend {
+        background: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        font-size: 12px;
+        line-height: 20px;
+        font-family: -apple-system, sans-serif;
+      }
+      .legend-row { display: flex; align-items: center; gap: 8px; }
+      .legend-line {
+        width: 24px;
+        height: 3px;
+        background: #ea580c;
+        flex-shrink: 0;
+      }
+      .legend-line.dashed {
+        background: none;
+        border-top: 3px dashed #ea580c;
+      }
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #9ca3af;
+        flex-shrink: 0;
+      }
+    </style>
+    <script>L_NO_TOUCH = false; L_DISABLE_3D = false;</script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script>
+    var map = L.map("map", {
+      center: [31, 115],
+      zoom: 5,
+      zoomControl: true,
+      preferCanvas: false,
+    });
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    function createNumberedIcon(number) {
+      return L.divIcon({
+        className: "numbered-marker",
+        html: number.toString(),
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14],
+      });
+    }
+
+    function createSuzhouIcon() {
+      return L.divIcon({
+        className: "suzhou-marker",
+        html: "S",
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        popupAnchor: [0, -12],
+      });
+    }
+
+    // ── Train / HST legs (solid) ───────────────────────────────────────────
+
+    // Beijing → Shanghai (HST)
+    L.polyline([
+      [39.9042, 116.4074],
+      [31.2304, 121.4737],
+    ], { color: "#ea580c", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // Shanghai → Suzhou day trip (HST, both ways shown as single line)
+    L.polyline([
+      [31.2304, 121.4737],
+      [31.2989, 120.5853],
+    ], { color: "#ea580c", weight: 2, opacity: 0.6, dashArray: "4, 4" }).addTo(map);
+
+    // Shanghai → Huangshan (overnight train)
+    L.polyline([
+      [31.2304, 121.4737],
+      [29.7147, 118.3374],
+    ], { color: "#ea580c", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // Macau → Yangshuo (train via Zhuhai/Guangzhou)
+    L.polyline([
+      [22.1987, 113.5439],
+      [23.1291, 113.2644], // Guangzhou/Zhuhai waypoint
+      [24.7787, 110.4935],
+    ], { color: "#ea580c", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // Yangshuo → Guilin (HST)
+    L.polyline([
+      [24.7787, 110.4935],
+      [25.2736, 110.2907],
+    ], { color: "#ea580c", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // Xi'an → Pingyao (HST)
+    L.polyline([
+      [34.3416, 108.9398],
+      [37.1894, 112.1762],
+    ], { color: "#ea580c", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // Pingyao → Beijing (HST)
+    L.polyline([
+      [37.1894, 112.1762],
+      [39.9042, 116.4074],
+    ], { color: "#ea580c", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // ── Flight legs (dashed) ───────────────────────────────────────────────
+
+    // Huangshan → Macau (flight via Guangzhou)
+    L.polyline([
+      [29.7147, 118.3374],
+      [22.1987, 113.5439],
+    ], { color: "#ea580c", weight: 2.5, opacity: 0.7, dashArray: "8, 7" }).addTo(map);
+
+    // Guilin → Chongqing (flight)
+    L.polyline([
+      [25.2736, 110.2907],
+      [29.5630, 106.5516],
+    ], { color: "#ea580c", weight: 2.5, opacity: 0.7, dashArray: "8, 7" }).addTo(map);
+
+    // Chongqing → Xi'an (flight)
+    L.polyline([
+      [29.5630, 106.5516],
+      [34.3416, 108.9398],
+    ], { color: "#ea580c", weight: 2.5, opacity: 0.7, dashArray: "8, 7" }).addTo(map);
+
+    // ── Numbered stop markers ──────────────────────────────────────────────
+
+    var stops = [
+      { num: 1,  lat: 39.9042, lng: 116.4074, title: "Days 1–3: Beijing (Start)",  detail: "Forbidden City · Great Wall · Temple of Heaven · Hutongs" },
+      { num: 2,  lat: 31.2304, lng: 121.4737, title: "Days 4–6: Shanghai",         detail: "The Bund · French Concession · Yu Garden · Tianzifang" },
+      { num: 3,  lat: 29.7147, lng: 118.3374, title: "Days 7–8: Huangshan",        detail: "Yellow Mountain · Sea of clouds · Hongcun village" },
+      { num: 4,  lat: 22.1987, lng: 113.5439, title: "Days 9–10: Macau",           detail: "Ruins of St. Paul's · Senado Square · Taipa · Egg tarts" },
+      { num: 5,  lat: 24.7787, lng: 110.4935, title: "Days 11–12: Yangshuo",       detail: "Karst peaks · Li River · Moon Hill · Bamboo rafting" },
+      { num: 6,  lat: 25.2736, lng: 110.2907, title: "Day 13: Guilin",             detail: "Reed Flute Cave · Elephant Trunk Hill · Night cruise" },
+      { num: 7,  lat: 29.5630, lng: 106.5516, title: "Days 14–15: Chongqing",      detail: "Hotpot capital · Hongya Cave · Yangtze confluence" },
+      { num: 8,  lat: 34.3416, lng: 108.9398, title: "Days 16–17: Xi'an",          detail: "Terracotta Army · City Walls · Muslim Quarter" },
+      { num: 9,  lat: 37.1894, lng: 112.1762, title: "Day 18: Pingyao",            detail: "Ming walled city · Courtyard hotels · Ancient banking" },
+      { num: 10, lat: 39.2442, lng: 116.8074, title: "Day 19: Beijing (Return)",   detail: "Return to Beijing — loop complete" },
+    ];
+
+    stops.forEach(function(s) {
+      var marker = L.marker([s.lat, s.lng], { icon: createNumberedIcon(s.num) }).addTo(map);
+      var popup = L.popup({ maxWidth: 220 });
+      var html = $('<div style="font-family:-apple-system,sans-serif"><b>' + s.title + '</b><br><span style="color:#555;font-size:12px">' + s.detail + '</span></div>')[0];
+      popup.setContent(html);
+      marker.bindPopup(popup);
+      marker.bindTooltip('<div>' + s.title + '</div>', { sticky: true });
+    });
+
+    // Suzhou — small secondary marker (day trip from Shanghai)
+    var suzhouMarker = L.marker([31.2989, 120.5853], { icon: createSuzhouIcon() }).addTo(map);
+    var suzhouPopup = L.popup({ maxWidth: 200 });
+    var suzhouHtml = $('<div style="font-family:-apple-system,sans-serif"><b>Suzhou (day trip)</b><br><span style="color:#555;font-size:12px">Classical gardens · Pingjiang Road canals</span></div>')[0];
+    suzhouPopup.setContent(suzhouHtml);
+    suzhouMarker.bindPopup(suzhouPopup);
+    suzhouMarker.bindTooltip('<div>Suzhou — day trip from Shanghai</div>', { sticky: true });
+
+    // ── Legend ─────────────────────────────────────────────────────────────
+
+    var legend = L.control({ position: "bottomleft" });
+    legend.onAdd = function() {
+      var div = L.DomUtil.create("div", "legend");
+      div.innerHTML =
+        '<div class="legend-row"><div class="legend-line"></div><span>Train / HST</span></div>' +
+        '<div class="legend-row" style="margin-top:4px"><div class="legend-line dashed"></div><span>Flight</span></div>' +
+        '<div class="legend-row" style="margin-top:4px"><div class="legend-dot"></div><span>Day trip</span></div>';
+      return div;
+    };
+    legend.addTo(map);
+  </script>
+</html>

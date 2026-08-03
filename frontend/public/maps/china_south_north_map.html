@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+      html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+      #map { position: absolute; top: 0; bottom: 0; right: 0; left: 0; }
+      .leaflet-container { font-size: 1rem; }
+
+      .numbered-marker {
+        background-color: #2563eb;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      }
+
+      .legend {
+        background: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        font-size: 12px;
+        line-height: 20px;
+        font-family: -apple-system, sans-serif;
+      }
+      .legend-row { display: flex; align-items: center; gap: 8px; }
+      .legend-line {
+        width: 24px;
+        height: 3px;
+        background: #2563eb;
+        flex-shrink: 0;
+      }
+      .legend-line.dashed {
+        background: none;
+        border-top: 3px dashed #2563eb;
+      }
+    </style>
+    <script>L_NO_TOUCH = false; L_DISABLE_3D = false;</script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script>
+    var map = L.map("map", {
+      center: [31, 111],
+      zoom: 5,
+      zoomControl: true,
+      preferCanvas: false,
+    });
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    function createNumberedIcon(number) {
+      return L.divIcon({
+        className: "numbered-marker",
+        html: number.toString(),
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14],
+      });
+    }
+
+    // ── Train legs (solid) ─────────────────────────────────────────────────
+
+    // 1. Hong Kong → Yangshuo (HST)
+    L.polyline([
+      [22.3193, 114.1694],
+      [23.1291, 113.2644], // Guangzhou (HST waypoint)
+      [24.7787, 110.4935],
+    ], { color: "#2563eb", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // 2. Yangshuo → Guilin (HST)
+    L.polyline([
+      [24.7787, 110.4935],
+      [25.2736, 110.2907],
+    ], { color: "#2563eb", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // 3. Zhangjiajie → Chongqing (sleeper train)
+    L.polyline([
+      [29.1167, 110.4833],
+      [29.5630, 106.5516],
+    ], { color: "#2563eb", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // 4. Xi'an → Pingyao (HST)
+    L.polyline([
+      [34.3416, 108.9398],
+      [37.1894, 112.1762],
+    ], { color: "#2563eb", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // 5. Pingyao → Beijing (HST)
+    L.polyline([
+      [37.1894, 112.1762],
+      [39.9042, 116.4074],
+    ], { color: "#2563eb", weight: 3, opacity: 0.85 }).addTo(map);
+
+    // ── Flight legs (dashed) ───────────────────────────────────────────────
+
+    // Guilin → Zhangjiajie (flight)
+    L.polyline([
+      [25.2736, 110.2907],
+      [29.1167, 110.4833],
+    ], { color: "#2563eb", weight: 2.5, opacity: 0.7, dashArray: "8, 7" }).addTo(map);
+
+    // Chongqing → Xi'an (flight)
+    L.polyline([
+      [29.5630, 106.5516],
+      [34.3416, 108.9398],
+    ], { color: "#2563eb", weight: 2.5, opacity: 0.7, dashArray: "8, 7" }).addTo(map);
+
+    // ── Markers ────────────────────────────────────────────────────────────
+
+    var stops = [
+      { num: 1, lat: 22.3193, lng: 114.1694, title: "Days 1–2: Hong Kong",      detail: "Star Ferry · Victoria Peak · Temple Street Night Market" },
+      { num: 2, lat: 24.7787, lng: 110.4935, title: "Days 3–5: Yangshuo",       detail: "Karst peaks · Li River · Moon Hill · Bamboo rafting" },
+      { num: 3, lat: 25.2736, lng: 110.2907, title: "Day 6: Guilin",            detail: "Reed Flute Cave · Elephant Trunk Hill · Night cruise" },
+      { num: 4, lat: 29.1167, lng: 110.4833, title: "Days 7–10: Zhangjiajie",  detail: "Tianmenshan · Avatar mountains · Glass walkway" },
+      { num: 5, lat: 29.5630, lng: 106.5516, title: "Days 11–12: Chongqing",   detail: "Hotpot capital · Hongya Cave · Yangtze confluence" },
+      { num: 6, lat: 34.3416, lng: 108.9398, title: "Days 13–14: Xi'an",       detail: "Terracotta Army · City Walls · Muslim Quarter" },
+      { num: 7, lat: 37.1894, lng: 112.1762, title: "Days 15–16: Pingyao",     detail: "Ming walled city · Courtyard hotels · Ancient banking" },
+      { num: 8, lat: 39.9042, lng: 116.4074, title: "Days 17–18: Beijing",     detail: "Forbidden City · Great Wall · Peking Duck" },
+    ];
+
+    stops.forEach(function(s) {
+      var marker = L.marker([s.lat, s.lng], { icon: createNumberedIcon(s.num) }).addTo(map);
+      var popup = L.popup({ maxWidth: 220 });
+      var html = $('<div style="font-family:-apple-system,sans-serif"><b>' + s.title + '</b><br><span style="color:#555;font-size:12px">' + s.detail + '</span></div>')[0];
+      popup.setContent(html);
+      marker.bindPopup(popup);
+      marker.bindTooltip('<div>' + s.title + '</div>', { sticky: true });
+    });
+
+    // ── Legend ─────────────────────────────────────────────────────────────
+
+    var legend = L.control({ position: "bottomleft" });
+    legend.onAdd = function() {
+      var div = L.DomUtil.create("div", "legend");
+      div.innerHTML = '<div class="legend-row"><div class="legend-line"></div><span>Train / HST</span></div>' +
+                      '<div class="legend-row" style="margin-top:4px"><div class="legend-line dashed"></div><span>Flight</span></div>';
+      return div;
+    };
+    legend.addTo(map);
+  </script>
+</html>
